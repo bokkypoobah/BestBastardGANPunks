@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>Banananas</title>
+
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-vue-icons.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/highlight.min.css"/>
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/bootstrap-vue.min.js"></script>
+    <script src="js/bootstrap-vue-icons.min.js"></script>
+    <script src="js/dexie.js"></script>
+
+    <script src="js/ethers-5.2.umd.min.js"></script>
+    <script src="js/highlight.min.js"></script>
+    <script src="bananaData.min.js"></script>
+    <script src="deploymentData.js"></script>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="manifest" href="images/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+  </head>
+  <body>
+    <div id="app">
+      <b-container fluid class="m-0 p-2">
+        <div>
+          <b-navbar variant="light">
+            <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Boring Bananas Browser'">
+              Banananas
+            </b-navbar-brand>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_2.jpg" v-b-popover.hover.bottom="'Banana #2'" class="ml-5"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_3.jpg" v-b-popover.hover.bottom="'Banana #3'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_4.jpg" v-b-popover.hover.bottom="'Banana #4'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_636.jpg" v-b-popover.hover.bottom="'2952: BoppyKooPah'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_2952.jpg" v-b-popover.hover.bottom="'2952: Banananananana'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_4149.jpg" v-b-popover.hover.bottom="'Banana #4149'" class="ml-3"></b-avatar>
+
+            <!--
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6529.jpg" v-b-popover.hover.bottom="'Banana #6529'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6534.jpg" v-b-popover.hover.bottom="'Banana #6534'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6535.jpg" v-b-popover.hover.bottom="'Banana #6535'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6536.jpg" v-b-popover.hover.bottom="'Banana #6536'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6538.jpg" v-b-popover.hover.bottom="'Banana #6538'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6539.jpg" v-b-popover.hover.bottom="'Banana #6539'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6542.jpg" v-b-popover.hover.bottom="'Banana #6542'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6543.jpg" v-b-popover.hover.bottom="'Banana #6543'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6544.jpg" v-b-popover.hover.bottom="'Banana #6544'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_6545.jpg" v-b-popover.hover.bottom="'Banana #6545'" class="ml-3"></b-avatar>
+          -->
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7478.jpg" v-b-popover.hover.bottom="'Banana #7478'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7480.jpg" v-b-popover.hover.bottom="'Banana #7480'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7481.jpg" v-b-popover.hover.bottom="'Banana #7481'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7482.jpg" v-b-popover.hover.bottom="'Banana #7482'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7483.jpg" v-b-popover.hover.bottom="'Banana #7483'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7487.jpg" v-b-popover.hover.bottom="'Banana #7487'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7488.jpg" v-b-popover.hover.bottom="'Banana #7488'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7489.jpg" v-b-popover.hover.bottom="'Banana #7489'" class="ml-3"></b-avatar>
+            <b-avatar variant="light" size="3.0rem" src="images/Banana_7490.jpg" v-b-popover.hover.bottom="'Banana #7490'" class="ml-3"></b-avatar>
+            <b-navbar-nav class="ml-auto">
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power up this app'" @click="connect();" v-if="!connected">Connect Wallet</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power down this app'" @click="disconnect();" v-if="connected">Disconnect {{ account.substring(0, 10) }}</b-button>
+            </b-navbar-nav>
+          </b-navbar>
+        </div>
+
+        <div>
+          <b-card no-body class="mt-1">
+            <b-tabs card v-model="tabIndex" align="right">
+
+              <b-tab title="Banananas">
+                <b-card-text>
+                  <div class="d-flex m-0 p-0" style="height: 37px;">
+                    <div>
+                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="Search..." v-b-popover.hover="'Search by tokenId or any attribute value'"></b-form-input>
+                    </div>
+                    <div class="pl-1">
+                      <b-form-select size="sm" v-model="facing" :options="facingOptions"></b-form-select>
+                    </div>
+                    <div class="pl-3">
+                      <b-form-checkbox v-model="displayOwned">My Banananas</b-form-checkbox>
+                    </div>
+                    <div class="pl-3">
+                      {{ getBananaSearchResultsRows }}/{{ getBananaTotalSupply }}
+                    </div>
+                    <div class="pr-1 flex-grow-1">
+                    </div>
+                    <div class="pl-1">
+                      <b-form-select size="sm" v-model="view" :options="viewOptions"></b-form-select>
+                    </div>
+                    <div class="pl-1">
+                      <b-pagination size="sm" v-model="searchCurrentPage" :total-rows="getBananaSearchResultsRows" :per-page="searchPerPage"></b-pagination>
+                    </div>
+                    <div class="pl-1">
+                      <b-form-select size="sm" v-model="searchPerPage" :options="searchPerPageOptions"></b-form-select>
+                    </div>
+                  </div>
+
+                  <div v-if="view == 'cards'">
+                    <b-card-group deck>
+                      <div v-for="record in getBananaSearchResultsPage">
+                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0">
+                          <template #header>
+                            <span variant="secondary" class="small truncate">
+                              {{ record.tokenId + ': ' + record.name }}
+                            </span>
+                          </template>
+                          <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                            <b-img-lazy width="200%" :src="record.osimage" />
+                          </b-link>
+                        </b-card>
+                      </div>
+                    </b-card-group>
+                  </div>
+                  <div v-if="view == 'list'">
+                    <b-table small :fields="fields" :items="getBananaSearchResultsPage" responsive="sm">
+                      <template #cell(image)="data">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                          <b-img-lazy width="100%" :src="data.item.osimage" />
+                        </b-link>
+                      </template>
+                    </b-table>
+                  </div>
+                </b-card-text>
+              </b-tab>
+
+              <b-tab title="Wallet">
+                <b-card-text>
+                  Select <b>Owned</b> in the previous tab to view your tokens.<br />
+                  <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
+                  </b-table>
+                </b-card-text>
+              </b-tab>
+
+              <b-tab title="Info">
+                <h6 class="mb-1">What Is This Site?</h6>
+                <b-card-text>
+                  A small web3 app to view your BoringBananas from <a href="https://www.boringbananas.co/" class="card-link" target="_blank">https://www.boringbananas.co/</a> ("BBC"). Open sourced code is available for you to improve on - see below.
+                </b-card-text>
+
+                <b-card-text>
+                  We are not affiliated with BBC. If you have questions about BBC, head over to their Discord, linked from their site above.
+                </b-card-text>
+
+                <h6 class="mt-4 mb-1">How Do I Get Some BoringBananas?</h6>
+                <b-card-text>
+                  The original minting of BBCs occurred on Jun-29-2021 and is now closed.
+
+                  BBCs can be bought from secondary ERC-721 markets such as <a href="https://opensea.io/collection/boring-bananas-company" class="card-link" target="_blank">opensea.io - BBC</a>.
+
+                  See <a href="https://rarity.tools/boring-bananas-company" class="card-link" target="_blank">rarity.tools - BBC</a> for rarities.
+
+                  This is not financial advice. Do your own research.
+                </b-card-text>
+
+                <h6 class="mt-4 mb-1">Contract Details</h6>
+                <b-card-text>
+                  The BBC smart contract at <a href="https://etherscan.io/address/0xB9aB19454ccb145F9643214616c5571B8a4EF4f2#code" class="card-link" target="_blank">0xB9aB19454ccb145F9643214616c5571B8a4EF4f2</a> with balance 219.075 ETH:
+                  <ul>
+                    <li>was deployed at <a href="https://etherscan.io/tx/0x48136e474bf074582b7cd17da3c022e28512e2a80f189b6c153a5f7f79a3bea0" class="card-link" target="_blank">Jun-29-2021 03:42:36 PM +UTC</a></li>
+                    <li>minted the first token 0 at <a href="https://etherscan.io/tx/0x036a036d62395bac0b928d1c1a5448342b6a78f78a60d2cec7b9503adbe6ef76" class="card-link" target="_blank">Jun-29-2021 06:01:10 PM +UTC</a></li>
+                    <li>minted the final token 8,887 at <a href="https://etherscan.io/tx/0x0949ca8a9dbd9a290ea0d34de767f3a36dbd8d571f002dcd68f4f7f0a6e700de" class="card-link" target="_blank">Jun-29-2021 07:03:12 PM +UTC</a> (1h 2m 2s)</li>
+                  </ul>
+                  <b-card img-src="images/EtherScan_BBCHoldersChart_20210701_1538.png" style="max-width: 40rem;" class="ml-5">
+                    <b-card-text>
+                      From EtherScan's <a href="https://etherscan.io/token/tokenholderchart/0xb9ab19454ccb145f9643214616c5571b8a4ef4f2" class="card-link" target="_blank">Boring Bananas Co. Token Holders</a>
+                    </b-card-text>
+                  </b-card>
+                </b-card-text>
+
+                <h6 class="mt-4 mb-1">About This App</h6>
+                <b-card-text>
+                  <ul>
+                    <li>Source code available at <a href="https://github.com/bokkypoobah/Banananas" class="card-link" target="_blank">https://github.com/bokkypoobah/Banananas</a>. Clone it. Fork it. Contribute any useful changes back to this main repo</li>
+                    <li>Written using the <a href="https://bootstrap-vue.org/" class="card-link" target="_blank">https://bootstrap-vue.org/</a> framework</li>
+                    <li>Generates "static" data by collating information from the token contract's <em>tokenURI(...)</em> information with information from OpenSea.io.</li>
+                    <li>Uses <a href="https://github.com/ethers-io/ethers.js/" class="card-link" target="_blank">ethers.js</a> to connect to Ethereum via web3 to retrieve NFT tokens owned and their names</li>
+                    <li>Has no tracking technology. However connections from this app to OpenSea and MetaMask from your website will leak some information.</li>
+                    <li>Can be run on your own computer by cloning the GitHub repository and serving the pages using a webserver, or the "anywhere" server.</li>
+                    <li>Can be run from GitHub pages, so you can easily clone, customise and server your own version</li>
+                  </ul>
+                </b-card-text>
+
+                <b-card-text class="mt-5">
+                  Enjoy!
+                  <b-card no-body img-src="images/DoomedDegen.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
+                  (c) BokkyPooBah / Bok Consulting Pty Ltd 2021. The MIT Licence.
+                </b-card-text>
+              </b-tab>
+            </b-tabs>
+          </b-card>
+        </div>
+      </b-container>
+    </div>
+
+    <script>
+      window.app = new Vue({
+        el: '#app',
+        data: {
+          connected: false,
+          account: null,
+          bananasOwned: [],
+          bananaNamesOfOwner: [],
+          tabIndex: 0,
+          abortSearch: false,
+          searchString: '',
+          searchCurrentPage: 1,
+          searchTotalRows: 25440,
+          searchPerPage: 444,
+          searchPerPageOptions: [
+            { value: 4, text: '4/p' },
+            { value: 8, text: '8/p' },
+            { value: 44, text: '44/p' },
+            { value: 88, text: '88/p' },
+            { value: 444, text: '444/p' },
+            { value: 888, text: '888/p' },
+            { value: 4444, text: '4,444/p' },
+            { value: 8888, text: '8,888/p' },
+          ],
+          facing: null,
+          facingOptions: [
+            { value: null, text: 'Left and Right' },
+            { value: 'left', text: 'Left Only' },
+            { value: 'right', text: 'Right Only' },
+          ],
+          displayOwned: false,
+          view: 'list',
+          viewOptions: [
+            { value: 'cards', text: 'Cards' },
+            { value: 'list', text: 'List' },
+          ],
+          fields: [
+            { key: 'tokenId', label: 'tokenId' },
+            { key: 'image', label: 'image' },
+            { key: 'name', label: 'name' },
+            { key: 'facing', label: 'facing', sortable: false },
+            { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
+            { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
+            { key: 'background', label: 'background', sortable: false },
+            { key: 'bananaBase', label: 'bananaBase', sortable: false },
+            { key: 'mouth', label: 'mouth', sortable: false },
+            { key: 'eyes', label: 'eyes', sortable: false },
+            { key: 'headGear', label: 'headGear', sortable: false },
+          ],
+          ownedTokenFields: [
+            { key: 'i', label: '#' },
+            { key: 'tokenId', label: 'tokenId' },
+            { key: 'name', label: 'name' },
+          ],
+        },
+        computed: {
+          getBananaData() {
+            const results = [];
+            for (let i in BANANADATA) {
+              const d = BANANADATA[i];
+              let signatureSeries = null;
+              let background = null;
+              let bananaBase = null;
+              let mouth = null;
+              let eyes = null;
+              let headGear = null;
+              for (let k in d.attributes) {
+                const a = d.attributes[k];
+                // console.log(k + " => " + JSON.stringify(a));
+                if (a.trait_type == 'Background') {
+                  background = a.value;
+                } else if (a.trait_type == 'Banana Base') {
+                  bananaBase = a.value;
+                } else if (a.trait_type == 'Mouth') {
+                  mouth = a.value;
+                } else if (a.trait_type == 'Eyes') {
+                  eyes = a.value;
+                } else if (a.trait_type == 'Head Gear') {
+                  headGear = a.value;
+                } else if (a.trait_type == 'Signature Series') {
+                  signatureSeries = a.value;
+                }
+              }
+              if (!signatureSeries && (background == null || bananaBase == null || mouth == null || eyes == null || headGear == null)) {
+                console.log("signatureSeries: " + signatureSeries);
+                console.log("tokenId: " + i);
+                console.log("d: " + JSON.stringify(d));
+                console.log("background: " + background);
+                console.log("bananaBase: " + bananaBase);
+                console.log("mouth: " + mouth);
+                console.log("eyes: " + eyes);
+                console.log("headGear: " + headGear);
+              }
+
+              d.background = background;
+              d.bananaBase = bananaBase;
+              d.mouth = mouth;
+              d.eyes = eyes;
+              d.headGear = headGear;
+              d.signatureSeries = signatureSeries;
+
+              d.owned = this.bananasOwned[i] && this.bananasOwned[i].length > 0;
+              if (this.bananasOwned[i]) {
+                d.name = this.bananasOwned[i];
+              }
+              // if (/*i == 991842 || */ d.owned) {
+              //   console.log("this.bananasOwned: " + JSON.stringify(this.bananasOwned, null, 2));
+              //   console.log("this.bananasOwned[i]: " + JSON.stringify(this.bananasOwned[i], null, 2));
+              //   console.log(JSON.stringify(d).toString(200));
+              // }
+
+              results.push(d);
+            }
+            return results;
+          },
+          getBananaTotalSupply() {
+            return BANANADATA.length;
+          },
+          getBananaSearchResults() {
+            let results = [];
+            for (let i in this.getBananaData) {
+              const d = this.getBananaData[i];
+              let include = true;
+              if (this.displayOwned) {
+                include = d.owned;
+              }
+
+              if (this.searchString != null && this.searchString.length > 0) {
+                const s = this.searchString.toLowerCase();
+                if (d.tokenId == this.searchString ||
+                  (d.name && d.name.toLowerCase().includes(s)) ||
+                  (d.signatureSeries && d.signatureSeries.toLowerCase().includes(s)) ||
+                  (d.background && d.background.toLowerCase().includes(s)) ||
+                  (d.bananaBase && d.bananaBase.toLowerCase().includes(s)) ||
+                  (d.mouth && d.mouth.toLowerCase().includes(s)) ||
+                  (d.eyes && d.eyes.toLowerCase().includes(s)) ||
+                  (d.headGear && d.headGear.toLowerCase().includes(s))) {
+                } else {
+                  include = false;
+                }
+              }
+
+              if (this.facing != null) {
+                if ((this.facing == 'left' && d.facing == 'Left') ||
+                  (this.facing == 'right' && d.facing == 'Right')) {
+                } else {
+                  include = false;
+                }
+              }
+
+              if (include) {
+                results.push(d);
+              }
+            }
+            return results;
+          },
+          getBananaSearchResultsPage() {
+            const currentPage = this.searchCurrentPage;
+            const perPage = this.searchPerPage;
+            return this.getBananaSearchResults.slice((currentPage - 1) * perPage, currentPage * perPage);
+          },
+          getBananaSearchResultsRows() {
+            return this.getBananaSearchResults.length;
+          },
+          getOwnedTokenIdData() {
+            var results = [];
+            let i = 0;
+            for (let tokenId in this.bananasOwned) {
+              results.push({ i: ++i, tokenId: tokenId, name: this.bananasOwned[tokenId] })
+            }
+            return results;
+          }
+        },
+        methods: {
+          async connect() {
+            if (!window.ethereum) {
+              alert("Please use the https://metamask.io addon with Firefox, Chromium, Opera or Chrome, or any other other web3 browser, if you would like to view your Ethereum wallet's Boring Bananas.");
+              this.connected = false;
+              this.account = null;
+            } else {
+              if (!window.ethereum.isConnected() || !window.ethereum['isUnlocked']) {
+                try {
+                  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                  this.account = accounts[0];
+                } catch (e) {
+                  console.log("connect(): Error connecting");
+                }
+              }
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const network = await provider.getNetwork();
+              if (network.chainId == 1) {
+                this.connected = true;
+                const banana = new ethers.Contract(BANANAADDRESS, BANANAABI, provider);
+                const tokensOfOwner = await banana.tokensOfOwner(this.account);
+                const bananaNamesOfOwner = await banana.bananaNamesOfOwner(this.account);
+                const bananasOwned = {};
+                for (let i in tokensOfOwner) {
+                  let t = tokensOfOwner[i];
+                  let name = bananaNamesOfOwner[i] || ('#' + t.toString());
+                  bananasOwned[t.toString()] = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+                this.bananasOwned = bananasOwned;
+                localStorage.setItem('bananasOwned', JSON.stringify(bananasOwned));
+              } else {
+                alert("Please switch to the Ethereum mainnet and refresh");
+              }
+            }
+          },
+          disconnect() {
+            this.connected = false;
+          },
+          /*
+          async retrieveData() {
+            console.log("retrieveData");
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+            if (network.chainId == 1) {
+              const banana = new ethers.Contract(BANANAADDRESS, BANANAABI, provider);
+              const tokensOfOwner = await banana.tokensOfOwner(this.account);
+              const bananaNamesOfOwner = await banana.bananaNamesOfOwner(this.account);
+              const bananasOwned = {};
+              for (let i in tokensOfOwner) {
+                let t = tokensOfOwner[i];
+                let name = bananaNamesOfOwner[i] || ('#' + t.toString());
+                bananasOwned[t.toString()] = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              }
+              this.bananasOwned = bananasOwned;
+              localStorage.setItem('bananasOwned', JSON.stringify(bananasOwned));
+            } else {
+              alert("Please switch to the Ethereum mainnet and refresh");
+            }
+          },
+          */
+        },
+        mounted() {
+          if (localStorage.getItem('bananasOwned')) {
+            this.bananasOwned = JSON.parse(localStorage.getItem('bananasOwned'));
+          }
+          // console.log("mounted: bananasOwned: " + JSON.stringify(this.bananasOwned, null, 2));
+          // hljs.highlightAll();
+        }
+      })
+    </script>
+  </body>
+</html>
