@@ -9,7 +9,7 @@ See https://bokkypoobah.github.io/BestBastardGANPunks/
 
 ### Boring Bananas API Server
 
-The script [scripts/01_getIndividualJSONs.sh](scripts/01_getIndividualJSONs.sh) retrieves the JSON files from `https://www.boringbananas.co/api/{tokenId}`.
+The script [scripts/01_getIndividualJSONs.sh](scripts/01_getIndividualJSONs.sh) retrieves the JSON files from `https://api.bastardganpunks.club/{tokenId}`.
 
 Sample data for tokenId 666:
 
@@ -50,6 +50,8 @@ Sample data for tokenId 666:
 ### OpenSea Data
 
 The script [scripts/02_getOSJSONs.sh](scripts/02_getOSJSONs.sh) retrieves the JSON files from OpenSea for the Banansdfa contract.
+
+You may need to run `npm install node-fetch` in the scripts subdirectory.
 
 Sample data:
 
