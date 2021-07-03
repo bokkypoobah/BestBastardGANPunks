@@ -183,6 +183,11 @@
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                           {{ data.item.tokenId }}
                         </b-link>
+                        <div v-if="data.item.mosaicurl != null">
+                          <b-link :href="data.item.mosaicurl" v-b-popover.hover="'View HYPED AF (ANIMATED) mosaic'" target="_blank">
+                            mosaic
+                          </b-link>
+                        </div>
                       </template>
                       <template #cell(image)="data">
                         <b-link @click="addAsset(data.item.tokenId)" v-b-popover.hover="'Click for details'">
@@ -380,10 +385,14 @@
               let mouth = null;
               let eyes = null;
               let headGear = null;
+              d.mosaicurl = null;
               for (let k in d.attributes) {
                 const a = d.attributes[k];
                 // console.log(k + " => " + JSON.stringify(a));
-                if (a.trait_type == 'Background') {
+                if (a.trait_type == 'HYPE TYPE') {
+                  if (a.value == 'HYPED AF (ANIMATED)') {
+                    d.mosaicurl = "hypedafmosaic/" + d.tokenId + ".png";
+                  }
                   background = a.value;
                 } else if (a.trait_type == 'Banana Base') {
                   bananaBase = a.value;
@@ -417,11 +426,11 @@
               d.signatureSeries = signatureSeries;
 
               d.owned = this.tokensOwned[i] || false;
-              // if (i == 666) {
+              if (i == 0) {
               //   console.log("this.tokensOwned: " + JSON.stringify(this.tokensOwned, null, 2));
               //   console.log("this.tokensOwned[i]: " + JSON.stringify(this.tokensOwned[i], null, 2));
-              //   console.log(JSON.stringify(d).toString(200));
-              // }
+                console.log(JSON.stringify(d, null, 2));
+              }
               results.push(d);
             }
             return results;
