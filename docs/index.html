@@ -82,9 +82,11 @@
                     <div>
                       <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="Search..." v-b-popover.hover="'Search by tokenId or any attribute value'"></b-form-input>
                     </div>
+                    <!--
                     <div class="pl-1">
                       <b-form-select size="sm" v-model="facing" :options="facingOptions"></b-form-select>
                     </div>
+                    -->
                     <div class="pl-3">
                       <b-form-checkbox v-model="displayOwned">My Bastards</b-form-checkbox>
                     </div>
@@ -114,7 +116,8 @@
                             </span>
                           </template>
                           <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                            <b-img-lazy width="200%" :src="record.osimage" />
+                            <!-- <b-img-lazy width="200%" :src="record.osimage" /> -->
+                            <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar>
                           </b-link>
                         </b-card>
                       </div>
@@ -124,8 +127,13 @@
                     <b-table small :fields="fields" :items="getSearchResultsPage" responsive="sm">
                       <template #cell(image)="data">
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                          <b-img-lazy width="100%" :src="data.item.osimage" />
+                          <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar>
                         </b-link>
+                      </template>
+                      <template #cell(description)="data">
+                        <div v-for="line in data.item.description.split('\n')">
+                          {{ line }}
+                        </div>
                       </template>
                     </b-table>
                   </div>
@@ -220,16 +228,13 @@
           searchString: '',
           searchCurrentPage: 1,
           searchTotalRows: 25440,
-          searchPerPage: 444,
+          searchPerPage: 66,
           searchPerPageOptions: [
-            { value: 4, text: '4/p' },
-            { value: 8, text: '8/p' },
-            { value: 44, text: '44/p' },
-            { value: 88, text: '88/p' },
-            { value: 444, text: '444/p' },
-            { value: 888, text: '888/p' },
-            { value: 4444, text: '4,444/p' },
-            { value: 8888, text: '8,888/p' },
+            { value: 6, text: '6/p' },
+            { value: 66, text: '66/p' },
+            { value: 666, text: '666/p' },
+            { value: 6666, text: '6,666/p' },
+            { value: 66666, text: '66,666/p' },
           ],
           facing: null,
           facingOptions: [
@@ -246,15 +251,15 @@
           fields: [
             { key: 'tokenId', label: 'tokenId' },
             { key: 'image', label: 'image' },
-            { key: 'name', label: 'name' },
-            { key: 'facing', label: 'facing', sortable: false },
-            { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
-            { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
-            { key: 'background', label: 'background', sortable: false },
-            { key: 'bananaBase', label: 'bananaBase', sortable: false },
-            { key: 'mouth', label: 'mouth', sortable: false },
-            { key: 'eyes', label: 'eyes', sortable: false },
-            { key: 'headGear', label: 'headGear', sortable: false },
+            { key: 'description', label: 'description' },
+            // { key: 'facing', label: 'facing', sortable: false },
+            // { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
+            // { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
+            // { key: 'background', label: 'background', sortable: false },
+            // { key: 'bananaBase', label: 'bananaBase', sortable: false },
+            // { key: 'mouth', label: 'mouth', sortable: false },
+            // { key: 'eyes', label: 'eyes', sortable: false },
+            // { key: 'headGear', label: 'headGear', sortable: false },
           ],
           ownedTokenFields: [
             { key: 'i', label: '#' },
@@ -290,6 +295,7 @@
                   signatureSeries = a.value;
                 }
               }
+
               // if (!signatureSeries && (background == null || bananaBase == null || mouth == null || eyes == null || headGear == null)) {
               //   console.log("signatureSeries: " + signatureSeries);
               //   console.log("tokenId: " + i);
@@ -403,8 +409,8 @@
                   tokensOwned[t.toString()] = true;
                 }
                 this.tokensOwned = tokensOwned;
-                // console.log("tokensOwned: " + JSON.stringify(tokensOwned, null, 2));
-                localStorage.setItem('tokensOwned', JSON.stringify(tokensOwned));
+                console.log("bastardsOwned: " + JSON.stringify(tokensOwned, null, 2));
+                localStorage.setItem('bastardsOwned', JSON.stringify(tokensOwned));
               } else {
                 alert("Please switch to the Ethereum mainnet and refresh");
               }
@@ -437,8 +443,9 @@
           */
         },
         mounted() {
-          if (localStorage.getItem('tokensOwned')) {
-            this.tokensOwned = JSON.parse(localStorage.getItem('tokensOwned'));
+          if (localStorage.getItem('bastardsOwned')) {
+            this.tokensOwned = JSON.parse(localStorage.getItem('bastardsOwned'));
+            console.log("bastardsOwned: " + JSON.stringify(this.tokensOwned, null, 2));
           }
           // console.log("mounted: tokensOwned: " + JSON.stringify(this.tokensOwned, null, 2));
           // hljs.highlightAll();
