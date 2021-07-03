@@ -391,7 +391,9 @@
                 // console.log(k + " => " + JSON.stringify(a));
                 if (a.trait_type == 'HYPE TYPE') {
                   if (a.value == 'HYPED AF (ANIMATED)') {
-                    d.mosaicurl = "hypedafmosaic/" + d.tokenId + ".png";
+                    if (d.tokenId < 9000) {
+                      d.mosaicurl = "hypedafmosaic/" + d.tokenId + ".png";                      
+                    }
                   }
                   background = a.value;
                 } else if (a.trait_type == 'Banana Base') {
