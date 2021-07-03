@@ -22,7 +22,7 @@
 
     <script src="js/ethers-5.2.umd.min.js"></script>
     <script src="js/highlight.min.js"></script>
-    <script src="bananaData.min.js"></script>
+    <script src="bastardData.min.js"></script>
     <script src="deploymentData.js"></script>
 
     <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
@@ -259,8 +259,8 @@
         computed: {
           getBananaData() {
             const results = [];
-            for (let i in BANANADATA) {
-              const d = BANANADATA[i];
+            for (let i in BASTARDDATA) {
+              const d = BASTARDDATA[i];
               let signatureSeries = null;
               let background = null;
               let bananaBase = null;
@@ -284,16 +284,16 @@
                   signatureSeries = a.value;
                 }
               }
-              if (!signatureSeries && (background == null || bananaBase == null || mouth == null || eyes == null || headGear == null)) {
-                console.log("signatureSeries: " + signatureSeries);
-                console.log("tokenId: " + i);
-                console.log("d: " + JSON.stringify(d));
-                console.log("background: " + background);
-                console.log("bananaBase: " + bananaBase);
-                console.log("mouth: " + mouth);
-                console.log("eyes: " + eyes);
-                console.log("headGear: " + headGear);
-              }
+              // if (!signatureSeries && (background == null || bananaBase == null || mouth == null || eyes == null || headGear == null)) {
+              //   console.log("signatureSeries: " + signatureSeries);
+              //   console.log("tokenId: " + i);
+              //   console.log("d: " + JSON.stringify(d));
+              //   console.log("background: " + background);
+              //   console.log("bananaBase: " + bananaBase);
+              //   console.log("mouth: " + mouth);
+              //   console.log("eyes: " + eyes);
+              //   console.log("headGear: " + headGear);
+              // }
 
               d.background = background;
               d.bananaBase = bananaBase;
@@ -317,7 +317,7 @@
             return results;
           },
           getBananaTotalSupply() {
-            return BANANADATA.length;
+            return BASTARDDATA.length;
           },
           getBananaSearchResults() {
             let results = [];
