@@ -1,6 +1,8 @@
 # BestBastardGANPunks
 
-See https://bokkypoobah.github.io/BestBastardGANPunks/
+See https://bokkypoobah.github.io/BestBastardGANPunks/.
+
+The code is mostly in [docs/index.html](docs/index.html), with data generation scripts in [scripts/](scripts/).
 
 
 <br />
