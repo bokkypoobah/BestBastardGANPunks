@@ -356,42 +356,59 @@ Sample data:
 
 ### Generate Combined Data
 
-Data for all tokens have been combined using [scripts/03_generateData.js](scripts/03_generateData.js) to generate [scripts/bananaData.js](scripts/bananaData.js) and the compact version [scripts/bananaData.min.js](scripts/bananaData.min.js):
+Data for all tokens have been combined using [scripts/03_generateData.js](scripts/03_generateData.js) to generate [scripts/bastardData.js](scripts/bastardData.js) and the compact version [scripts/bastardData.min.js](scripts/bastardData.min.js):
 
 ```javascript
-const BANANADATA=[
+const BASTARDDATA=[
   {
     "tokenId": 0,
-    "name": "#0",
-    "image": "https://gateway.pinata.cloud/ipfs/Qme4bfYh3jnPFvLwLYFxWYkSQoym72M5ZgGRZzqiTPuLuK",
-    "osimage": "https://lh3.googleusercontent.com/suqHN-z-s8dWibjOYT2ciNqyYY6vKN8mbd-odZpsegC5cAuZ4_j2A9xa92ZdImvfiqsPN2rSfsaUlcjQiejp3U6B4nUcJtQNclzx_w",
-    "description": "BoringBananasCo is a community-centered enterprise focussed on preserving our research about the emerging reports that several banana species have begun exhibiting strange characteristics following the recent worldwide pandemic. Our research team located across the globe has commenced efforts to study and document these unusual phenomena. Concerned about parties trying to suppress our research, the team has opted to store our findings on the blockchain to prevent interference. Although this is a costly endeavour, our mission has never been clearer. The fate of the world's bananas depends on it.",
+    "name": "BASTARD GAN PUNK V2 #0",
+    "image": "https://ipfs.io/ipfs/QmXsNHk4aQtoPe33qtK7zYKyGtcz7EMzyX4RJehKy1uPfb",
+    "osimage": "https://lh3.googleusercontent.com/4Dy9co2W_aXxrzNyEBc2NfTwG_-HuaGCo34-6Z3PtNuHMSwP73uoCOH2MAZmrlQceGIqCYamSQe2tJMXINvQ4KjdsnYxI2V06JJb9A",
+    "permalink": "https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/0",
+    "description": "UGLY STINKY WHALES\nFATHER PICK ME UP\nI'M OUT OF CONTROL\nBUT MY BONES ARE EMPTY\nHER LIPS ARE EMPTY\nMY HEAD DOES NOT FEEL ALONE\nAND MY HANDS ARE OPEN\n",
     "attributes": [
       {
-        "trait_type": "Background",
-        "value": "Downtown"
+        "trait_type": "HYPE TYPE",
+        "value": "HYPED AF (ANIMATED)"
       },
       {
-        "trait_type": "Banana Base",
-        "value": "Green"
+        "trait_type": "BASTARDNESS",
+        "value": "GOD BASTARD"
       },
       {
-        "trait_type": "Mouth",
-        "value": "Grrrr"
+        "trait_type": "SONG WORD COUNT",
+        "value": 31
       },
       {
-        "trait_type": "Eyes",
-        "value": "Cyberpunk"
+        "trait_type": "SPEEDOMETER",
+        "value": "SWEEP PICKING (16.66 FPS)"
       },
       {
-        "trait_type": "Head Gear",
-        "value": "Dood"
+        "trait_type": "NUM OF FRAMES",
+        "value": "188"
+      },
+      {
+        "trait_type": "HEAD TURNS",
+        "value": "2"
+      },
+      {
+        "trait_type": "FLOATY HEAD",
+        "value": "NAH"
+      },
+      {
+        "trait_type": "BACKGROUND GLITCH LEVEL",
+        "value": "3 - NOISY"
+      },
+      {
+        "trait_type": "BACKGROUND MOOD",
+        "value": "TRANSIENT COLORS"
       }
     ]
   },
   {
     "tokenId": 1,
-    "name": "#1",
+    "name": "BASTARD GAN PUNK V2 #1",
     ...
 ```
 
