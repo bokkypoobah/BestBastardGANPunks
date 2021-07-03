@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-    <title>BestBastardGANPunks</title>
+    <title>BESTBASTARDGANPUNKS</title>
 
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.min.css"/>
@@ -50,7 +50,7 @@
         <div>
           <b-navbar variant="light">
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
-              BestBastardGANPunks
+              BESTBASTARDGANPUNKS
             </b-navbar-brand>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10375.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10375'" class="ml-4"></b-avatar>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_9738.png" v-b-popover.hover.bottom="'BGANPUNKV2 #9738'" class="ml-4"></b-avatar>
@@ -66,8 +66,8 @@
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_11106.png" v-b-popover.hover.bottom="'BGANPUNKV2 #11106'" class="ml-4"></b-avatar>
 
             <b-navbar-nav class="ml-auto">
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power up this app'" @click="connect();" v-if="!connected">Connect Wallet</b-button>
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power down this app'" @click="disconnect();" v-if="connected">Disconnect {{ account.substring(0, 10) }}</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power up this app'" @click="connect();" v-if="!connected">CONNECT MY FUCKING WALLET</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power down this app'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ account.substring(0, 10).toUpperCase() }}</b-button>
             </b-navbar-nav>
           </b-navbar>
         </div>
@@ -76,7 +76,7 @@
           <b-card no-body class="mt-1">
             <b-tabs card v-model="tabIndex" align="right">
 
-              <b-tab title="Bastards">
+              <b-tab title="SEXY BASTARDS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
@@ -88,7 +88,7 @@
                     </div>
                     -->
                     <div class="pl-3">
-                      <b-form-checkbox v-model="displayOwned">My Bastards</b-form-checkbox>
+                      <b-form-checkbox v-model="displayOwned">MY SEXY BASTARDS</b-form-checkbox>
                     </div>
                     <div class="pl-3">
                       {{ getSearchResultsRows }}/{{ getBananaTotalSupply }}
@@ -140,7 +140,7 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab title="Wallet">
+              <b-tab title="MY FUCKING WALLET">
                 <b-card-text>
                   Select <b>Owned</b> in the previous tab to view your tokens.<br />
                   <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
@@ -148,7 +148,7 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab title="Info">
+              <b-tab title="INFO">
                 <h6 class="mb-1">What Is This Site?</h6>
 
                 <b-card-text>
