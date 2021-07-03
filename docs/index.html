@@ -80,7 +80,7 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID'"></b-form-input>
+                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
                     </div>
                     <!--
                     <div class="pl-1">
@@ -332,7 +332,9 @@
               }
 
               if (this.searchString != null && this.searchString.length > 0) {
-                if (d.tokenId != this.searchString) {
+                const s = this.searchString.toLowerCase();
+                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s))) {
+                } else {
                   include = false;
                 }
               }
@@ -409,7 +411,7 @@
                   tokensOwned[t.toString()] = true;
                 }
                 this.tokensOwned = tokensOwned;
-                console.log("bastardsOwned: " + JSON.stringify(tokensOwned, null, 2));
+                // console.log("bastardsOwned: " + JSON.stringify(tokensOwned, null, 2));
                 localStorage.setItem('bastardsOwned', JSON.stringify(tokensOwned));
               } else {
                 alert("Please switch to the Ethereum mainnet and refresh");
@@ -445,9 +447,8 @@
         mounted() {
           if (localStorage.getItem('bastardsOwned')) {
             this.tokensOwned = JSON.parse(localStorage.getItem('bastardsOwned'));
-            console.log("bastardsOwned: " + JSON.stringify(this.tokensOwned, null, 2));
           }
-          // console.log("mounted: tokensOwned: " + JSON.stringify(this.tokensOwned, null, 2));
+          // console.log("mounted: bastardsOwned: " + JSON.stringify(this.tokensOwned, null, 2));
           // hljs.highlightAll();
         }
       })
