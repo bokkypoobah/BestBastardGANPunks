@@ -77,8 +77,30 @@
           <b-card no-body class="mt-1">
 
             <div>
-              <b-modal ref="my-modal" hide-footer title="Select frame from GIF" /*@shown="onGIFFrameSelectionModalOpened"*/>
-                Blah
+              <!-- <b-modal ref="my-modal" hide-footer title="Select frame from GIF" @shown="onGIFFrameSelectionModalOpened"-->
+              <b-modal ref="my-modal" hide-footer @shown="onGIFFrameSelectionModalOpened">
+                <template #modal-title>
+                  {{ selectedItem.name }} - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}
+                </template>
+                <div class="d-block text-center">
+                  <img id="thegif1" :src="selectedItem == null ? null : selectedItem.osimage" :rel:animated_src="selectedItem == null ? null : selectedItem.osimage" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                </div>
+                <!--
+                <div class="d-block text-center">
+                  <h3>Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }} </h3>
+                  <img id="thegif1" :src="selectedItem == null ? null : selectedItem.osimage" :rel:animated_src="selectedItem == null ? null : selectedItem.osimage" width="360" height="360" rel:auto_play="0" rel:rubbable="1" class="p-2" />
+                </div>
+                -->
+                <b-input-group>
+                  <template #prepend>
+                    <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
+                    <b-input-group-text>0</b-input-group-text>
+                  </template>
+                  <b-form-input @change="setFrame()" v-model="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
+                  <template #append>
+                    <b-input-group-text>{{ selectedItemFrames == null ? 0 : (selectedItemFrames - 1) }}</b-input-group-text>
+                  </template>
+                </b-input-group>
                 <!--
                 <b-link @click="addGIFFrame()" v-b-popover.hover="'Click to add this frame to the canvas'">
                   <div class="d-block text-center">
@@ -127,7 +149,7 @@
                       <b-form-checkbox v-model="displayOwned">MY SEXY BASTARDS</b-form-checkbox>
                     </div>
                     <div class="pl-3">
-                      {{ getSearchResultsRows }}/{{ getBananaTotalSupply }}
+                      {{ getSearchResultsRows }}/{{ getTotalSupply }}
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
@@ -291,7 +313,6 @@
           connected: false,
           account: null,
           tokensOwned: [],
-          bananaNamesOfOwner: [],
           tabIndex: 0,
           abortSearch: false,
           searchString: '',
@@ -312,6 +333,13 @@
             { value: 'right', text: 'Right Only' },
           ],
           displayOwned: false,
+          selectedItem: null,
+
+          selectedItemFrame: 0,
+          selectedItemFrames: null,
+          selectedItemIsGIF: false,
+          selectedItemGIF: null,
+
           view: 'list',
           viewOptions: [
             { value: 'cards', text: 'CARDS' },
@@ -338,7 +366,7 @@
           ],
         },
         computed: {
-          getBananaData() {
+          getData() {
             const results = [];
             for (let i in BASTARDDATA) {
               const d = BASTARDDATA[i];
@@ -394,13 +422,13 @@
             }
             return results;
           },
-          getBananaTotalSupply() {
+          getTotalSupply() {
             return BASTARDDATA.length;
           },
           getSearchResults() {
             let results = [];
-            for (let i in this.getBananaData) {
-              const d = this.getBananaData[i];
+            for (let i in this.getData) {
+              const d = this.getData[i];
               let include = true;
               if (this.displayOwned) {
                 include = d.owned;
@@ -510,7 +538,53 @@
             this.connected = false;
           },
           async addAsset(asset) {
-            console.log(JSON.stringify(asset, null, 2));
+            // console.log(JSON.stringify(asset.osimage, null, 2));
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', asset.osimage);
+            const t = this;
+            xhr.onload = function() {
+              // console.log(xhr.response.substring(0, 3));
+              if (xhr.response.substring(0, 3) == "GIF") {
+                // console.log("addAsset() asset GIF: " + JSON.stringify(asset.osimage, null, 2));
+                t.selectedItem = asset;
+                t.selectedItemIsGIF = true;
+                t.$refs['my-modal'].show();
+              } else {
+                t.selectedItem = asset;
+                t.selectedItemIsGIF = false;
+                t.$refs['my-modal'].show();
+              }
+            }
+            xhr.onerror = function() {
+              alert('A network error occurred!');
+            };
+            xhr.send();
+          },
+          async onGIFFrameSelectionModalOpened() {
+            // console.log("onGIFFrameSelectionModalOpened()");
+            const t = this;
+            var element = document.getElementById("thegif1")
+            if (t.selectedItemIsGIF) {
+              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 400, rubbable: true } );
+              // console.log("this.selectedItemGIF: " + JSON.stringify(this.selectedItemGIF));
+              this.selectedItemGIF.load(function(){
+                // console.log('oh hey, now the gif is loaded');
+                // console.log("t.selectedItemGIF.get_length(): " + JSON.stringify(t.selectedItemGIF.get_length()));
+                // console.log("t.selectedItemGIF.get_auto_play(): " + JSON.stringify(t.selectedItemGIF.get_auto_play()));
+                t.selectedItemFrames = t.selectedItemGIF.get_length();
+                // console.log("t.selectedItemFrames: " + t.selectedItemFrames);
+                if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
+                  t.selectedItemFrame = 0;
+                }
+                t.selectedItemGIF.move_to(t.selectedItemFrame);
+              });
+            }
+          },
+          setFrame() {
+            // console.log("setFrame() this.selectedItemFrame: " + JSON.stringify(this.selectedItemFrame));
+            if (this.selectedItemGIF) {
+              this.selectedItemGIF.move_to(this.selectedItemFrame);
+            }
           },
 
           /*
