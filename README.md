@@ -7,7 +7,7 @@ See https://bokkypoobah.github.io/BestBastardGANPunks/
 
 ## Scraped "Static" Data
 
-### Boring Bananas API Server
+### BGANPUNKV2 Server
 
 The script [scripts/01_getIndividualJSONs.sh](scripts/01_getIndividualJSONs.sh) retrieves the JSON files from `https://api.bastardganpunks.club/{tokenId}`.
 
@@ -403,4 +403,4 @@ You may find this data useful for your projects.
 
 Enjoy!
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd - Jun 30 2019. The MIT Licence. Not affiliated with Boring Bananas Co.
+(c) BokkyPooBah / Bok Consulting Pty Ltd - Jul 2021. The MIT Licence. Not affiliated with [https://bastardganpunks.club/](https://bastardganpunks.club/).
