@@ -176,6 +176,11 @@
                           {{ line }}
                         </div>
                       </template>
+                      <template #cell(attributes)="data">
+                        <div v-for="attribute in data.item.attributes">
+                          {{ attribute.trait_type + ": " + attribute.value }}
+                        </div>
+                      </template>
                     </b-table>
                   </div>
                 </b-card-text>
@@ -296,6 +301,7 @@
             { key: 'tokenId', label: 'TOKENID' },
             { key: 'image', label: 'BASTARD' },
             { key: 'description', label: 'LYRICS' },
+            { key: 'attributes', label: 'ATTRIBUTES' },
             // { key: 'facing', label: 'facing', sortable: false },
             // { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
             // { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
@@ -380,9 +386,22 @@
                 include = d.owned;
               }
 
+              function hasAttribute(data, searchString) {
+                for (let attributeIndex in data.attributes) {
+                  const attribute = data.attributes[attributeIndex];
+                  if (('' + attribute.value).toLowerCase().includes(searchString)) {
+                    return true;
+                  }
+                }
+                return false;
+              }
+
               if (this.searchString != null && this.searchString.length > 0) {
                 const s = this.searchString.toLowerCase();
-                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s))) {
+
+                // const hasAttr = hasAttribute(d, s);
+
+                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s)) /*|| hasAttribute(d, s) */) {
                 } else {
                   include = false;
                 }
