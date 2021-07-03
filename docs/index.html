@@ -52,8 +52,8 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10375.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10375'" class="ml-4"></b-avatar>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_9738.png" v-b-popover.hover.bottom="'BGANPUNKV2 #9738'" class="ml-4"></b-avatar>
+            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10375.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10375'" class="ml-4"></b-avatar>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10456.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10456'" class="ml-4"></b-avatar>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10564.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10564'" class="ml-4"></b-avatar>
             <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10729.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10729'" class="ml-4"></b-avatar>
@@ -80,7 +80,7 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="Search..." v-b-popover.hover="'Search by tokenId or any attribute value'"></b-form-input>
+                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID'"></b-form-input>
                     </div>
                     <!--
                     <div class="pl-1">
@@ -142,71 +142,67 @@
 
               <b-tab title="MY FUCKING WALLET">
                 <b-card-text>
-                  Select <b>Owned</b> in the previous tab to view your tokens.<br />
+                  SELECT <em>MY SEXY BASTARDS</em> INI THE PREVIOUS TAB TO VIEW YOUR TOKENS.<br />
                   <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
                   </b-table>
                 </b-card-text>
               </b-tab>
 
               <b-tab title="INFO">
-                <h6 class="mb-1">What Is This Site?</h6>
+                <h6 class="mb-1">WHAT IS STHIS SITE?</h6>
+                <b-card-text>
+                  A SDMALL WEB3 APP TO VIEW YOUR BASTARD GAN PUNKS FROM <a href="https://www.bastardganpunks.club/" class="card-link" target="_blank">https://www.bastardganpunks.club/</a>. OPOEN SORUUCED CODE IS AVAILBLE FOR YOUR TO IMPROVE ON - SEE BELOW.
 
-                <b-card-text>
-                  TODO
-                </b-card-text>
-                <!--
-                <b-card-text>
-                  A small web3 app to view your BoringBananas from <a href="https://www.boringbananas.co/" class="card-link" target="_blank">https://www.boringbananas.co/</a> ("BBC"). Open sourced code is available for you to improve on - see below.
+                  THIS SITE CURRENTLY LISTS BGANPUNKV2 (VERSION 2) NFTS, NOT BGANPUNKV1 (VERSION 1) <a href="https://bganpunks.eth.link/" class="card-link" target="_blank">https://bganpunks.eth.link/</a>.
                 </b-card-text>
 
                 <b-card-text>
-                  We are not affiliated with BBC. If you have questions about BBC, head over to their Discord, linked from their site above.
+                  WER ARE NOT AFFILIATED WITH THESE BASTARDS WITH A SANDWICH LOGO. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR DISCORD, LINEKD FROM THE URLS ABOVE.
+                  <b-card no-body img-src="images/Twitter_bganpunks.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
                 </b-card-text>
 
-                <h6 class="mt-4 mb-1">How Do I Get Some BoringBananas?</h6>
+                <h6 class="mt-4 mb-1">HOW DO I ADOPT SOME BASTARDS?</h6>
                 <b-card-text>
-                  The original minting of BBCs occurred on Jun-29-2021 and is now closed.
+                  THE LAST BASTARD WAS MINTED (SEE BELOW) AT <a href="https://etherscan.io/tx/0x8540f856b6db0eab792fda749730865a10178260da06541c84cf585d8dc60592" class="card-link" target="_blank">Jun-25-2021 04:53:13 PM +UTC</a> THROUGH A PROXY CONTRACT AND THERE ARE NO MORE BASTARDS TO ADOPT.
 
-                  BBCs can be bought from secondary ERC-721 markets such as <a href="https://opensea.io/collection/boring-bananas-company" class="card-link" target="_blank">opensea.io - BBC</a>.
+                  BGANPUNKV2 NFTS CAN BE PURCHASED FROM SECONDARY ERC-721 MARKETS SUCH AS <a href="https://opensea.io/collection/bastard-gan-punks-v2" class="card-link" target="_blank">https://opensea.io/collection/bastard-gan-punks-v2</a>.
 
-                  See <a href="https://rarity.tools/boring-bananas-company" class="card-link" target="_blank">rarity.tools - BBC</a> for rarities.
+                  SEE ALSO <a href="https://allbastards.com/" class="card-link" target="_blank">https://allbastards.com/</a> FOR MORE INFROMATION.
 
-                  This is not financial advice. Do your own research.
+                  THIS IS NOT FINANCIAL ADVICE. DO YOUR OWN FUCKING RESEARCH.
                 </b-card-text>
 
                 <h6 class="mt-4 mb-1">Contract Details</h6>
                 <b-card-text>
-                  The BBC smart contract at <a href="https://etherscan.io/address/0xB9aB19454ccb145F9643214616c5571B8a4EF4f2#code" class="card-link" target="_blank">0xB9aB19454ccb145F9643214616c5571B8a4EF4f2</a> with balance 219.075 ETH:
+                  THE BGANPUNV2 NFT SMART CONTRACT AT <a href="https://etherscan.io/address/0x31385d3520bCED94f77AaE104b406994D8F2168C#code" class="card-link" target="_blank">0x31385d3520bCED94f77AaE104b406994D8F2168C</a>:
                   <ul>
-                    <li>was deployed at <a href="https://etherscan.io/tx/0x48136e474bf074582b7cd17da3c022e28512e2a80f189b6c153a5f7f79a3bea0" class="card-link" target="_blank">Jun-29-2021 03:42:36 PM +UTC</a></li>
-                    <li>minted the first token 0 at <a href="https://etherscan.io/tx/0x036a036d62395bac0b928d1c1a5448342b6a78f78a60d2cec7b9503adbe6ef76" class="card-link" target="_blank">Jun-29-2021 06:01:10 PM +UTC</a></li>
-                    <li>minted the final token 8,887 at <a href="https://etherscan.io/tx/0x0949ca8a9dbd9a290ea0d34de767f3a36dbd8d571f002dcd68f4f7f0a6e700de" class="card-link" target="_blank">Jun-29-2021 07:03:12 PM +UTC</a> (1h 2m 2s)</li>
+                    <li>WAS DEPLOYED AT <a href="https://etherscan.io/tx/0xd875fb294bf841eaf7bffae94bd5488d78f227e9b4a3017105bae31b296419ce" class="card-link" target="_blank">Mar-07-2021 12:03:56 PM +UTC</a> WHERE TOKENS #0 TO 33 WERE MINTED</li>
+                    <li>MINTED THE FINAL TOKEN #11,304 AT <a href="https://etherscan.io/tx/0x8540f856b6db0eab792fda749730865a10178260da06541c84cf585d8dc60592" class="card-link" target="_blank">Jun-25-2021 04:53:13 PM +UTC</a> THROUGH A PROXY CONTRACT WITH A DECLINING PRICE</li>
                   </ul>
-                  <b-card img-src="images/EtherScan_BBCHoldersChart_20210701_1538.png" style="max-width: 40rem;" class="ml-5">
+                  <b-card img-src="images/EtherScan_BGANPUNKSV2_20210703_2211.png" style="max-width: 40rem;" class="ml-5">
                     <b-card-text>
-                      From EtherScan's <a href="https://etherscan.io/token/tokenholderchart/0xb9ab19454ccb145f9643214616c5571b8a4ef4f2" class="card-link" target="_blank">Boring Bananas Co. Token Holders</a>
+                      FROM ETHERSCAN'S <a href="https://etherscan.io/token/tokenholderchart/0x31385d3520bced94f77aae104b406994d8f2168c" class="card-link" target="_blank">BASTARD GAN PUNKS V2 TOKEN HOLDERS</a>
                     </b-card-text>
                   </b-card>
                 </b-card-text>
 
-                <h6 class="mt-4 mb-1">About This App</h6>
+                <h6 class="mt-4 mb-1">ABOUT THIS APP</h6>
                 <b-card-text>
                   <ul>
-                    <li>Source code available at <a href="https://github.com/bokkypoobah/Banananas" class="card-link" target="_blank">https://github.com/bokkypoobah/Banananas</a>. Clone it. Fork it. Contribute any useful changes back to this main repo</li>
-                    <li>Written using the <a href="https://bootstrap-vue.org/" class="card-link" target="_blank">https://bootstrap-vue.org/</a> framework</li>
-                    <li>Generates "static" data by collating information from the token contract's <em>tokenURI(...)</em> information with information from OpenSea.io.</li>
-                    <li>Uses <a href="https://github.com/ethers-io/ethers.js/" class="card-link" target="_blank">ethers.js</a> to connect to Ethereum via web3 to retrieve NFT tokens owned and their names</li>
-                    <li>Has no tracking technology. However connections from this app to OpenSea and MetaMask from your website will leak some information.</li>
-                    <li>Can be run on your own computer by cloning the GitHub repository and serving the pages using a webserver, or the "anywhere" server.</li>
-                    <li>Can be run from GitHub pages, so you can easily clone, customise and server your own version</li>
+                    <li>SOURCE CODE AVAILABLE AT <a href="https://github.com/bokkypoobah/BestBastardGANPunks" class="card-link" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks</a>. CLONE IT, FORK IT. CONTRIBUTE ANY USEFUL CHANGES BACK TO THIS MAIN REPOSITORY</li>
+                    <li>WRITTEN USING THE <a href="https://bootstrap-vue.org/" class="card-link" target="_blank">https://bootstrap-vue.org/</a> FRAMEWWORK</li>
+                    <li>GENERATES "STATIC" DATA BY COLLATING INFOTMSTION FROM THE TOKEN CONTACT'S <em>tokenURI(...)</em> INFORMATION WITH THE INFOTRMATION FROM OPENSEA.IO.</li>
+                    <li>USES <a href="https://github.com/ethers-io/ethers.js/" class="card-link" target="_blank">ETHERS.JS</a> TO CONNECT TO ETHERUEM VIA WEB3 TO RETRIEVE NFT TOKENS OWNED</li>
+                    <li>HAS NO TRACKIING TECHNOLOGY. HOWEVER CONNECTIONS FROM THIS APP TO OPENSEA AND YOUR WEB3 PROVIDER WILL LEAK SOME INFORMATION.</li>
+                    <li>CAN BE RUN ON YOUR OWN COMPUTER BY CLONING THE GITHUB REPOSITORY AND SERVING THE PAGES USING A WEBSERVER, OR THE "ANYWHERE" SERVER.</li>
+                    <li>CAN BE RUN FROM GITHUB PAGES, SO YOU CAN EASILY CLONE, CUSTOMISE AND SERVE YOUR OWN VERSION</li>
                   </ul>
                 </b-card-text>
-                -->
 
                 <b-card-text class="mt-5">
-                  Enjoy!
+                  ENJOY!
                   <b-card no-body img-src="images/DoomedDegen.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
-                  (c) BokkyPooBah / Bok Consulting Pty Ltd 2021. The MIT Licence.
+                  (C) BOKKYPOOBAH / BOK CONSULTING PTY LTD 2021. THE MIT LICENCE.
                 </b-card-text>
               </b-tab>
             </b-tabs>
@@ -227,14 +223,13 @@
           abortSearch: false,
           searchString: '',
           searchCurrentPage: 1,
-          searchTotalRows: 25440,
           searchPerPage: 66,
           searchPerPageOptions: [
-            { value: 6, text: '6/p' },
-            { value: 66, text: '66/p' },
-            { value: 666, text: '666/p' },
-            { value: 6666, text: '6,666/p' },
-            { value: 66666, text: '66,666/p' },
+            { value: 6, text: '6/P' },
+            { value: 66, text: '66/P' },
+            { value: 666, text: '666/P' },
+            { value: 6666, text: '6,666/P' },
+            { value: 66666, text: '66,666/P' },
           ],
           facing: null,
           facingOptions: [
@@ -245,13 +240,13 @@
           displayOwned: false,
           view: 'list',
           viewOptions: [
-            { value: 'cards', text: 'Cards' },
-            { value: 'list', text: 'List' },
+            { value: 'cards', text: 'CARDS' },
+            { value: 'list', text: 'LIST' },
           ],
           fields: [
-            { key: 'tokenId', label: 'tokenId' },
-            { key: 'image', label: 'image' },
-            { key: 'description', label: 'description' },
+            { key: 'tokenId', label: 'TOKENID' },
+            { key: 'image', label: 'BASTARD' },
+            { key: 'description', label: 'LYRICS' },
             // { key: 'facing', label: 'facing', sortable: false },
             // { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
             // { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
@@ -263,8 +258,8 @@
           ],
           ownedTokenFields: [
             { key: 'i', label: '#' },
-            { key: 'tokenId', label: 'tokenId' },
-            { key: 'name', label: 'name' },
+            { key: 'tokenId', label: 'TOKENID' },
+            // { key: 'name', label: 'name' },
           ],
         },
         computed: {
