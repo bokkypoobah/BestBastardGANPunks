@@ -74,6 +74,36 @@
 
         <div>
           <b-card no-body class="mt-1">
+
+            <div>
+              <b-modal ref="my-modal" hide-footer title="Select frame from GIF" /*@shown="onGIFFrameSelectionModalOpened"*/>
+                Blah
+                <!--
+                <b-link @click="addGIFFrame()" v-b-popover.hover="'Click to add this frame to the canvas'">
+                  <div class="d-block text-center">
+                    <h3>Frame {{ gif.frame == null ? '(loading)' : gif.frame }} </h3>
+                    <img id="thegif1" :src="gif.src" :rel:animated_src="gif.src" width="360" height="360" rel:auto_play="0" rel:rubbable="1" class="p-2" />
+                  </div>
+                </b-link>
+                <br />
+
+                <b-input-group>
+                  <template #prepend>
+                    <b-form-spinbutton wrap @change="setFrame()" v-model.trim="gif.frame" min="0" :max="gif.frames == null ? 0 : (gif.frames - 1)" class="mr-2"></b-form-spinbutton>
+                    <b-input-group-text>0</b-input-group-text>
+                  </template>
+                  <b-form-input @change="setFrame()" v-model="gif.frame" type="range" min="0" :max="gif.frames == null ? 0 : (gif.frames - 1)" class="w-25"></b-form-input>
+                  <template #append>
+                    <b-input-group-text>{{ gif.frames == null ? 0 : (gif.frames - 1) }}</b-input-group-text>
+                  </template>
+                </b-input-group>
+
+                <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+                <b-button class="mt-2" variant="outline-warning" block @click="toggleModal">Toggle Me</b-button>
+                -->
+              </b-modal>
+            </div>
+
             <b-tabs card v-model="tabIndex" align="right">
 
               <b-tab title="SEXY BASTARDS">
@@ -116,8 +146,8 @@
                             </span>
                           </template>
                           <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                            <!-- <b-img-lazy width="200%" :src="record.osimage" /> -->
-                            <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar>
+                            <b-img-lazy width="220%" :src="record.osimage" />
+                            <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           </b-link>
                         </b-card>
                       </div>
@@ -125,10 +155,20 @@
                   </div>
                   <div v-if="view == 'list'">
                     <b-table small :fields="fields" :items="getSearchResultsPage" responsive="sm">
+                      <template #cell(tokenId)="data">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                          {{ data.item.tokenId }}
+                        </b-link>
+                      </template>
                       <template #cell(image)="data">
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                          <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar>
+                          <b-img-lazy width="200%" :src="data.item.osimage" />
+                          <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
+                        <!--
+                        <b-link @click="addAsset(asset)" v-b-popover.hover="'Click to add image to the canvas'">
+                        </b-link>
+                        -->
                       </template>
                       <template #cell(description)="data">
                         <div v-for="line in data.item.description.split('\n')">
@@ -223,13 +263,13 @@
           abortSearch: false,
           searchString: '',
           searchCurrentPage: 1,
-          searchPerPage: 66,
+          searchPerPage: 73,
           searchPerPageOptions: [
-            { value: 6, text: '6/P' },
-            { value: 66, text: '66/P' },
+            { value: 3, text: '3/P' },
+            { value: 73, text: '73/P' },
             { value: 666, text: '666/P' },
-            { value: 6666, text: '6,666/P' },
-            { value: 66666, text: '66,666/P' },
+            { value: 2145, text: '2,145/P' },
+            { value: 66666, text: 'ALL' },
           ],
           facing: null,
           facingOptions: [
