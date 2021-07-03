@@ -331,6 +331,11 @@
                 include = d.owned;
               }
 
+              if (this.searchString != null && this.searchString.length > 0) {
+                if (d.tokenId != this.searchString) {
+                  include = false;
+                }
+              }
               // if (this.searchString != null && this.searchString.length > 0) {
               //   const s = this.searchString.toLowerCase();
               //   if (d.tokenId == this.searchString ||
