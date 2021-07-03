@@ -173,12 +173,12 @@
                         </b-link>
                       </template>
                       <template #cell(image)="data">
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                        <b-link @click="addAsset(data.item)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="200%" :src="data.item.osimage" />
                           <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
                         <!--
-                        <b-link @click="addAsset(asset)" v-b-popover.hover="'Click to add image to the canvas'">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                         </b-link>
                         -->
                       </template>
@@ -189,13 +189,15 @@
                       </template>
                       <template #cell(attributes)="data">
                         <div v-for="attribute in data.item.attributes">
-                          <!-- {{ attribute.trait_type + ": " + attribute.value }} -->
+                          {{ attribute.trait_type + ": " + attribute.value }}
+                          <!--
                           <div class="text-left">
                             <b-button variant="none">
                               {{ attribute.value }}
                               <b-badge pill variant="light">{{ attribute.trait_type }}</b-badge>
                             </b-button>
                           </div>
+                           -->
                         </div>
                       </template>
                     </b-table>
@@ -507,6 +509,10 @@
           disconnect() {
             this.connected = false;
           },
+          async addAsset(asset) {
+            console.log(JSON.stringify(asset, null, 2));
+          },
+
           /*
           async retrieveData() {
             console.log("retrieveData");
