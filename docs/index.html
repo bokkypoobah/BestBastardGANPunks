@@ -53,19 +53,11 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_9738.png" v-b-popover.hover.bottom="'BGANPUNKV2 #9738'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10375.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10375'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10456.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10456'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10564.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10564'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10729.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10729'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10731.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10731'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10734.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10734'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10735.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10735'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10738.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10738'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10739.png" v-b-popover.hover.bottom="'BGANPUNKV2 #10739'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_10834.gif" v-b-popover.hover.bottom="'BGANPUNKV2 #10834'" class="ml-4"></b-avatar>
-            <b-avatar rounded="sm" variant="light" size="3.0rem" src="images/bganpunkv2_11106.png" v-b-popover.hover.bottom="'BGANPUNKV2 #11106'" class="ml-4"></b-avatar>
-
+            <div v-for="item in showcase">
+              <b-link @click="addAsset(item.tokenId)">
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="item.src" v-b-popover.hover.bottom="'BGANPUNKV2 #' + item.tokenId" class="ml-4"></b-avatar>
+              </b-link>
+            </div>
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power up this app'" @click="connect();" v-if="!connected">CONNECT MY FUCKING WALLET</b-button>
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'Power down this app'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ account.substring(0, 10).toUpperCase() }}</b-button>
@@ -77,20 +69,14 @@
           <b-card no-body class="mt-1">
 
             <div>
-              <!-- <b-modal ref="my-modal" hide-footer title="Select frame from GIF" @shown="onGIFFrameSelectionModalOpened"-->
               <b-modal ref="my-modal" hide-footer @shown="onGIFFrameSelectionModalOpened">
                 <template #modal-title>
-                  {{ selectedItem.name }} - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}
+                  {{ selectedTokenId == null ? null : getData[selectedTokenId].name }}
+                  <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedItem == null ? null : selectedItem.osimage" :rel:animated_src="selectedItem == null ? null : selectedItem.osimage" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selectedTokenId == null ? null : getData[selectedTokenId].osimage" :rel:animated_src="selectedTokenId == null ? null : getData[selectedTokenId].osimage" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
-                <!--
-                <div class="d-block text-center">
-                  <h3>Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }} </h3>
-                  <img id="thegif1" :src="selectedItem == null ? null : selectedItem.osimage" :rel:animated_src="selectedItem == null ? null : selectedItem.osimage" width="360" height="360" rel:auto_play="0" rel:rubbable="1" class="p-2" />
-                </div>
-                -->
                 <b-input-group>
                   <template #prepend>
                     <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
@@ -179,9 +165,14 @@
                               {{ '#' + record.tokenId }}
                             </span>
                           </template>
+                          <!--
                           <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                             <b-img-lazy width="220%" :src="record.osimage" />
+                            -->
                             <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
+                          <!-- </b-link> -->
+                          <b-link @click="addAsset(record.tokenId)" v-b-popover.hover="'Click for details'">
+                            <b-img-lazy width="220%" :src="record.osimage" />
                           </b-link>
                         </b-card>
                       </div>
@@ -195,7 +186,7 @@
                         </b-link>
                       </template>
                       <template #cell(image)="data">
-                        <b-link @click="addAsset(data.item)" v-b-popover.hover="'Click for details'">
+                        <b-link @click="addAsset(data.item.tokenId)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="200%" :src="data.item.osimage" />
                           <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
@@ -333,8 +324,8 @@
             { value: 'right', text: 'Right Only' },
           ],
           displayOwned: false,
-          selectedItem: null,
 
+          selectedTokenId: null,
           selectedItemFrame: 0,
           selectedItemFrames: null,
           selectedItemIsGIF: false,
@@ -363,6 +354,20 @@
             { key: 'i', label: '#' },
             { key: 'tokenId', label: 'TOKENID' },
             // { key: 'name', label: 'name' },
+          ],
+          showcase: [
+            { tokenId: 9738, src: "images/bganpunkv2_9738.png" },
+            { tokenId: 10375, src: "images/bganpunkv2_10375.gif" },
+            { tokenId: 10456, src: "images/bganpunkv2_10456.png" },
+            { tokenId: 10564, src: "images/bganpunkv2_10564.png" },
+            { tokenId: 10729, src: "images/bganpunkv2_10729.gif" },
+            { tokenId: 10731, src: "images/bganpunkv2_10731.png" },
+            { tokenId: 10734, src: "images/bganpunkv2_10734.png" },
+            { tokenId: 10735, src: "images/bganpunkv2_10735.gif" },
+            { tokenId: 10738, src: "images/bganpunkv2_10738.png" },
+            { tokenId: 10739, src: "images/bganpunkv2_10739.png" },
+            { tokenId: 10834, src: "images/bganpunkv2_10834.gif" },
+            { tokenId: 11106, src: "images/bganpunkv2_11106.png" }
           ],
         },
         computed: {
@@ -537,23 +542,18 @@
           disconnect() {
             this.connected = false;
           },
-          async addAsset(asset) {
-            // console.log(JSON.stringify(asset.osimage, null, 2));
+          async addAsset(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', asset.osimage);
+            xhr.open('GET', this.getData[tokenId].osimage);
             const t = this;
             xhr.onload = function() {
-              // console.log(xhr.response.substring(0, 3));
               if (xhr.response.substring(0, 3) == "GIF") {
-                // console.log("addAsset() asset GIF: " + JSON.stringify(asset.osimage, null, 2));
-                t.selectedItem = asset;
                 t.selectedItemIsGIF = true;
-                t.$refs['my-modal'].show();
               } else {
-                t.selectedItem = asset;
                 t.selectedItemIsGIF = false;
-                t.$refs['my-modal'].show();
               }
+              t.selectedTokenId = tokenId;
+              t.$refs['my-modal'].show();
             }
             xhr.onerror = function() {
               alert('A network error occurred!');
@@ -561,18 +561,12 @@
             xhr.send();
           },
           async onGIFFrameSelectionModalOpened() {
-            // console.log("onGIFFrameSelectionModalOpened()");
             const t = this;
             var element = document.getElementById("thegif1")
             if (t.selectedItemIsGIF) {
               this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 400, rubbable: true } );
-              // console.log("this.selectedItemGIF: " + JSON.stringify(this.selectedItemGIF));
               this.selectedItemGIF.load(function(){
-                // console.log('oh hey, now the gif is loaded');
-                // console.log("t.selectedItemGIF.get_length(): " + JSON.stringify(t.selectedItemGIF.get_length()));
-                // console.log("t.selectedItemGIF.get_auto_play(): " + JSON.stringify(t.selectedItemGIF.get_auto_play()));
                 t.selectedItemFrames = t.selectedItemGIF.get_length();
-                // console.log("t.selectedItemFrames: " + t.selectedItemFrames);
                 if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
                   t.selectedItemFrame = 0;
                 }
@@ -581,34 +575,10 @@
             }
           },
           setFrame() {
-            // console.log("setFrame() this.selectedItemFrame: " + JSON.stringify(this.selectedItemFrame));
             if (this.selectedItemGIF) {
               this.selectedItemGIF.move_to(this.selectedItemFrame);
             }
           },
-
-          /*
-          async retrieveData() {
-            console.log("retrieveData");
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const network = await provider.getNetwork();
-            if (network.chainId == 1) {
-              const banana = new ethers.Contract(BANANAADDRESS, BANANAABI, provider);
-              const tokensOfOwner = await banana.tokensOfOwner(this.account);
-              const bananaNamesOfOwner = await banana.bananaNamesOfOwner(this.account);
-              const tokensOwned = {};
-              for (let i in tokensOfOwner) {
-                let t = tokensOfOwner[i];
-                let name = bananaNamesOfOwner[i] || ('#' + t.toString());
-                tokensOwned[t.toString()] = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-              }
-              this.tokensOwned = tokensOwned;
-              localStorage.setItem('tokensOwned', JSON.stringify(tokensOwned));
-            } else {
-              alert("Please switch to the Ethereum mainnet and refresh");
-            }
-          },
-          */
         },
         mounted() {
           if (localStorage.getItem('bastardsOwned')) {
