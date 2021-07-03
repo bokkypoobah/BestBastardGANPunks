@@ -118,6 +118,11 @@
                       <b-form-select size="sm" v-model="facing" :options="facingOptions"></b-form-select>
                     </div>
                     -->
+                    <!--
+                    <div class="pl-3">
+                      <b-form-checkbox v-model="advancedSearch">ADVANCED SEARCH</b-form-checkbox>
+                    </div>
+                    -->
                     <div class="pl-3">
                       <b-form-checkbox v-model="displayOwned">MY SEXY BASTARDS</b-form-checkbox>
                     </div>
@@ -126,6 +131,12 @@
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
+                    <!--
+                    <div class="pl-1">
+                      <b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'Close sidebar'" ><b-icon-list shift-v="-1" font-scale="1.7"></b-icon-list></b-button>
+                      <b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'Close sidebar'" ><b-icon-grid3x3-gap shift-v="-1" font-scale="1.7"></b-icon-grid3x3-gap></b-button>
+                    </div>
+                    -->
                     <div class="pl-1">
                       <b-form-select size="sm" v-model="view" :options="viewOptions"></b-form-select>
                     </div>
@@ -143,7 +154,7 @@
                         <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0">
                           <template #header>
                             <span variant="secondary" class="small truncate">
-                              {{ record.tokenId + ': ' + record.name }}
+                              {{ '#' + record.tokenId }}
                             </span>
                           </template>
                           <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
@@ -178,7 +189,13 @@
                       </template>
                       <template #cell(attributes)="data">
                         <div v-for="attribute in data.item.attributes">
-                          {{ attribute.trait_type + ": " + attribute.value }}
+                          <!-- {{ attribute.trait_type + ": " + attribute.value }} -->
+                          <div class="text-left">
+                            <b-button variant="none">
+                              {{ attribute.value }}
+                              <b-badge pill variant="light">{{ attribute.trait_type }}</b-badge>
+                            </b-button>
+                          </div>
                         </div>
                       </template>
                     </b-table>
@@ -276,6 +293,7 @@
           tabIndex: 0,
           abortSearch: false,
           searchString: '',
+          advancedSearch: false,
           searchCurrentPage: 1,
           searchPerPage: 73,
           searchPerPageOptions: [
