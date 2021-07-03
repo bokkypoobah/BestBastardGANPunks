@@ -360,55 +360,48 @@ Data for all tokens have been combined using [scripts/03_generateData.js](script
 
 ```javascript
 const BASTARDDATA=[
+  ...
   {
-    "tokenId": 0,
-    "name": "BASTARD GAN PUNK V2 #0",
-    "image": "https://ipfs.io/ipfs/QmXsNHk4aQtoPe33qtK7zYKyGtcz7EMzyX4RJehKy1uPfb",
-    "osimage": "https://lh3.googleusercontent.com/4Dy9co2W_aXxrzNyEBc2NfTwG_-HuaGCo34-6Z3PtNuHMSwP73uoCOH2MAZmrlQceGIqCYamSQe2tJMXINvQ4KjdsnYxI2V06JJb9A",
-    "permalink": "https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/0",
-    "description": "UGLY STINKY WHALES\nFATHER PICK ME UP\nI'M OUT OF CONTROL\nBUT MY BONES ARE EMPTY\nHER LIPS ARE EMPTY\nMY HEAD DOES NOT FEEL ALONE\nAND MY HANDS ARE OPEN\n",
+    "tokenId": 666,
+    "name": "BASTARD GAN PUNK V2 #666",
+    "image": "https://ipfs.io/ipfs/QmS4GcX91uTBpYkCxWNqZd4da23HrMQXcPd5o2kHujcCcb",
+    "osimage": "https://lh3.googleusercontent.com/aaIi9UHPPJCyhSb6JfNBo6DUEQhDzuWi_ZOE5fw2S6NWrep2Z1dS103LnqLu4mTCbL3bfB8-PS9NLhteI9LcSiZli4S2a3dpncZLFQ",
+    "permalink": "https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/666",
+    "description": "BOOMER TO BE ON YOUR STREETS\nLET'S MAKE A RAIL, AND GET A HOLE IN THIS SMALL WAY \nAND YOU KNOW THAT EVERYTHING YOU WANTED WAS NOT TOO MUCH \nYOU SEE THERE'S A HOLE IN MY SOUL \n",
     "attributes": [
       {
         "trait_type": "HYPE TYPE",
-        "value": "HYPED AF (ANIMATED)"
+        "value": "CALM AF (STILL)"
       },
       {
         "trait_type": "BASTARDNESS",
-        "value": "GOD BASTARD"
+        "value": "DANK BASTARD"
       },
       {
         "trait_type": "SONG WORD COUNT",
-        "value": 31
+        "value": 37
       },
       {
-        "trait_type": "SPEEDOMETER",
-        "value": "SWEEP PICKING (16.66 FPS)"
+        "trait_type": "TYPE",
+        "value": "APE"
       },
       {
-        "trait_type": "NUM OF FRAMES",
-        "value": "188"
+        "trait_type": "BACKGROUND",
+        "value": "GLITCHY AF"
       },
       {
-        "trait_type": "HEAD TURNS",
-        "value": "2"
+        "trait_type": "FACING DIRECTION",
+        "value": "RIGHT"
       },
       {
-        "trait_type": "FLOATY HEAD",
-        "value": "NAH"
-      },
-      {
-        "trait_type": "BACKGROUND GLITCH LEVEL",
-        "value": "3 - NOISY"
-      },
-      {
-        "trait_type": "BACKGROUND MOOD",
-        "value": "TRANSIENT COLORS"
+        "trait_type": "BAD HABIT(S)",
+        "value": "EDIBLES???"
       }
     ]
   },
   {
-    "tokenId": 1,
-    "name": "BASTARD GAN PUNK V2 #1",
+    "tokenId": 667,
+    "name": "BASTARD GAN PUNK V2 #667",
     ...
 ```
 
