@@ -53,7 +53,7 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <div v-for="item in showcase">
+            <div v-for="item in getSelectedShowcase">
               <b-link @click="addAsset(item.tokenId)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="item.src" v-b-popover.hover.bottom="'BGANPUNKV2 #' + item.tokenId" class="ml-4"></b-avatar>
               </b-link>
@@ -67,7 +67,6 @@
 
         <div>
           <b-card no-body class="mt-1">
-
             <div>
               <b-modal ref="my-modal" hide-footer @shown="onGIFFrameSelectionModalOpened">
                 <template #modal-title>
@@ -503,6 +502,19 @@
               results.push({ i: ++i, tokenId: tokenId, name: this.tokensOwned[tokenId] })
             }
             return results;
+          },
+          getSelectedShowcase() {
+            function shuffleArray(array) {
+              for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+              }
+            }
+            const newArray = this.showcase.slice(0);
+            shuffleArray(newArray);
+            return newArray;
           }
         },
         methods: {
