@@ -12,7 +12,6 @@ The code is mostly in [docs/index.html](docs/index.html), with data generation s
 
 Note that a copy of "hyped af mosaics" from [https://drive.google.com/drive/folders/1dLnTSUhDlgfdUlzwm1pamiAWUyGVOGj-](https://drive.google.com/drive/folders/1dLnTSUhDlgfdUlzwm1pamiAWUyGVOGj-) has been downloaded into this repository and reorganised in [docs/hypedafmosaic](docs/hypedafmosaic). Only the first 9,000 (#0 to #8,999) has been organised and this repository will need to be updated when the "hyped af mosaics" are finally published.
 
-
 <br />
 
 ## Scraped "Static" Data
