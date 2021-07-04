@@ -98,7 +98,7 @@
                       <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
                     </div>
                     <div class="pl-2">
-                      <b-button v-b-toggle.collapse-1 size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
+                      <b-button v-b-toggle.collapse-search size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY BASTARDS</b-button>
@@ -126,13 +126,24 @@
                   </div>
 
                   <div>
-                    <b-collapse id="collapse-1" class="m-2">
+                    <b-collapse id="collapse-search" visible class="m-2">
                       <b-card>
+
+                        <b-row v-for="categoryKey in Object.keys(getCategories).sort()">
+                          <b-col> {{ categoryKey }}</b-col>
+                          <b-col>
+                            <b-row v-for="valuesKey in Object.keys(getCategories[categoryKey]).sort()">
+                              {{ valuesKey }} : {{ getCategories[categoryKey][valuesKey] }}
+                            </b-row>
+                          </b-col>
+                        </b-row>
+                        <!--
                         <p class="card-text">Collapse contents Here</p>
-                        <b-button v-b-toggle.collapse-1-inner size="sm">Toggle Inner Collapse</b-button>
-                        <b-collapse id="collapse-1-inner" class="mt-2">
+                        <b-button v-b-toggle.collapse-search-inner size="sm">Toggle Inner Collapse</b-button>
+                        <b-collapse id="collapse-search-inner" class="mt-2">
                           <b-card>Hello!</b-card>
                         </b-collapse>
+                        -->
                       </b-card>
                     </b-collapse>
                   </div>
@@ -330,25 +341,59 @@
           getData() {
             const results = [];
             for (let i in BASTARDDATA) {
-              const d = BASTARDDATA[i];
-              d.mosaicurl = null;
-              for (let k in d.attributes) {
-                const a = d.attributes[k];
-                if (a.trait_type == 'HYPE TYPE') {
-                  if (a.value == 'HYPED AF (ANIMATED)') {
-                    if (d.tokenId < 9000) {
-                      d.mosaicurl = "hypedafmosaic/" + d.tokenId + ".png";
+              const item = BASTARDDATA[i];
+              item.mosaicurl = null;
+              for (let k in item.attributes) {
+                const attribute = item.attributes[k];
+                if (attribute.trait_type == 'HYPE TYPE') {
+                  if (attribute.value == 'HYPED AF (ANIMATED)') {
+                    if (item.tokenId < 9000) {
+                      item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
                     }
                   }
                 }
               }
-              d.owned = this.tokensOwned[i] || false;
-              // if (i == 0) {
-              //   console.log(JSON.stringify(d, null, 2));
-              // }
-              results.push(d);
+              item.owned = this.tokensOwned[i] || false;
+              results.push(item);
             }
             return results;
+          },
+          getCategories() {
+            let results = [];
+            const collater = {};
+            for (let i in BASTARDDATA) {
+              const item = BASTARDDATA[i];
+              for (let k in item.attributes) {
+                const attribute = item.attributes[k];
+                const traitType = attribute.trait_type;
+                const value = attribute.value;
+                if (!collater[traitType]) {
+                  collater[traitType] = {};
+                }
+                if (!collater[traitType][value]) {
+                  collater[traitType][value] = 1;
+                } else {
+                  collater[traitType][value] = collater[traitType][value] + 1;
+                }
+              }
+            }
+            // console.log(JSON.stringify(collater, null, 2));
+            // const sortedCategories = Object.keys(collater).sort();
+            // for (let i in sortedCategories) {
+            //   const category = sortedCategories[i];
+            //   console.log("Category: " + category);
+            //   const sortedValues = Object.keys(sortedCategories[i]).sort();
+            //   console.log("sortedValues: " + sortedValues);
+            //   const values = [];
+            //   for (let j in sortedValues) {
+            //     const value = sortedValues[j];
+            //     console.log("  value: " + value);
+            //     values.push(value);
+            //   }
+            //   results.push({ category: category, values: values });
+            // }
+
+            return collater;
           },
           getTotalSupply() {
             return BASTARDDATA.length;
