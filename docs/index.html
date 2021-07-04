@@ -97,11 +97,6 @@
                     <div>
                       <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
                     </div>
-                    <!--
-                    <div class="pl-1">
-                      <b-form-select size="sm" v-model="facing" :options="facingOptions"></b-form-select>
-                    </div>
-                    -->
                     <div class="pl-2">
                       <b-button v-b-toggle.collapse-1 size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
                     </div>
@@ -192,17 +187,9 @@
                         </span>
                       </template>
                       <template #cell(attributes)="data">
-                        <span v-for="attribute in data.item.attributes" class="m-0 p-0">
-                          <font size="-2">{{ attribute.trait_type + ": " }} <b>{{ attribute.value }}</b></font><br />
-                          <!--
-                          <div class="text-left">
-                            <b-button variant="none">
-                              {{ attribute.value }}
-                              <b-badge pill variant="light">{{ attribute.trait_type }}</b-badge>
-                            </b-button>
-                          </div>
-                           -->
-                        </span>
+                        <b-row v-for="attribute in data.item.attributes" class="m-0 p-0">
+                          <b-col class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></font></b-col>
+                        </b-row>
                       </template>
                     </b-table>
                   </div>
@@ -314,12 +301,6 @@
             { value: 2145, text: '2,145/P' },
             { value: 66666, text: 'ALL' },
           ],
-          facing: null,
-          facingOptions: [
-            { value: null, text: 'Left and Right' },
-            { value: 'left', text: 'Left Only' },
-            { value: 'right', text: 'Right Only' },
-          ],
           displayOwned: false,
 
           selectedTokenId: null,
@@ -338,19 +319,10 @@
             { key: 'image', label: 'BASTARD' },
             { key: 'description', label: 'LYRICS' },
             { key: 'attributes', label: 'ATTRIBUTES' },
-            // { key: 'facing', label: 'facing', sortable: false },
-            // { key: 'madBoogieLogo', label: 'madBoogieLogo', sortable: false },
-            // { key: 'signatureSeries', label: 'signatureSeries', sortable: false },
-            // { key: 'background', label: 'background', sortable: false },
-            // { key: 'bananaBase', label: 'bananaBase', sortable: false },
-            // { key: 'mouth', label: 'mouth', sortable: false },
-            // { key: 'eyes', label: 'eyes', sortable: false },
-            // { key: 'headGear', label: 'headGear', sortable: false },
           ],
           ownedTokenFields: [
             { key: 'i', label: '#' },
             { key: 'tokenId', label: 'TOKENID' },
-            // { key: 'name', label: 'name' },
           ],
           bokkysBastards: [3053, 7222, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
         },
