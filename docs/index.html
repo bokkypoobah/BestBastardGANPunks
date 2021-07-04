@@ -188,9 +188,9 @@
                         -->
                       </template>
                       <template #cell(description)="data">
-                        <div v-for="line in data.item.description.split('\n')">
-                          {{ line }}
-                        </div>
+                        <span v-for="line in data.item.description.split('\n')">
+                          <b>{{ line }}</b><br />
+                        </span>
                       </template>
                       <template #cell(attributes)="data">
                         <div v-for="attribute in data.item.attributes" class="m-0 p-0">
