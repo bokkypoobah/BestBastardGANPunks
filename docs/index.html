@@ -132,8 +132,8 @@
                         <b-row v-for="categoryKey in Object.keys(getCategories).sort()">
                           <b-col> {{ categoryKey }}</b-col>
                           <b-col>
-                            <b-row v-for="valuesKey in Object.keys(getCategories[categoryKey]).sort()">
-                              {{ valuesKey }} : {{ getCategories[categoryKey][valuesKey] }}
+                            <b-row v-for="valuesKey in getSortedValuesForCategory(categoryKey)">
+                              {{ valuesKey }} : {{ getCategories[categoryKey] }}
                             </b-row>
                           </b-col>
                         </b-row>
@@ -335,7 +335,7 @@
             { key: 'i', label: '#' },
             { key: 'tokenId', label: 'TOKENID' },
           ],
-          bokkysBastards: [3053, 7222, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
+          bokkysBastards: [3053, 7222, 7567, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
         },
         computed: {
           getData() {
@@ -468,6 +468,11 @@
           }
         },
         methods: {
+          getSortedValuesForCategory(category) {
+            console.log(" --- " + category + " ---");
+            console.log(JSON.stringify(this.getCategories[category]));
+            return this.getCategories[category];
+          },
           async connect() {
             if (!window.ethereum) {
               alert("Please use the https://metamask.io addon with Firefox, Chromium, Opera or Chrome, or any other other web3 browser, if you would like to view your Ethereum wallet's Boring Bananas.");
