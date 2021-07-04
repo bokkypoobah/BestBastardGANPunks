@@ -193,7 +193,7 @@
                         </div>
                       </template>
                       <template #cell(attributes)="data">
-                        <div v-for="attribute in data.item.attributes">
+                        <div v-for="attribute in data.item.attributes" class="m-0 p-0">
                           <font size="-2">{{ attribute.trait_type + ": " + attribute.value }}</font>
                           <!--
                           <div class="text-left">
@@ -212,7 +212,7 @@
 
               <b-tab title="MY FUCKING WALLET">
                 <b-card-text>
-                  SELECT <em>MY SEXY BASTARDS</em> INI THE PREVIOUS TAB TO VIEW YOUR TOKENS.<br />
+                  SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
                   <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
                   </b-table>
                 </b-card-text>
@@ -233,6 +233,8 @@
 
                 <b-card-text>
                   NFT AND IMAGE COPYRIGHT INFO SEE <a href="https://www.bastardganpunks.club/#nftownership" target="_blank">https://www.bastardganpunks.club/#nftownership</a>.
+
+                  A COPY OF THE <a href="https://drive.google.com/drive/folders/1dLnTSUhDlgfdUlzwm1pamiAWUyGVOGj-" target="_blank">HYPED AF MOSAICS</a> HAS BEEN INCLUDED WITH THIS WEBSHITE TO ORGANISE FOR EASIER ACCESS. ONLY THE HYPED AF (ANIMATED) MOSAICS IN THE FIRST 9,000 (#0 to #8,999) TOKENS HAVE BEEN ORGANISED AND THIS REPOSITORY WILL HAVE TO BE UPDATED WHEN THE ORGANISED MOSAICS ARE FINALLY PUBLISHED.
                 </b-card-text>
 
                 <h6 class="mt-4 mb-1">HOW DO I ADOPT SOME BASTARDS?</h6>
