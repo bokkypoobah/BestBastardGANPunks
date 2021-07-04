@@ -81,7 +81,7 @@
                     <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
                     <b-input-group-text>0</b-input-group-text>
                   </template>
-                  <b-form-input @change="setFrame()" v-model="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
+                  <b-form-input @change="setFrame()" v-model.trim="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
                   <template #append>
                     <b-input-group-text>{{ selectedItemFrames == null ? 0 : (selectedItemFrames - 1) }}</b-input-group-text>
                   </template>
@@ -187,7 +187,7 @@
                         </span>
                       </template>
                       <template #cell(attributes)="data">
-                        <b-row v-for="attribute in data.item.attributes" class="m-0 p-0">
+                        <b-row v-for="attribute in data.item.attributes"  v-bind:key="attribute.trait_type" class="m-0 p-0">
                           <b-col class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></font></b-col>
                         </b-row>
                       </template>
@@ -213,9 +213,9 @@
                 </b-card-text>
 
                 <b-card-text>
-                  WER ARE NOT AFFILIATED WITH THESE BASTARDS WITH A SANDWICH LOGO. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR DISCORD, LINEKD FROM THE URLS ABOVE.
+                  WER ARE NOT AFFILIATED WITH <a href="https://twitter.com/bganpunks" target="_blank">THESE BASTARDS</a> WITH A SANDWICH LOGO. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR DISCORD, LINEKD FROM THE URLS ABOVE.
                   <b-card no-body img-src="images/Twitter_bganpunks.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
-                </b-card-text>
+                </b-card-text>              
 
                 <b-card-text>
                   NFT AND IMAGE COPYRIGHT INFO SEE <a href="https://www.bastardganpunks.club/#nftownership" target="_blank">https://www.bastardganpunks.club/#nftownership</a>.
