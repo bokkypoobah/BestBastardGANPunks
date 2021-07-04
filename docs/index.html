@@ -54,8 +54,8 @@
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
             <div v-for="item in getSelectedShowcase">
-              <b-link @click="addAsset(item.tokenId)">
-                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="'images/' + item.src" v-b-popover.hover.bottom="'Bokky\'s #' + item.tokenId" class="ml-2"></b-avatar>
+              <b-link @click="addAsset(item)">
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
             </div>
             <b-navbar-nav class="ml-auto">
@@ -193,8 +193,8 @@
                         </span>
                       </template>
                       <template #cell(attributes)="data">
-                        <div v-for="attribute in data.item.attributes" class="m-0 p-0">
-                          <font size="-2">{{ attribute.trait_type + ": " + attribute.value }}</font>
+                        <span v-for="attribute in data.item.attributes" class="m-0 p-0">
+                          <font size="-2">{{ attribute.trait_type + ": " }} <b>{{ attribute.value }}</b></font><br />
                           <!--
                           <div class="text-left">
                             <b-button variant="none">
@@ -203,7 +203,7 @@
                             </b-button>
                           </div>
                            -->
-                        </div>
+                        </span>
                       </template>
                     </b-table>
                   </div>
@@ -353,22 +353,7 @@
             { key: 'tokenId', label: 'TOKENID' },
             // { key: 'name', label: 'name' },
           ],
-          showcase: [
-            { tokenId: 3053, src: "bganpunkv2_3053.gif" },
-            { tokenId: 7222, src: "bganpunkv2_7222.gif" },
-            { tokenId: 9738, src: "bganpunkv2_9738.png" },
-            { tokenId: 10375, src: "bganpunkv2_10375.gif" },
-            { tokenId: 10456, src: "bganpunkv2_10456.png" },
-            { tokenId: 10564, src: "bganpunkv2_10564.png" },
-            { tokenId: 10729, src: "bganpunkv2_10729.gif" },
-            { tokenId: 10731, src: "bganpunkv2_10731.png" },
-            { tokenId: 10734, src: "bganpunkv2_10734.png" },
-            { tokenId: 10735, src: "bganpunkv2_10735.gif" },
-            { tokenId: 10738, src: "bganpunkv2_10738.png" },
-            { tokenId: 10739, src: "bganpunkv2_10739.png" },
-            { tokenId: 10834, src: "bganpunkv2_10834.gif" },
-            { tokenId: 11106, src: "bganpunkv2_11106.png" }
-          ],
+          bokkysBastards: [3053, 7222, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
         },
         computed: {
           getData() {
@@ -449,6 +434,7 @@
             return results;
           },
           getSelectedShowcase() {
+            const MAXBASTARDS = 14;
             function shuffleArray(array) {
               for (var i = array.length - 1; i > 0; i--) {
                 var j = Math.floor(Math.random() * (i + 1));
@@ -457,9 +443,12 @@
                 array[j] = temp;
               }
             }
-            const newArray = this.showcase.slice(0);
+            let newArray = Object.keys(this.tokensOwned);
+            if (!this.connected || newArray.length == 0) {
+              newArray = this.bokkysBastards.slice(0);
+            }
             shuffleArray(newArray);
-            return newArray;
+            return newArray.slice(0, MAXBASTARDS);
           }
         },
         methods: {
