@@ -131,7 +131,7 @@
 
                       <b-card>
 
-                        <h6 class="mb-5">NOT WORKING YET!</h6>
+                        <h6 class="mb-5">NOT WORKING YET! {{ categoryFilter }}</h6>
 
                         <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
                           <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
@@ -139,7 +139,7 @@
                             <font size="-2">
                               <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
                                 <template #cell(select)="data">
-                                  Select
+                                  <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
                                 </template>
                               </b-table>
                             </font>
@@ -344,8 +344,9 @@
           categoryFields: [
             { key: 'select', label: 'SELECT', thStyle: 'width: 20%;' },
             { key: 'categoryOption', label: 'TYPE', sortable: true },
-            { key: 'categoryTotal', label: '#', sortable: true, thStyle: 'width: 20%;', thClass: 'text-right', tdClass: 'text-right' },
+            { key: 'categoryTotal', label: 'COUNT', sortable: true, thStyle: 'width: 20%;', thClass: 'text-right', tdClass: 'text-right' },
           ],
+          categoryFilter: {},
           fields: [
             { key: 'tokenId', label: 'TOKENID' },
             { key: 'image', label: 'BASTARD' },
@@ -489,13 +490,23 @@
           }
         },
         methods: {
+          filterChange(category, option) {
+            if (!this.categoryFilter[category]) {
+              Vue.set(this.categoryFilter, category, {});
+            }
+            if (this.categoryFilter[category][option]) {
+              Vue.delete(this.categoryFilter[category], option);
+              if (Object.keys(this.categoryFilter[category]) == 0) {
+                Vue.delete(this.categoryFilter, category);
+              }
+            } else {
+              Vue.set(this.categoryFilter[category], option, true);
+            }
+          },
           getSortedValuesForCategory(category) {
-            // console.log(" --- " + category + " ---");
-            // console.log(JSON.stringify(this.getCategories[category]));
             const results = [];
             for (let categoryKey in this.getCategories[category]) {
               const c = this.getCategories[category][categoryKey];
-              // console.log(" + c: " + categoryKey + " => " + c);
               results.push({ categoryOption: categoryKey, categoryTotal: c })
             }
             results.sort(function(a, b) {
