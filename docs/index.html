@@ -130,9 +130,20 @@
                     <b-collapse id="collapse-search" class="m-2">
 
                       <b-card>
+
+                        <h6 class="mb-5">NOT WORKING YET!</h6>
+
                         <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
-                          <b-col> {{ categoryKey }}</b-col>
-                          <b-col><font size="-2"><b-table small sticky-header="200px" :items="getSortedValuesForCategory(categoryKey)" head-variant="light"></b-table></font></b-col>
+                          <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
+                          <b-col cols="6">
+                            <font size="-2">
+                              <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                                <template #cell(select)="data">
+                                  Select
+                                </template>
+                              </b-table>
+                            </font>
+                          </b-col>
 
                           <!--
                           <b-col>
@@ -330,6 +341,11 @@
             { value: 'cards', text: 'CARDS' },
             { value: 'list', text: 'LIST' },
           ],
+          categoryFields: [
+            { key: 'select', label: 'SELECT', sortable: true },
+            { key: 'categoryOption', label: 'TYPE', sortable: true },
+            { key: 'categoryTotal', label: '#', sortable: true, thClass: 'text-right', tdClass: 'text-right' },
+          ],
           fields: [
             { key: 'tokenId', label: 'TOKENID' },
             { key: 'image', label: 'BASTARD' },
@@ -480,10 +496,10 @@
             for (let categoryKey in this.getCategories[category]) {
               const c = this.getCategories[category][categoryKey];
               // console.log(" + c: " + categoryKey + " => " + c);
-              results.push({ categoryOption: categoryKey, categoryTotals: c })
+              results.push({ categoryOption: categoryKey, categoryTotal: c })
             }
             results.sort(function(a, b) {
-              return b.categoryTotals - a.categoryTotals;
+              return b.categoryTotal - a.categoryTotal;
             });
             return results;
           },
