@@ -128,15 +128,19 @@
                   <div>
                     <!-- visible -->
                     <b-collapse id="collapse-search" class="m-2">
-                      <b-card>
 
-                        <b-row v-for="categoryKey in Object.keys(getCategories).sort()">
+                      <b-card>
+                        <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
                           <b-col> {{ categoryKey }}</b-col>
+                          <b-col><font size="-2"><b-table small sticky-header="200px" :items="getSortedValuesForCategory(categoryKey)" head-variant="light"></b-table></font></b-col>
+
+                          <!--
                           <b-col>
-                            <b-row v-for="valuesKey in getSortedValuesForCategory(categoryKey)">
-                              {{ valuesKey }} : {{ getCategories[categoryKey] }}
+                            <b-row v-for="(valuesKey, valuesIndex) in getSortedValuesForCategory(categoryKey)" v-bind:key="valuesIndex">
+                              {{ valuesKey.categoryOption + ':' + valuesKey.categoryTotals }}
                             </b-row>
                           </b-col>
+                          -->
                         </b-row>
                         <!--
                         <p class="card-text">Collapse contents Here</p>
@@ -470,9 +474,18 @@
         },
         methods: {
           getSortedValuesForCategory(category) {
-            console.log(" --- " + category + " ---");
-            console.log(JSON.stringify(this.getCategories[category]));
-            return this.getCategories[category];
+            // console.log(" --- " + category + " ---");
+            // console.log(JSON.stringify(this.getCategories[category]));
+            const results = [];
+            for (let categoryKey in this.getCategories[category]) {
+              const c = this.getCategories[category][categoryKey];
+              // console.log(" + c: " + categoryKey + " => " + c);
+              results.push({ categoryOption: categoryKey, categoryTotals: c })
+            }
+            results.sort(function(a, b) {
+              return b.categoryTotals - a.categoryTotals;
+            });
+            return results;
           },
           async connect() {
             if (!window.ethereum) {
