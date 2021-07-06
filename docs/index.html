@@ -89,6 +89,54 @@
               </b-modal>
             </div>
 
+            <template>
+              <div>
+                <b-sidebar right id="sidebar-border" sidebar-class="border-right border-danger">
+                  <!-- <b-card class="m-1 p-1"> -->
+                    <div v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
+                      <b-card body-class="p-1" header-class="p-1 pl-2" footer-class="p-1" class="m-1 p-0">
+                        <template #header>
+                          <span variant="secondary" class="small truncate">
+                            {{ categoryKey }}
+                          </span>
+                        </template>
+                        <font size="-2">
+                          <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                            <template #cell(select)="data">
+                              <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                            </template>
+                          </b-table>
+                        </font>
+                      </b-card>
+                    </div>
+                    <!--
+                    <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
+                      <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
+                      <b-col cols="6">
+                        <font size="-2">
+                          <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                            <template #cell(select)="data">
+                              <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                            </template>
+                          </b-table>
+                        </font>
+                      </b-col>
+                    </b-row>
+                    -->
+                  <!-- </b-card> -->
+                  <!--
+                  <div class="px-3 py-2">
+                    <p>
+                      Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                      in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <b-img src="https://picsum.photos/500/500/?image=54" fluid thumbnail></b-img>
+                  </div>
+                  -->
+                </b-sidebar>
+              </div>
+            </template>
+
             <b-tabs card v-model="tabIndex" align="right">
 
               <b-tab title="SEXY BASTARDS">
@@ -98,8 +146,13 @@
                       <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
                     </div>
                     <div class="pl-2">
+                      <b-button v-b-toggle.sidebar-border size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-search shift-v="+1" font-scale="1.3"></b-icon-search></b-button></b-button>
+                    </div>
+                    <!--
+                    <div class="pl-2">
                       <b-button v-b-toggle.collapse-search size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
                     </div>
+                    -->
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY BASTARDS</b-button>
                     </div>
@@ -161,7 +214,7 @@
                             <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <!-- </b-link> -->
                           <b-link @click="addAsset(record.tokenId)" v-b-popover.hover="'Click for details'">
-                            <b-img-lazy width="220%" :src="record.osimage" />
+                            <b-img-lazy width="150%" :src="record.osimage" />
                           </b-link>
                         </b-card>
                       </div>
@@ -331,8 +384,8 @@
           fields: [
             { key: 'tokenId', label: 'TOKENID' },
             { key: 'image', label: 'BASTARD' },
-            { key: 'description', label: 'LYRICS' },
             { key: 'attributes', label: 'ATTRIBUTES' },
+            { key: 'description', label: 'LYRICS', thStyle: 'width: 40%;' },
           ],
           ownedTokenFields: [
             { key: 'i', label: '#' },
