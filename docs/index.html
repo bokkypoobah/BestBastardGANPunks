@@ -92,47 +92,22 @@
             <template>
               <div>
                 <b-sidebar right id="sidebar-border" sidebar-class="border-right border-danger">
-                  <!-- <b-card class="m-1 p-1"> -->
-                    <div v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
-                      <b-card body-class="p-1" header-class="p-1 pl-2" footer-class="p-1" class="m-1 p-0">
-                        <template #header>
-                          <span variant="secondary" class="small truncate">
-                            {{ categoryKey }}
-                          </span>
-                        </template>
-                        <font size="-2">
-                          <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
-                            <template #cell(select)="data">
-                              <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                            </template>
-                          </b-table>
-                        </font>
-                      </b-card>
-                    </div>
-                    <!--
-                    <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
-                      <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
-                      <b-col cols="6">
-                        <font size="-2">
-                          <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
-                            <template #cell(select)="data">
-                              <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                            </template>
-                          </b-table>
-                        </font>
-                      </b-col>
-                    </b-row>
-                    -->
-                  <!-- </b-card> -->
-                  <!--
-                  <div class="px-3 py-2">
-                    <p>
-                      Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                      in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <b-img src="https://picsum.photos/500/500/?image=54" fluid thumbnail></b-img>
+                  <div v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
+                    <b-card body-class="p-1" header-class="m-1 p-1" footer-class="p-1" class="m-1 p-1">
+                      <template #header>
+                        <span variant="secondary" class="small truncate">
+                          {{ categoryKey }}
+                        </span>
+                      </template>
+                      <font size="-2">
+                        <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                          <template #cell(select)="data">
+                            <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                          </template>
+                        </b-table>
+                      </font>
+                    </b-card>
                   </div>
-                  -->
                 </b-sidebar>
               </div>
             </template>
@@ -378,7 +353,7 @@
           categoryFields: [
             { key: 'select', label: 'SELECT', thStyle: 'width: 20%;' },
             { key: 'categoryOption', label: 'TYPE', sortable: true },
-            { key: 'categoryTotal', label: 'COUNT', sortable: true, thStyle: 'width: 20%;', thClass: 'text-right', tdClass: 'text-right' },
+            { key: 'categoryTotal', label: 'COUNT', sortable: true, thStyle: 'width: 30%;', thClass: 'text-right', tdClass: 'text-right' },
           ],
           categoryFilter: {},
           fields: [
