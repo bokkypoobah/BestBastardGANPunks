@@ -53,7 +53,7 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <div v-for="item in getSelectedShowcase">
+            <div v-if="getTotalSupply > 100" v-for="item in getSelectedShowcase">
               <b-link @click="addAsset(item)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
@@ -128,11 +128,7 @@
                   <div>
                     <!-- visible -->
                     <b-collapse id="collapse-search" class="m-2">
-
                       <b-card>
-
-                        <h6 class="mb-5">NOT WORKING YET! {{ categoryFilter }}</h6>
-
                         <b-row v-for="(categoryKey, categoryIndex) in Object.keys(getCategories).sort()" v-bind:key="categoryIndex">
                           <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
                           <b-col cols="6">
@@ -144,22 +140,7 @@
                               </b-table>
                             </font>
                           </b-col>
-
-                          <!--
-                          <b-col>
-                            <b-row v-for="(valuesKey, valuesIndex) in getSortedValuesForCategory(categoryKey)" v-bind:key="valuesIndex">
-                              {{ valuesKey.categoryOption + ':' + valuesKey.categoryTotals }}
-                            </b-row>
-                          </b-col>
-                          -->
                         </b-row>
-                        <!--
-                        <p class="card-text">Collapse contents Here</p>
-                        <b-button v-b-toggle.collapse-search-inner size="sm">Toggle Inner Collapse</b-button>
-                        <b-collapse id="collapse-search-inner" class="mt-2">
-                          <b-card>Hello!</b-card>
-                        </b-collapse>
-                        -->
                       </b-card>
                     </b-collapse>
                   </div>
@@ -383,8 +364,8 @@
           getCategories() {
             let results = [];
             const collater = {};
-            for (let i in BASTARDDATA) {
-              const item = BASTARDDATA[i];
+            for (let i in this.getData) {
+              const item = this.getData[i];
               for (let k in item.attributes) {
                 const attribute = item.attributes[k];
                 const traitType = attribute.trait_type;
@@ -399,26 +380,10 @@
                 }
               }
             }
-            // console.log(JSON.stringify(collater, null, 2));
-            // const sortedCategories = Object.keys(collater).sort();
-            // for (let i in sortedCategories) {
-            //   const category = sortedCategories[i];
-            //   console.log("Category: " + category);
-            //   const sortedValues = Object.keys(sortedCategories[i]).sort();
-            //   console.log("sortedValues: " + sortedValues);
-            //   const values = [];
-            //   for (let j in sortedValues) {
-            //     const value = sortedValues[j];
-            //     console.log("  value: " + value);
-            //     values.push(value);
-            //   }
-            //   results.push({ category: category, values: values });
-            // }
-
             return collater;
           },
           getTotalSupply() {
-            return BASTARDDATA.length;
+            return this.getData.length;
           },
           getSearchResults() {
             let results = [];
@@ -428,23 +393,25 @@
               if (this.displayOwned) {
                 include = d.owned;
               }
-
-              function hasAttribute(data, searchString) {
+              function getAttribute(data, category) {
                 for (let attributeIndex in data.attributes) {
                   const attribute = data.attributes[attributeIndex];
-                  if (('' + attribute.value).toLowerCase().includes(searchString)) {
-                    return true;
+                  if (attribute.trait_type == category) {
+                    return attribute.value;
                   }
                 }
-                return false;
+                return null;
               }
-
+              for (const [key, value] of Object.entries(this.categoryFilter)) {
+                const attributeValue = getAttribute(d, key);
+                if (!value[attributeValue]) {
+                  include = false;
+                  break;
+                }
+              }
               if (this.searchString != null && this.searchString.length > 0) {
                 const s = this.searchString.toLowerCase();
-
-                // const hasAttr = hasAttribute(d, s);
-
-                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s)) /*|| hasAttribute(d, s) */) {
+                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s))) {
                 } else {
                   include = false;
                 }
