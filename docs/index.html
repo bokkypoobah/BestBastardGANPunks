@@ -247,7 +247,7 @@
 
               <b-tab title="OWNERS">
                 <b-card-text>
-                  Unique Owners: {{ getCollatedOwners.length }}; Total Supply: {{ totalSupply }}<br />
+                  Unique Owners: {{ getCollatedOwners.length }} ({{ ((getCollatedOwners.length*100)/getTotalSupply).toFixed(2) + '%' }}); Total Supply: {{ getTotalSupply }}. Connect your wallet to retrieve up-to-date owner data<br />
                   <!-- :fields="ownedTokenFields" -->
                   <b-table small :items="getCollatedOwners" responsive="sm">
                   </b-table>
