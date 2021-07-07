@@ -70,3 +70,8 @@ const OUTPUTREPORT = "bastardData.js";
 })();
 
 console.log(process.cwd());
+
+
+// module.exports = {
+//   BASTARDDATA
+// }

@@ -201,6 +201,11 @@
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                           {{ data.item.tokenId }}
                         </b-link>
+                        <div v-if="owners.length > 0">
+                          <b-link :href="'https://etherscan.io/address/' + owners[data.item.tokenId]" v-b-popover.hover="'View on EtherScan'" target="_blank">
+                            {{ owners[data.item.tokenId].substring(0, 10) }}
+                          </b-link>
+                        </div>
                         <div v-if="data.item.mosaicurl != null">
                           <b-link :href="data.item.mosaicurl" v-b-popover.hover="'View HYPED AF (ANIMATED) mosaic'" target="_blank">
                             mosaic
@@ -324,6 +329,7 @@
           connected: false,
           account: null,
           tokensOwned: [],
+          owners: [],
           tabIndex: 0,
           abortSearch: false,
           searchString: '',
@@ -357,7 +363,7 @@
           ],
           categoryFilter: {},
           fields: [
-            { key: 'tokenId', label: 'TOKENID' },
+            { key: 'tokenId', label: 'TOKENID/OWNER/MOSAIC' },
             { key: 'image', label: 'BASTARD' },
             { key: 'attributes', label: 'ATTRIBUTES' },
             { key: 'description', label: 'LYRICS', thStyle: 'width: 40%;' },
@@ -527,6 +533,26 @@
               const network = await provider.getNetwork();
               if (network.chainId == 1) {
                 this.connected = true;
+
+                const erc721Helper = new ethers.Contract(ERC721HELPERADDRESS, ERC721HELPERABI, provider);
+                const info = await erc721Helper.tokenInfo(BASTARDADDRESS);
+                const totalSupply = parseInt(info[2].toString());
+                console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
+                const BATCHSIZE = 500;
+
+                const owners = [];
+                for (let i = 0; i < totalSupply; i += BATCHSIZE) {
+                  const to = (i + BATCHSIZE > totalSupply) ? totalSupply : i + BATCHSIZE;
+                  const ownersResult = await erc721Helper.owners(BASTARDADDRESS, i, to);
+                  console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
+                  for (let j = 0; j < ownersResult[0].length; j++) {
+                    owners.push(ownersResult[1][j]);
+                  }
+                }
+                this.owners = owners;
+                localStorage.setItem('bastardsOwners', JSON.stringify(owners));
+                // console.log(JSON.stringify(owners, null, 2));
+
                 const banana = new ethers.Contract(BASTARDADDRESS, BASTARDABI, provider);
                 const tokensOfOwner = await banana.tokensOfOwner(this.account);
                 const tokensOwned = {};
@@ -587,6 +613,10 @@
           if (localStorage.getItem('bastardsOwned')) {
             this.tokensOwned = JSON.parse(localStorage.getItem('bastardsOwned'));
           }
+          if (localStorage.getItem('bastardsOwners')) {
+            this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
+          }
+
           // console.log("mounted: bastardsOwned: " + JSON.stringify(this.tokensOwned, null, 2));
           // hljs.highlightAll();
         }
