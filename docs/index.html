@@ -245,6 +245,19 @@
                 </b-card-text>
               </b-tab>
 
+              <b-tab title="OWNERS">
+                <b-card-text>
+                  Unique Owners: {{ getCollatedOwners.length }}; Total Supply: {{ totalSupply }}<br />
+                  <!-- :fields="ownedTokenFields" -->
+                  <b-table small :items="getCollatedOwners" responsive="sm">
+                  </b-table>
+                  <!-- SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
+                  <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
+                  </b-table> -->
+                </b-card-text>
+              </b-tab>
+
+
               <b-tab title="INFO">
                 <h6 class="mb-1">WHAT IS THIS WEBSHITE ABOUT?</h6>
                 <b-card-text>
@@ -415,6 +428,27 @@
               }
             }
             return collater;
+          },
+          getCollatedOwners() {
+            const collater = {};
+            for (let i in this.getData) {
+              const item = this.getData[i];
+              const owner = this.owners[i];
+              if (!collater[owner]) {
+                collater[owner] = [];
+              }
+              collater[owner].push(item.tokenId);
+            }
+            console.log(JSON.stringify(collater));
+
+            let results = [];
+            for (const [key, value] of Object.entries(collater)) {
+              results.push({ owner: key, tokens: value });
+            }
+            results.sort(function(a, b) {
+              return b.tokens.length - a.tokens.length;
+            });
+            return results;
           },
           getTotalSupply() {
             return this.getData.length;
