@@ -10,7 +10,6 @@
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.min.css"/>
     <link type="text/css" rel="stylesheet" href="css/bootstrap-vue-icons.min.css"/>
-    <link type="text/css" rel="stylesheet" href="css/highlight.min.css"/>
 
     <!-- Load polyfills to support older browsers -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
@@ -22,7 +21,8 @@
     <script src="js/libgif.js"></script>
 
     <script src="js/ethers-5.2.umd.min.js"></script>
-    <script src="js/highlight.min.js"></script>
+    <script src="js/apexcharts.js"></script>
+
     <script src="bastardData.min.js"></script>
     <script src="deploymentData.js"></script>
 
@@ -650,9 +650,6 @@
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
           }
-
-          // console.log("mounted: bastardsOwned: " + JSON.stringify(this.tokensOwned, null, 2));
-          // hljs.highlightAll();
         }
       })
     </script>
