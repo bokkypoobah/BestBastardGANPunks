@@ -248,12 +248,17 @@
               <b-tab active title="OWNERS">
                 <b-card-text>
                   Unique Owners: {{ getCollatedOwners.length }} ({{ ((getCollatedOwners.length*100)/getTotalSupply).toFixed(2) + '%' }}); Total Supply: {{ getTotalSupply }}. Connect your wallet to retrieve up-to-date owner data<br />
-                  <!-- :fields="ownedTokenFields" -->
                   <b-table small :fields="ownersFields" :items="getCollatedOwners" responsive="sm">
+                    <template #cell(index)="data">
+                      {{ (data.index + 1) }}
+                    </template>
+                    <template #cell(owner)="data">
+                      <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                        {{ data.item.owner.substring(0, 10) }}
+                      </b-link>
+                      {{ '(' + data.item.tokens.length + ')'}}
+                    </template>
                   </b-table>
-                  <!-- SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
-                  <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
-                  </b-table> -->
                 </b-card-text>
               </b-tab>
 
@@ -386,6 +391,7 @@
             { key: 'tokenId', label: 'TOKENID' },
           ],
           ownersFields: [
+            { key: 'index', label: '#' },
             { key: 'owner', label: 'OWNER' },
             { key: 'tokens', label: 'TOKENS' },
           ],
@@ -452,6 +458,9 @@
             results.sort(function(a, b) {
               return b.tokens.length - a.tokens.length;
             });
+            for (let i in results) {
+                results[i].index = i;
+            }
             return results;
           },
           getTotalSupply() {
