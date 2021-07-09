@@ -21,7 +21,14 @@
     <script src="js/libgif.js"></script>
 
     <script src="js/ethers-5.2.umd.min.js"></script>
-    <script src="js/apexcharts.js"></script>
+    <!-- <script src="js/apexcharts.js"></script> -->
+
+    <!-- ENS stuff -->
+    <script src="js/punycode.js"></script>
+    <script src="js/idna-map.js"></script>
+    <script src="js/idna-uts46-hx.js"></script>
+    <script src="js/js-sha3.js"></script>
+    <script src="js/eth-ens-namehash.js"></script>
 
     <script src="bastardData.min.js"></script>
     <script src="deploymentData.js"></script>
@@ -60,7 +67,7 @@
             </div>
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT MY FUCKING WALLET</b-button>
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ account.substring(0, 10).toUpperCase() }}</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ ensOrShortName(account) }}</b-button>
             </b-navbar-nav>
           </b-navbar>
         </div>
@@ -206,9 +213,12 @@
                         </b-link>
                         <div v-if="owners.length > 0">
                           <b-link :href="'https://etherscan.io/address/' + owners[data.item.tokenId]" v-b-popover.hover="'View on EtherScan'" target="_blank">
-                            {{ owners[data.item.tokenId].substring(0, 10) }}
+                            {{ ensOrShortName(owners[data.item.tokenId]) }}
                           </b-link>
                         </div>
+                        <b-button size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " variant="outline-primary">
+                          Search {{ ensOrShortName(owners[data.item.tokenId]) }}
+                        </b-button>
                         <div v-if="data.item.mosaicurl != null">
                           <b-link :href="data.item.mosaicurl" v-b-popover.hover="'View HYPED AF (ANIMATED) mosaic'" target="_blank">
                             mosaic
@@ -285,7 +295,7 @@
                     </template>
                     <template #cell(owner)="data">
                       <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                        {{ data.item.owner.substring(0, 10) }}
+                        {{ ensOrShortName(data.item.owner) }}
                       </b-link>
                       <b-button size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary">
                         Search {{ data.item.owner.substring(0, 10) }}
@@ -391,6 +401,7 @@
           account: null,
           tokensOwned: [],
           owners: [],
+          ensMap: {},
           collatedOwners: [],
           selectedOwner: null,
           tabIndex: 0,
@@ -475,9 +486,16 @@
             shuffleArray(tokenIdsOwned);
             console.log(new Date().toUTCString() + " - getSelectedShowcase() end");
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
-          }
+          },
         },
         methods: {
+          ensOrShortName(address) {
+            let name = this.ensMap[address];
+            if (name != null) {
+              name = name.substring(0, 16);
+            }
+            return name;
+          },
           calculateData() {
             const results = [];
             console.log(new Date().toUTCString() + " - calculateData() start");
@@ -672,15 +690,17 @@
               if (network.chainId == 1) {
                 this.connected = true;
 
+                const NFTOWNERBATCHSIZE = 500;
+                const ENSOWNERBATCHSIZE = 500;
+
                 const erc721Helper = new ethers.Contract(ERC721HELPERADDRESS, ERC721HELPERABI, provider);
                 const info = await erc721Helper.tokenInfo(BASTARDADDRESS);
                 const totalSupply = parseInt(info[2].toString());
                 console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
-                const BATCHSIZE = 500;
 
                 const owners = [];
-                for (let i = 0; i < totalSupply; i += BATCHSIZE) {
-                  const to = (i + BATCHSIZE > totalSupply) ? totalSupply : i + BATCHSIZE;
+                for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
+                  const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + i + " - " + (parseInt(to) - 1) + " OF " + totalSupply;
                   const ownersResult = await erc721Helper.owners(BASTARDADDRESS, i, to);
                   console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
@@ -690,6 +710,35 @@
                 }
                 this.owners = owners;
                 localStorage.setItem('bastardsOwners', JSON.stringify(owners));
+
+                const ensMap = {};
+                for (let i in owners) {
+                  if (!ensMap[owners[i]]) {
+                    ensMap[owners[i]] = owners[i];
+                  }
+                }
+                ensMap[this.account] = this.account;
+
+                let addresses = Object.keys(ensMap);
+                const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
+
+                for (let i = 0; i < addresses.length; i += ENSOWNERBATCHSIZE) {
+                  this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + i + " OF " + addresses.length;
+                  const batch = addresses.slice(i, parseInt(i) + ENSOWNERBATCHSIZE);
+                  const allnames = await ensReverseRecordsContract.getNames(batch);
+                  // const validNames = allnames.filter((n) => normalize(n) === n );
+
+                  for (let j = 0; j < batch.length; j++) {
+                    const address = batch[j];
+                    const name = allnames[j];
+                    ensMap[address] = name != null && name.length > 0 ? name : address;
+                    // const normalized = normalize(address);
+                  }
+                }
+                ensMap["0x000000000000000000000000000000000000dEaD"] = "BurnAddress";
+                this.ensMap = ensMap;
+                localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
+
                 this.processing = "RECALCULATING DATA";
                 this.recalculate('web3 data retrieval');
                 this.processing = null;
@@ -745,6 +794,9 @@
           }
           if (localStorage.getItem('bastardMyAccount')) {
             this.account = JSON.parse(localStorage.getItem('bastardMyAccount'));
+          }
+          if (localStorage.getItem('bastardsENSMap')) {
+            this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
           }
           this.recalculate("mounted");
         }
