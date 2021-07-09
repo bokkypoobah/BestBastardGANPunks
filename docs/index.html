@@ -469,7 +469,6 @@
             return this.collatedOwners.slice((this.ownersCurrentPage - 1) * this.ownersPageSize, this.ownersCurrentPage * this.ownersPageSize);
           },
           getSelectedShowcase() {
-            console.log(new Date().toUTCString() + " - getSelectedShowcase() start");
             const MAXBASTARDSTODISPLAY = 14;
             function shuffleArray(array) {
               for (var i = array.length - 1; i > 0; i--) {
@@ -484,13 +483,12 @@
               tokenIdsOwned = this.bokkysBastards.slice(0);
             }
             shuffleArray(tokenIdsOwned);
-            console.log(new Date().toUTCString() + " - getSelectedShowcase() end");
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
           },
         },
         methods: {
           ensOrShortName(address) {
-            let name = this.ensMap[address];
+            let name = this.ensMap[address.toLowerCase()];
             if (name != null) {
               name = name.substring(0, 16);
             }
@@ -498,7 +496,6 @@
           },
           calculateData() {
             const results = [];
-            console.log(new Date().toUTCString() + " - calculateData() start");
             for (let i in BASTARDDATA) {
               const item = BASTARDDATA[i];
               item.mosaicurl = null;
@@ -514,13 +511,12 @@
               }
               results.push(item);
             }
-            console.log(new Date().toUTCString() + " - calculateData() end");
+            console.log(new Date().toUTCString() + " - calculateData() completed");
             return results;
           },
           calculateTokensOwned() {
             const results = [];
             if (this.owners.length > 0 && this.account) {
-              console.log(new Date().toUTCString() + " - calculateTokensOwned() - this.account: " + this.account);
               const account = this.account.toLowerCase();
               for (let i in this.data) {
                 const item = this.data[i];
@@ -530,11 +526,10 @@
                 }
               }
             }
-            console.log(new Date().toUTCString() + " - calculateTokensOwned(): " + JSON.stringify(results));
+            console.log(new Date().toUTCString() + " - calculateTokensOwned() completed: " + JSON.stringify(results));
             return results;
           },
           calculateCategories() {
-            console.log(new Date().toUTCString() + " - calculateCategories() start");
             const collater = {};
             for (let i in this.data) {
               const item = this.data[i];
@@ -552,11 +547,10 @@
                 }
               }
             }
-            console.log(new Date().toUTCString() + " - calculateCategories() end");
+            console.log(new Date().toUTCString() + " - calculateCategories() completed");
             return collater;
           },
           calculateSearchResults() {
-            console.log(new Date().toUTCString() + " - calculateSearchResults() start");
             let results = [];
             let data = this.data.slice(0);
             const accountLowerCase = this.account == null ? null : this.account.toLowerCase();
@@ -587,7 +581,10 @@
               }
               if (this.searchAccount != null && this.searchAccount.length > 0) {
                 const s = this.searchAccount.toLowerCase();
-                if (this.owners.length > 0 && this.owners[d.tokenId] && this.owners[d.tokenId].toLowerCase().includes(s)) {
+                const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
+                const ensName = owner == null ? null : this.ensMap[owner];
+                if (owner != null && owner.includes(s)) {
+                } else if (ensName != null && ensName.includes(s)) {
                 } else {
                   include = false;
                 }
@@ -596,11 +593,10 @@
                 results.push(d);
               }
             }
-            console.log(new Date().toUTCString() + " - calculateSearchResults() end");
+            console.log(new Date().toUTCString() + " - calculateSearchResults() completed");
             return results;
           },
           calculateCollatedOwners() {
-            console.log(new Date().toUTCString() + " - calculateCollatedOwners() start");
             let results = [];
             if (this.owners.length > 0) {
               const collater = {};
@@ -622,7 +618,7 @@
                 results[i].index = i;
               }
             }
-            console.log(new Date().toUTCString() + " - calculateCollatedOwners() end");
+            console.log(new Date().toUTCString() + " - calculateCollatedOwners() completed");
             return results;
           },
           async recalculate(from) {
@@ -632,7 +628,7 @@
             this.categories = this.calculateCategories();
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
-            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") end");
+            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") completed");
           },
           filterChange(category, option) {
             if (!this.categoryFilter[category]) {
@@ -708,11 +704,12 @@
                 localStorage.setItem('bastardsOwners', JSON.stringify(owners));
                 const ensMap = {};
                 for (let i in owners) {
-                  if (!ensMap[owners[i]]) {
-                    ensMap[owners[i]] = owners[i];
+                  const owner = owners[i].toLowerCase();
+                  if (!ensMap[owner]) {
+                    ensMap[owner] = owners[i];
                   }
                 }
-                ensMap[this.account] = this.account;
+                ensMap[this.account.toLowerCase()] = this.account;
                 let addresses = Object.keys(ensMap);
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
                 const ENSOWNERBATCHSIZE = 500;
