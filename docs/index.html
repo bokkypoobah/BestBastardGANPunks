@@ -54,7 +54,7 @@
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
             <div v-if="getTotalSupply > 100" v-for="item in getSelectedShowcase">
-              <b-link @click="addAsset(item)">
+              <b-link @click="displayToken(item)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
             </div>
@@ -112,6 +112,12 @@
               </div>
             </template>
 
+            <div v-if="processing != null">
+              <b-jumbotron header="PROCESSING" bg-variant="info" text-variant="white" border-variant="dark">
+                {{ processing }}
+              </b-jumbotron>
+            </div>
+
             <b-tabs card v-model="tabIndex" align="right">
 
               <b-tab title="SEXY BASTARDS">
@@ -128,11 +134,6 @@
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY BASTARDS</b-button>
                     </div>
-                    <!--
-                    <div class="pl-2">
-                      <b-form-select size="sm" v-model="selectedOwner" :options="getOwnerList"></b-form-select>
-                    </div>
-                    -->
                     <div class="pr-1 flex-grow-1">
                     </div>
                     <div class="pl-2">
@@ -187,7 +188,7 @@
                             -->
                             <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <!-- </b-link> -->
-                          <b-link @click="addAsset(record.tokenId)" v-b-popover.hover="'Click for details'">
+                          <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'Click for details'">
                             <b-img-lazy width="150%" :src="record.osimage" />
                           </b-link>
                         </b-card>
@@ -212,7 +213,7 @@
                         </div>
                       </template>
                       <template #cell(image)="data">
-                        <b-link @click="addAsset(data.item.tokenId)" v-b-popover.hover="'Click for details'">
+                        <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="200%" :src="data.item.osimage" />
                           <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
@@ -356,6 +357,7 @@
         el: '#app',
         data: {
           loadNow: false,
+          processing: null,
           connected: false,
           account: null,
           tokensOwned: [],
@@ -428,7 +430,7 @@
                     }
                   }
                 }
-                item.owned = this.tokensOwned[i] || false;
+                item.owned = this.owners && this.owners[i].toLowerCase() == this.account;
                 results.push(item);
               }
             } else {
@@ -478,16 +480,6 @@
             }
             return results;
           },
-          // getOwnerList() {
-          //   const results = [];
-          //   results.push( { value: null, text: 'All' });
-          //   // console.log("this.getCollatedOwners: " + JSON.stringify(this.getCollatedOwners));
-          //   for (let i in this.getCollatedOwners) {
-          //     const owner = this.getCollatedOwners[i].owner;
-          //     results.push( { value: owner, text: owner.substring(0, 10) });
-          //   }
-          //   return results;
-          // },
           getTotalSupply() {
             return this.getData.length;
           },
@@ -545,8 +537,22 @@
             }
             return results;
           },
+          getTokensOwned() {
+            const results = [];
+            if (this.owners.length > 0 && this.account) {
+              const account = this.account.toLowerCase();
+              for (let i in this.getData) {
+                const item = this.getData[i];
+                const owner = this.owners[i];
+                if (owner && owner.toLowerCase() == account) {
+                  results.push(item.tokenId);
+                }
+              }
+            }
+            return results;
+          },
           getSelectedShowcase() {
-            const MAXBASTARDS = 14;
+            const MAXBASTARDSTODISPLAY = 14;
             function shuffleArray(array) {
               for (var i = array.length - 1; i > 0; i--) {
                 var j = Math.floor(Math.random() * (i + 1));
@@ -555,12 +561,12 @@
                 array[j] = temp;
               }
             }
-            let newArray = Object.keys(this.tokensOwned);
-            if (!this.connected || newArray.length == 0) {
-              newArray = this.bokkysBastards.slice(0);
+            let tokenIdsOwned = this.getTokensOwned;
+            if (!this.connected || tokenIdsOwned.length == 0) {
+              tokenIdsOwned = this.bokkysBastards.slice(0);
             }
-            shuffleArray(newArray);
-            return newArray.slice(0, MAXBASTARDS);
+            shuffleArray(tokenIdsOwned);
+            return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
           }
         },
         methods: {
@@ -596,8 +602,20 @@
             } else {
               if (!window.ethereum.isConnected() || !window.ethereum['isUnlocked']) {
                 try {
+                  const t = this;
+                  function handleAccountsChanged(accounts) {
+                    console.log("handleAccountsChanged: " + JSON.stringify(accounts));
+                    t.account = accounts[0];
+                    localStorage.setItem('myBastardAccount', JSON.stringify(t.account));
+                    this.processing = "YOUR ACCOUNT IS " + this.account;
+                  }
+                  if (this.account == null) {
+                    window.ethereum.on('accountsChanged', handleAccountsChanged);
+                  }
+
                   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                   this.account = accounts[0];
+                  localStorage.setItem('myBastardAccount', JSON.stringify(this.account));
                 } catch (e) {
                   console.log("connect(): Error connecting");
                 }
@@ -616,6 +634,7 @@
                 const owners = [];
                 for (let i = 0; i < totalSupply; i += BATCHSIZE) {
                   const to = (i + BATCHSIZE > totalSupply) ? totalSupply : i + BATCHSIZE;
+                  this.processing = "RETRIEVING ONWERSHIP RECORDS " + i + " TO " + to + " OF " + totalSupply + " BASTARD GAN PUNK V2 NFTS FROM THE ETHEREUM BLOCKCHAIN";
                   const ownersResult = await erc721Helper.owners(BASTARDADDRESS, i, to);
                   console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
                   for (let j = 0; j < ownersResult[0].length; j++) {
@@ -624,18 +643,7 @@
                 }
                 this.owners = owners;
                 localStorage.setItem('bastardsOwners', JSON.stringify(owners));
-                // console.log(JSON.stringify(owners, null, 2));
-
-                const banana = new ethers.Contract(BASTARDADDRESS, BASTARDABI, provider);
-                const tokensOfOwner = await banana.tokensOfOwner(this.account);
-                const tokensOwned = {};
-                for (let i in tokensOfOwner) {
-                  let t = tokensOfOwner[i];
-                  tokensOwned[t.toString()] = true;
-                }
-                this.tokensOwned = tokensOwned;
-                // console.log("bastardsOwned: " + JSON.stringify(tokensOwned, null, 2));
-                localStorage.setItem('bastardsOwned', JSON.stringify(tokensOwned));
+                this.processing = null;
               } else {
                 alert("Please switch to the Ethereum mainnet and refresh");
               }
@@ -644,7 +652,7 @@
           disconnect() {
             this.connected = false;
           },
-          async addAsset(tokenId) {
+          async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', this.getData[tokenId].osimage);
             const t = this;
@@ -683,11 +691,14 @@
           },
         },
         mounted() {
-          if (localStorage.getItem('bastardsOwned')) {
-            this.tokensOwned = JSON.parse(localStorage.getItem('bastardsOwned'));
-          }
+          // if (localStorage.getItem('bastardsOwned')) {
+          //   this.tokensOwned = JSON.parse(localStorage.getItem('bastardsOwned'));
+          // }
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
+          }
+          if (localStorage.getItem('myBastardAccount')) {
+            this.account = JSON.parse(localStorage.getItem('myBastardAccount'));
           }
           this.loadNow = true;
         }
