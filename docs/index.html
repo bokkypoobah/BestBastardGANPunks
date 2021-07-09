@@ -245,11 +245,11 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab title="OWNERS">
+              <b-tab active title="OWNERS">
                 <b-card-text>
                   Unique Owners: {{ getCollatedOwners.length }} ({{ ((getCollatedOwners.length*100)/getTotalSupply).toFixed(2) + '%' }}); Total Supply: {{ getTotalSupply }}. Connect your wallet to retrieve up-to-date owner data<br />
                   <!-- :fields="ownedTokenFields" -->
-                  <b-table small :items="getCollatedOwners" responsive="sm">
+                  <b-table small :fields="ownersFields" :items="getCollatedOwners" responsive="sm">
                   </b-table>
                   <!-- SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
                   <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
@@ -385,6 +385,10 @@
             { key: 'i', label: '#' },
             { key: 'tokenId', label: 'TOKENID' },
           ],
+          ownersFields: [
+            { key: 'owner', label: 'OWNER' },
+            { key: 'tokens', label: 'TOKENS' },
+          ],
           bokkysBastards: [3053, 4689, 5846, 5982, 6403, 7222, 7333, 7567, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
         },
         computed: {
@@ -439,7 +443,7 @@
               }
               collater[owner].push(item.tokenId);
             }
-            console.log(JSON.stringify(collater));
+            // console.log(JSON.stringify(collater));
 
             let results = [];
             for (const [key, value] of Object.entries(collater)) {
