@@ -212,7 +212,7 @@
                           {{ data.item.tokenId }}
                         </b-link>
                         <div v-if="owners.length > 0">
-                          <b-link :href="'https://etherscan.io/address/' + owners[data.item.tokenId]" v-b-popover.hover="'View on EtherScan'" target="_blank">
+                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View on EtherScan'" target="_blank">
                             {{ ensOrShortName(owners[data.item.tokenId]) }}
                           </b-link>
                         </div>
@@ -725,7 +725,8 @@
                     // const normalized = normalize(address);
                   }
                 }
-                ensMap["0x000000000000000000000000000000000000dEaD"] = "BurnAddress";
+                ensMap["0x000000000000000000000000000000000000dEaD".toLowerCase()] = "BurnAddress_";
+                ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 this.ensMap = ensMap;
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
                 this.processing = "RECALCULATING DATA";
