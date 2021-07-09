@@ -256,7 +256,7 @@
                       <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                         {{ data.item.owner.substring(0, 10) }}
                       </b-link>
-                      {{ '(' + data.item.tokens.length + ')'}}
+                      {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}
                     </template>
                   </b-table>
                 </b-card-text>
