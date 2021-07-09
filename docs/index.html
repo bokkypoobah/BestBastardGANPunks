@@ -325,7 +325,7 @@
 
                 <b-card-text>
                   WER ARE NOT AFFILIATED WITH <a href="https://twitter.com/bganpunks" target="_blank">THESE BASTARDS</a> WITH A SANDWICH LOGO. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR DISCORD, LINEKD FROM THE URLS ABOVE.
-                  <b-card no-body img-src="images/Twitter_bganpunks.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
+                  <b-card no-body img-src="images/Twitter_bganpunks.png" style="max-width: 20rem;" class="mt-1 ml-5"></b-card>
                 </b-card-text>
 
                 <b-card-text>
@@ -380,7 +380,7 @@
                   </ul>
                 </b-card-text>
 
-                <b-card-text class="mt-5">
+                <b-card-text class="ml-5 mt-5">
                   ENJOY!
                   <b-card no-body img-src="images/DoomedDegen.png" style="max-width: 20rem;" class="mt-1 ml-2"></b-card>
                   (C) BOKKYPOOBAH / BOK CONSULTING PTY LTD 2021. THE MIT LICENCE.
@@ -689,16 +689,12 @@
               const network = await provider.getNetwork();
               if (network.chainId == 1) {
                 this.connected = true;
-
-                const NFTOWNERBATCHSIZE = 500;
-                const ENSOWNERBATCHSIZE = 500;
-
                 const erc721Helper = new ethers.Contract(ERC721HELPERADDRESS, ERC721HELPERABI, provider);
                 const info = await erc721Helper.tokenInfo(BASTARDADDRESS);
                 const totalSupply = parseInt(info[2].toString());
                 console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
-
                 const owners = [];
+                const NFTOWNERBATCHSIZE = 500;
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + i + " - " + (parseInt(to) - 1) + " OF " + totalSupply;
@@ -710,7 +706,6 @@
                 }
                 this.owners = owners;
                 localStorage.setItem('bastardsOwners', JSON.stringify(owners));
-
                 const ensMap = {};
                 for (let i in owners) {
                   if (!ensMap[owners[i]]) {
@@ -718,16 +713,14 @@
                   }
                 }
                 ensMap[this.account] = this.account;
-
                 let addresses = Object.keys(ensMap);
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
-
+                const ENSOWNERBATCHSIZE = 500;
                 for (let i = 0; i < addresses.length; i += ENSOWNERBATCHSIZE) {
                   this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + i + " OF " + addresses.length;
                   const batch = addresses.slice(i, parseInt(i) + ENSOWNERBATCHSIZE);
                   const allnames = await ensReverseRecordsContract.getNames(batch);
-                  // const validNames = allnames.filter((n) => normalize(n) === n );
-
+                  // NOT CHECKING ADDRESSES AS THE ADDRESSES CAME FROM A CONTRACT. AND account. const validNames = allnames.filter((n) => normalize(n) === n );
                   for (let j = 0; j < batch.length; j++) {
                     const address = batch[j];
                     const name = allnames[j];
@@ -738,7 +731,6 @@
                 ensMap["0x000000000000000000000000000000000000dEaD"] = "BurnAddress";
                 this.ensMap = ensMap;
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
-
                 this.processing = "RECALCULATING DATA";
                 this.recalculate('web3 data retrieval');
                 this.processing = null;
