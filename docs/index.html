@@ -124,10 +124,10 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" @change="recalculate('search')" v-model.trim="searchString" debounce="600" placeholder="🔍 TOKENID/LYRICS" v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('search')" v-model.trim="searchString" debounce="600" placeholder="🔍 TOKENID/LYRICS"></b-form-input>
                     </div>
                     <div class="pl-2">
-                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="searchAccount" debounce="600" placeholder="🔍 OWNER" v-b-popover.hover="'SEARCH BY OWNER ACCOUNT'"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="searchAccount" debounce="600" placeholder="🔍 OWNER"></b-form-input>
                     </div>
                     <!--
                     <div class="pl-2">
@@ -440,10 +440,6 @@
             { key: 'attributes', label: 'ATTRIBUTES' },
             { key: 'description', label: 'LYRICS', thStyle: 'width: 40%;' },
           ],
-          // ownedTokenFields: [
-          //   { key: 'i', label: '#' },
-          //   { key: 'tokenId', label: 'TOKENID' },
-          // ],
           ownersFields: [
             { key: 'index', label: '#' },
             { key: 'owner', label: 'OWNER' },
@@ -461,33 +457,6 @@
           pagedCollatedOwnersResults() {
             return this.collatedOwners.slice((this.ownersCurrentPage - 1) * this.ownersPageSize, this.ownersCurrentPage * this.ownersPageSize);
           },
-          // getSearchResultsRows() {
-          //   return this.tokensSearchResults.length;
-          // },
-          // getOwnedTokenIdData() {
-          //   console.log(new Date().toUTCString() + " - getOwnedTokenIdData() start");
-          //   var results = [];
-          //   let i = 0;
-          //   for (let tokenId in this.tokensOwned) {
-          //     results.push({ i: ++i, tokenId: tokenId, name: this.tokensOwned[tokenId] })
-          //   }
-          //   console.log(new Date().toUTCString() + " - getOwnedTokenIdData() end");
-          //   return results;
-          // },
-          // getTokensOwned() {
-          //   const results = [];
-          //   if (this.owners.length > 0 && this.account) {
-          //     const account = this.account.toLowerCase();
-          //     for (let i in this.getData) {
-          //       const item = this.getData[i];
-          //       const owner = this.owners[i];
-          //       if (owner && owner.toLowerCase() == account) {
-          //         results.push(item.tokenId);
-          //       }
-          //     }
-          //   }
-          //   return results;
-          // },
           getSelectedShowcase() {
             console.log(new Date().toUTCString() + " - getSelectedShowcase() start");
             const MAXBASTARDSTODISPLAY = 14;
@@ -499,11 +468,10 @@
                 array[j] = temp;
               }
             }
-            // TODO
-            let tokenIdsOwned = null; // this.getTokensOwned;
-            // if (!this.connected || tokenIdsOwned.length == 0) {
-            tokenIdsOwned = this.bokkysBastards.slice(0);
-            // }
+            let tokenIdsOwned = this.tokensOwned.slice(0);
+            if (tokenIdsOwned.length == 0) {
+              tokenIdsOwned = this.bokkysBastards.slice(0);
+            }
             shuffleArray(tokenIdsOwned);
             console.log(new Date().toUTCString() + " - getSelectedShowcase() end");
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
@@ -529,6 +497,22 @@
               results.push(item);
             }
             console.log(new Date().toUTCString() + " - calculateData() end");
+            return results;
+          },
+          calculateTokensOwned() {
+            const results = [];
+            if (this.owners.length > 0 && this.account) {
+              console.log(new Date().toUTCString() + " - calculateTokensOwned() - this.account: " + this.account);
+              const account = this.account.toLowerCase();
+              for (let i in this.data) {
+                const item = this.data[i];
+                const owner = this.owners[i];
+                if (owner && owner.toLowerCase() == account) {
+                  results.push(item.tokenId);
+                }
+              }
+            }
+            console.log(new Date().toUTCString() + " - calculateTokensOwned(): " + JSON.stringify(results));
             return results;
           },
           calculateCategories() {
@@ -579,8 +563,7 @@
               }
               if (this.searchString != null && this.searchString.length > 0) {
                 const s = this.searchString.toLowerCase();
-                if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s))) {
-                } else {
+                if (d.tokenId != this.searchString && (!d.description || !d.description.toLowerCase().includes(s))) {
                   include = false;
                 }
               }
@@ -627,6 +610,7 @@
           async recalculate(from) {
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
             this.data = this.calculateData();
+            this.tokensOwned = this.calculateTokensOwned();
             this.categories = this.calculateCategories();
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
