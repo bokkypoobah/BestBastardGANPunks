@@ -258,6 +258,13 @@
                       </b-link>
                       {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}
                     </template>
+                    <template #cell(tokens)="data">
+                      <span v-for="token in data.item.tokens">
+                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + token" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                          {{ token }}
+                        </b-link>                        
+                      </span>
+                    </template>
                   </b-table>
                 </b-card-text>
               </b-tab>
