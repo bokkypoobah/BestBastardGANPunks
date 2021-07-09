@@ -118,7 +118,7 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID OR WORD IN LYRICS'"></b-form-input>
+                      <b-form-input type="text" size="sm" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID, WORD IN LYRICS OR OWNER ADDRESS'"></b-form-input>
                     </div>
                     <!--
                     <div class="pl-2">
@@ -128,14 +128,13 @@
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY BASTARDS</b-button>
                     </div>
-                    <div class="pr-1 flex-grow-1">
-                    </div>
                     <!--
-                    <div class="pl-1">
-                      <b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'Close sidebar'" ><b-icon-list shift-v="-1" font-scale="1.7"></b-icon-list></b-button>
-                      <b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'Close sidebar'" ><b-icon-grid3x3-gap shift-v="-1" font-scale="1.7"></b-icon-grid3x3-gap></b-button>
+                    <div class="pl-2">
+                      <b-form-select size="sm" v-model="selectedOwner" :options="getOwnerList"></b-form-select>
                     </div>
                     -->
+                    <div class="pr-1 flex-grow-1">
+                    </div>
                     <div class="pl-2">
                       <font size="-2">{{ getSearchResultsRows }}/{{ getTotalSupply }}</font>
                     </div>
@@ -256,6 +255,9 @@
                       <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
                         {{ data.item.owner.substring(0, 10) }}
                       </b-link>
+                      <b-button size="sm" @click="searchString = data.item.owner; tabIndex = 0; " variant="outline-primary">
+                        Search {{ data.item.owner.substring(0, 10) }}
+                      </b-button>
                       {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}
                     </template>
                     <template #cell(tokens)="data">
@@ -353,10 +355,12 @@
       window.app = new Vue({
         el: '#app',
         data: {
+          loadNow: false,
           connected: false,
           account: null,
           tokensOwned: [],
           owners: [],
+          selectedOwner: null,
           tabIndex: 0,
           abortSearch: false,
           searchString: '',
@@ -409,21 +413,26 @@
         computed: {
           getData() {
             const results = [];
-            for (let i in BASTARDDATA) {
-              const item = BASTARDDATA[i];
-              item.mosaicurl = null;
-              for (let k in item.attributes) {
-                const attribute = item.attributes[k];
-                if (attribute.trait_type == 'HYPE TYPE') {
-                  if (attribute.value == 'HYPED AF (ANIMATED)') {
-                    if (item.tokenId < 9000) {
-                      item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+            if (this.loadNow) {
+              // console.log("Loading now");
+              for (let i in BASTARDDATA) {
+                const item = BASTARDDATA[i];
+                item.mosaicurl = null;
+                for (let k in item.attributes) {
+                  const attribute = item.attributes[k];
+                  if (attribute.trait_type == 'HYPE TYPE') {
+                    if (attribute.value == 'HYPED AF (ANIMATED)') {
+                      if (item.tokenId < 9000) {
+                        item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+                      }
                     }
                   }
                 }
+                item.owned = this.tokensOwned[i] || false;
+                results.push(item);
               }
-              item.owned = this.tokensOwned[i] || false;
-              results.push(item);
+            } else {
+              // console.log("Delaying loading");
             }
             return results;
           },
@@ -449,29 +458,36 @@
             return collater;
           },
           getCollatedOwners() {
-            const collater = {};
-            for (let i in this.getData) {
-              const item = this.getData[i];
-              const owner = this.owners[i];
-              if (!collater[owner]) {
-                collater[owner] = [];
-              }
-              collater[owner].push(item.tokenId);
-            }
-            // console.log(JSON.stringify(collater));
-
             let results = [];
-            for (const [key, value] of Object.entries(collater)) {
-              results.push({ owner: key, tokens: value });
-            }
-            results.sort(function(a, b) {
-              return b.tokens.length - a.tokens.length;
-            });
-            for (let i in results) {
-                results[i].index = i;
+            if (this.owners.length > 0) {
+              const collater = {};
+              for (let i in this.getData) {
+                const item = this.getData[i];
+                const owner = this.owners[i];
+                if (!collater[owner]) {
+                  collater[owner] = [];
+                }
+                collater[owner].push(item.tokenId);
+              }
+              for (const [key, value] of Object.entries(collater)) {
+                results.push({ owner: key, tokens: value, count: value.length });
+              }
+              results.sort(function(a, b) {
+                return b.count - a.count;
+              });
             }
             return results;
           },
+          // getOwnerList() {
+          //   const results = [];
+          //   results.push( { value: null, text: 'All' });
+          //   // console.log("this.getCollatedOwners: " + JSON.stringify(this.getCollatedOwners));
+          //   for (let i in this.getCollatedOwners) {
+          //     const owner = this.getCollatedOwners[i].owner;
+          //     results.push( { value: owner, text: owner.substring(0, 10) });
+          //   }
+          //   return results;
+          // },
           getTotalSupply() {
             return this.getData.length;
           },
@@ -502,6 +518,7 @@
               if (this.searchString != null && this.searchString.length > 0) {
                 const s = this.searchString.toLowerCase();
                 if (d.tokenId == this.searchString || (d.description && d.description.toLowerCase().includes(s))) {
+                } else if (this.owners.length > 0 && this.owners[d.tokenId] && this.owners[d.tokenId].toLowerCase().includes(s)){
                 } else {
                   include = false;
                 }
@@ -672,6 +689,7 @@
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
           }
+          this.loadNow = true;
         }
       })
     </script>
