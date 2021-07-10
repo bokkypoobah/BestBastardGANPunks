@@ -120,7 +120,7 @@
             </template>
 
             <div v-if="processing != null">
-              <b-jumbotron header="PROCESSING" bg-variant="info" text-variant="white" border-variant="dark">
+              <b-jumbotron header="PROCESSING" bg-variant="info" text-variant="white" border-variant="dark" class="m-5 p-5">
                 {{ processing }}
               </b-jumbotron>
             </div>
@@ -211,22 +211,23 @@
                   <div v-if="view == 'list'">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(tokenId)="data">
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea'" target="_blank">
                           {{ data.item.tokenId }}
                         </b-link>
-                        <div v-if="owners.length > 0">
-                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View on EtherScan'" target="_blank">
-                            {{ ensOrShortName(owners[data.item.tokenId]) }}
+                        <span v-if="owners.length > 0">
+                          {{ ensOrShortName(owners[data.item.tokenId]) }}
+                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
+                            <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
                           </b-link>
-                        </div>
-                        <b-button size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " variant="outline-primary">
-                          Search {{ ensOrShortName(owners[data.item.tokenId]) }}
-                        </b-button>
-                        <div v-if="data.item.mosaicurl != null">
+                        </span>
+                        <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'Filter by this owner'" variant="link">
+                          <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
+                        </b-link>
+                        <span v-if="data.item.mosaicurl != null">
                           <b-link :href="data.item.mosaicurl" v-b-popover.hover="'View HYPED AF (ANIMATED) mosaic'" target="_blank">
-                            mosaic
+                            <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
                           </b-link>
-                        </div>
+                        </span>
 
                         <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="Enter new tags" class="ml-0 mt-1"></b-form-tags>
 
@@ -300,13 +301,14 @@
                       {{ data.item.index }}
                     </template>
                     <template #cell(owner)="data">
-                      <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                        {{ ensOrShortName(data.item.owner) }}
+                      {{ ensOrShortName(data.item.owner) }}<br />
+                      {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}<br />
+                      <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View in OpenSea'" target="_blank">
+                         <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
                       </b-link>
-                      <b-button size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary">
-                        Search {{ data.item.owner.substring(0, 10) }}
-                      </b-button>
-                      {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}
+                      <b-link size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary" v-b-popover.hover="'Filter by this owner'" >
+                        <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
+                      </b-link>
                     </template>
                     <template #cell(tokens)="data">
                       <span v-for="token in data.item.tokens">
