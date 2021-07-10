@@ -681,9 +681,11 @@
           },
           async recalculate(from) {
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
-            this.data = this.calculateData();
-            this.tokensOwned = this.calculateTokensOwned();
-            this.categories = this.calculateCategories();
+            if (from != 'selectedTags') {
+              this.data = this.calculateData();
+              this.tokensOwned = this.calculateTokensOwned();
+              this.categories = this.calculateCategories();
+            }
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") completed");
