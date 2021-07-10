@@ -211,14 +211,18 @@
                   <div v-if="view == 'list'">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(tokenId)="data">
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea'" target="_blank">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View in OpenSea'" target="_blank">
                           {{ data.item.tokenId }}
                         </b-link>
                         <span v-if="owners.length > 0">
-                          {{ ensOrShortName(owners[data.item.tokenId]) }}
+                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
+                            {{ ensOrShortName(owners[data.item.tokenId]) }}
+                          </b-link>
+                          <!--
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
                             <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
                           </b-link>
+                          -->
                         </span>
                         <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'Filter by this owner'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
