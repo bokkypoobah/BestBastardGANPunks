@@ -279,6 +279,14 @@
               </b-tab>
               -->
 
+              <b-tab title="DATA">
+                <b-card-text>
+                  <b-link @click="loadOSData()">
+                    LOAD DATA
+                  </b-link>
+                </b-card-text>
+              </b-tab>
+
               <b-tab lazy title="OWNERS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
@@ -382,7 +390,9 @@
                 <h6 class="mt-4 mb-1">ABOUT THIS APP</h6>
                 <b-card-text>
                   <ul>
-                    <li>SOURCE CODE AVAILABLE AT <a href="https://github.com/bokkypoobah/BestBastardGANPunks" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks</a>. CLONE IT, FORK IT. CONTRIBUTE ANY USEFUL CHANGES BACK TO THIS MAIN REPOSITORY</li>
+                    <li>SOURCE CODE AVAILABLE AT <a href="https://github.com/bokkypoobah/BestBastardGANPunks" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks</a>. CLONE IT, FORK IT. CONTRIBUTE ANY USEFUL CHANGES BACK TO THIS MAIN REPOSITORY.</li>
+                    <li>THE MAIN BIT OF CODE IS IN <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/index.html#L416" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/index.html</a>.</li>
+                    <li>TO SEE HOW IT WORKS, SWITCH TO YOUR WEB BEOWSER DEVELOPER CONSOLE AND TRY STRPPING THROUGH THE SOURCE CODE.</li>
                     <li>WRITTEN USING THE <a href="https://bootstrap-vue.org/" target="_blank">https://bootstrap-vue.org/</a> FRAMEWWORK</li>
                     <li>GENERATES "STATIC" DATA BY COLLATING INFOTMSTION FROM THE TOKEN CONTACT'S <em>tokenURI(...)</em> INFORMATION WITH THE INFOTRMATION FROM OPENSEA.IO.</li>
                     <li>USES <a href="https://github.com/ethers-io/ethers.js/" target="_blank">ETHERS.JS</a> TO CONNECT TO ETHERUEM VIA WEB3 TO RETRIEVE NFT TOKENS OWNED</li>
@@ -528,6 +538,9 @@
           }
         },
         methods: {
+          loadOSData() {
+            console.log("loadOSData: ");
+          },
           saveTags() {
             for (const [key, value] of Object.entries(this.tags)) {
               if (value.length == 0) {
