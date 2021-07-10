@@ -207,7 +207,7 @@
                             -->
                             <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <!-- </b-link> -->
-                          <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'Click for details'">
+                          <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy width="150%" :src="record.osimage" />
                           </b-link>
                         </b-card>
@@ -216,13 +216,25 @@
                   </div>
                   <div v-if="view == 'list'">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
+                      <template #cell(image)="data">
+                        <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
+                          <b-img-lazy width="300%" :src="data.item.osimage" />
+                          <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
+                        </b-link>
+                        <!--
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                        </b-link>
+                        -->
+                      </template>
+
                       <template #cell(tokenId)="data">
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View in OpenSea'" target="_blank">
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
                           {{ data.item.tokenId }}
                         </b-link>
+                        <br />
                         <span v-if="owners.length > 0">
-                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
-                            {{ ensOrShortName(owners[data.item.tokenId]) }}
+                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                            <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
                           </b-link>
                           <!--
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
@@ -230,27 +242,17 @@
                           </b-link>
                           -->
                         </span>
-                        <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'Filter by this owner'" variant="link">
+                        <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
                         </b-link>
                         <span v-if="data.item.mosaicurl != null">
-                          <b-link :href="data.item.mosaicurl" v-b-popover.hover="'View HYPED AF (ANIMATED) mosaic'" target="_blank">
+                          <b-link :href="data.item.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
 
-                        <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="Enter new tags" class="ml-0 mt-1"></b-form-tags>
+                        <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
 
-                      </template>
-                      <template #cell(image)="data">
-                        <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
-                          <b-img-lazy width="200%" :src="data.item.osimage" />
-                          <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
-                        </b-link>
-                        <!--
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                        </b-link>
-                        -->
                       </template>
                       <template #cell(description)="data">
                         <span v-for="line in data.item.description.split('\n')">
@@ -313,16 +315,16 @@
                     <template #cell(owner)="data">
                       {{ ensOrShortName(data.item.owner) }}<br />
                       {{ data.item.tokens.length + ' (' + (data.item.tokens.length*100/getTotalSupply).toFixed(2) + '%)'}}<br />
-                      <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'View in OpenSea'" target="_blank">
+                      <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                          <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
                       </b-link>
-                      <b-link size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary" v-b-popover.hover="'Filter by this owner'" >
+                      <b-link size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary" v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" >
                         <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
                       </b-link>
                     </template>
                     <template #cell(tokens)="data">
                       <span v-for="token in data.item.tokens">
-                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + token" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
+                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + token" v-b-popover.hover="'VIEW IN OPENSEA'" target="_blank">
                           {{ token }}
                         </b-link>
                       </span>
@@ -463,10 +465,10 @@
           ],
           categoryFilter: {},
           fields: [
-            { key: 'tokenId', label: 'TOKENID/OWNER/MOSAIC' },
-            { key: 'image', label: 'BASTARD' },
-            { key: 'attributes', label: 'ATTRIBUTES' },
-            { key: 'description', label: 'LYRICS', thStyle: 'width: 40%;' },
+            { key: 'image', label: 'BASTARD', thStyle: 'width: 25%;' },
+            { key: 'tokenId', label: 'INFO', thStyle: 'width: 15%;' },
+            { key: 'attributes', label: 'ATTRIBUTES', thStyle: 'width: 25%;' },
+            { key: 'description', label: 'LYRICS', thStyle: 'width: 35%;' },
           ],
           ownersFields: [
             { key: 'index', label: '#' },
