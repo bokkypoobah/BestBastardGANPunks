@@ -129,7 +129,7 @@
 
               <b-tab title="SEXY BASTARDS">
                 <b-card-text>
-                  <div class="d-flex m-0 p-0" style="height: 37px;">
+                  <div class="d-flex m-0 p-0" style="height: 70px;">
                     <div>
                       <b-form-input type="text" size="sm" @change="recalculate('search')" v-model.trim="searchString" debounce="600" placeholder="🔍 TOKENID/LYRICS"></b-form-input>
                     </div>
@@ -143,6 +143,9 @@
                     -->
                     <div class="pl-2">
                       <b-button size="sm" @click="searchAccount = account; recalculate('mytokens')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
+                    </div>
+                    <div class="pl-2">
+                      <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="3" variant="outline-primary"></b-form-select>
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
@@ -224,6 +227,9 @@
                             mosaic
                           </b-link>
                         </div>
+
+                        <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="Enter new tags" class="ml-0 mt-1"></b-form-tags>
+
                       </template>
                       <template #cell(image)="data">
                         <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
@@ -402,6 +408,8 @@
           tokensOwned: [],
           owners: [],
           ensMap: {},
+          tags: {},
+          selectedTags: [],
           collatedOwners: [],
           selectedOwner: null,
           tabIndex: 0,
@@ -485,8 +493,38 @@
             shuffleArray(tokenIdsOwned);
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
           },
+          getTags() {
+            const collator = {};
+            for (const [key, value] of Object.entries(this.tags)) {
+              for (let i = 0; i < value.length; i++) {
+                const tag = value[i];
+                if (!collator[tag]) {
+                  collator[tag] = 1;
+                } else {
+                  collator[tag] = parseInt(collator[tag]) + 1;
+                }
+              }
+            }
+            let results = [];
+            results.push( { value: null, text: '(All)' });
+            for (const [key, value] of Object.entries(collator)) {
+              results.push( { value: key, text: key + ' (' + value + ')' });
+            }
+            results.sort(function(a, b) {
+              return b.count - a.count;
+            });
+            return results;
+          }
         },
         methods: {
+          saveTags() {
+            for (const [key, value] of Object.entries(this.tags)) {
+              if (value.length == 0) {
+                Vue.delete(this.tags, key);
+              }
+            }
+            localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
+          },
           ensOrShortName(address) {
             let name = this.ensMap[address.toLowerCase()];
             if (name != null) {
@@ -530,30 +568,31 @@
             return results;
           },
           calculateCategories() {
-            const collater = {};
+            const collator = {};
             for (let i in this.data) {
               const item = this.data[i];
               for (let k in item.attributes) {
                 const attribute = item.attributes[k];
                 const traitType = attribute.trait_type;
                 const value = attribute.value;
-                if (!collater[traitType]) {
-                  collater[traitType] = {};
+                if (!collator[traitType]) {
+                  collator[traitType] = {};
                 }
-                if (!collater[traitType][value]) {
-                  collater[traitType][value] = 1;
+                if (!collator[traitType][value]) {
+                  collator[traitType][value] = 1;
                 } else {
-                  collater[traitType][value] = collater[traitType][value] + 1;
+                  collator[traitType][value] = collator[traitType][value] + 1;
                 }
               }
             }
             console.log(new Date().toUTCString() + " - calculateCategories() completed");
-            return collater;
+            return collator;
           },
           calculateSearchResults() {
             let results = [];
             let data = this.data.slice(0);
             const accountLowerCase = this.account == null ? null : this.account.toLowerCase();
+            const selectedTags = this.selectedTags == null || (this.selectedTags.length == 1 && this.selectedTags[0] == null) ? null : this.selectedTags;
             for (let i in data) {
               const d = data[i];
               let include = true;
@@ -573,13 +612,13 @@
                   break;
                 }
               }
-              if (this.searchString != null && this.searchString.length > 0) {
+              if (include && this.searchString != null && this.searchString.length > 0) {
                 const s = this.searchString.toLowerCase();
                 if (d.tokenId != this.searchString && (!d.description || !d.description.toLowerCase().includes(s))) {
                   include = false;
                 }
               }
-              if (this.searchAccount != null && this.searchAccount.length > 0) {
+              if (include && this.searchAccount != null && this.searchAccount.length > 0) {
                 const s = this.searchAccount.toLowerCase();
                 const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
                 const ensName = owner == null ? null : this.ensMap[owner];
@@ -587,6 +626,25 @@
                 } else if (ensName != null && ensName.includes(s)) {
                 } else {
                   include = false;
+                }
+              }
+              if (include) {
+                if (selectedTags && selectedTags.length > 0) {
+                  const tags = this.tags[d.tokenId];
+                  let found = false;
+                  if (tags) {
+                    for (const selectedTag of selectedTags) {
+                      for (const tag of tags) {
+                        if (selectedTag == tag) {
+                          found = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                  if (!found) {
+                    include = false;
+                  }
                 }
               }
               if (include) {
@@ -599,16 +657,16 @@
           calculateCollatedOwners() {
             let results = [];
             if (this.owners.length > 0) {
-              const collater = {};
+              const collator = {};
               for (let i in this.data) {
                 const item = this.data[i];
                 const owner = this.owners[i];
-                if (!collater[owner]) {
-                  collater[owner] = [];
+                if (!collator[owner]) {
+                  collator[owner] = [];
                 }
-                collater[owner].push(item.tokenId);
+                collator[owner].push(item.tokenId);
               }
-              for (const [key, value] of Object.entries(collater)) {
+              for (const [key, value] of Object.entries(collator)) {
                 results.push({ owner: key, tokens: value, count: value.length });
               }
               results.sort(function(a, b) {
@@ -788,6 +846,10 @@
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
           }
+          if (localStorage.getItem('bastardsTags')) {
+            this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
+          }
+
           this.recalculate("mounted");
         }
       })
