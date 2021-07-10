@@ -100,7 +100,7 @@
               <div>
                 <b-sidebar right id="sidebar-border" sidebar-class="border-right border-danger">
                   <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
-                    <b-card body-class="p-1" header-class="m-1 p-1" footer-class="p-1" class="m-1 p-1">
+                    <b-card body-class="p-0" header-class="m-0 p-0 pl-2" footer-class="p-1" class="m-3 p-0">
                       <template #header>
                         <span variant="secondary" class="small truncate">
                           {{ categoryKey }}
@@ -450,7 +450,7 @@
             { value: 'list', text: 'LIST' },
           ],
           categoryFields: [
-            { key: 'select', label: 'SELECT', thStyle: 'width: 20%;' },
+            { key: 'select', label: '', thStyle: 'width: 10%;' },
             { key: 'categoryOption', label: 'TYPE', sortable: true },
             { key: 'categoryTotal', label: 'COUNT', sortable: true, thStyle: 'width: 30%;', thClass: 'text-right', tdClass: 'text-right' },
           ],
