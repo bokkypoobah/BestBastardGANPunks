@@ -119,6 +119,12 @@
               </div>
             </template>
 
+            <div v-if="processing == null && searchAccount != null && searchAccount.length > 0 && collatedOwners.length == 0">
+              <b-jumbotron header="WEB3 CONNECTION REQUIRED" bg-variant="info" text-variant="white" border-variant="dark" class="m-5 p-5">
+                TO RETRIEVE ERC-721 TOKEN OWNERSHIP AND ENS INFOMRATION. YOU CAN CONTINUE USING THIS TOOL WITHOUT A CONNECTION BUT OWNER INFORMATION AND SEARCH WILL NOT WORK. CLICK ON THE BUTTON ON THE TOP RIGHT TO CONNECT. CLEAR THE OWNER SEARCH FIELD TO REMOVE THIS MESSAGE.
+              </b-jumbotron>
+            </div>
+
             <div v-if="processing != null">
               <b-jumbotron header="PROCESSING" bg-variant="info" text-variant="white" border-variant="dark" class="m-5 p-5">
                 {{ processing }}
@@ -417,12 +423,9 @@
           tags: {},
           selectedTags: [],
           collatedOwners: [],
-          selectedOwner: null,
           tabIndex: 0,
-          abortSearch: false,
           searchString: '',
           searchAccount: '',
-          advancedSearch: false,
 
           data: [],
           categories: {},
@@ -844,6 +847,18 @@
             }
           },
         },
+        created() {
+          const separator = window.location.href.indexOf("/#/");
+          if (separator > 0) {
+            const parameter = window.location.href.substring(separator + 3);
+            var reg = new RegExp('^[0-9]$');
+            if (new RegExp('^[0-9]+$').test(parameter)) {
+              this.searchString = parameter;
+            } else {
+              this.searchAccount = parameter;
+            }
+          }
+        },
         mounted() {
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
@@ -857,7 +872,6 @@
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
           }
-
           this.recalculate("mounted");
         }
       })
