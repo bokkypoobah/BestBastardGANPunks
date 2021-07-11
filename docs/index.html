@@ -575,101 +575,63 @@
 
 
         methods: {
-          formatETH(e) {
-            return ethers.utils.commify(e.toString());
-          },
-          formatDate(d) {
-            if (d == 0) {
-              return "";
-            } else {
-              if (new RegExp('^[0-9]+$').test(d)) {
-                return new Date(parseInt(d) * 1000).toUTCString();
-              } else {
-                return new Date(d).toUTCString();
-              }
-            }
-          },
-          async loadOSData() {
-            console.log("loadOSData: loadNFTs()" + BASTARDADDRESS);
-
+          async processOSData() {
+            console.log(new Date().toUTCString() + " processOSData() start");
             var db0 = new Dexie("BastardDB");
             db0.version(1).stores({
               apiData: '&tokenId,asset,timestamp'
             });
-
-            const timestamp = parseInt(new Date() / 1000);
-            const BATCHSIZE = 50; // Default 20, max 50
-            const DELAY = 1000; // Millis
-            let page = 0;
-            const records = [];
-            const delay = ms => new Promise(res => setTimeout(res, ms));
-            await delay(DELAY);
-            console.log("loadOSData: loadNFTs() 1 - this.getTotalSupply: " + this.getTotalSupply);
-            const to = this.getTotalSupply;
-            for (let i = 0; i < to; i += BATCHSIZE) {
-              let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=" + BASTARDADDRESS + "\&order_direction=desc\&limit=50\&offset=0";
-              for (let j = i; j < i + BATCHSIZE && j < to; j++) {
-                url = url + "&token_ids=" + j;
+            const osAssets = await db0.apiData.toArray();
+            const osData = {};
+            // console.log(JSON.stringify(osAssets[4553], null, 2));
+            for (const asset of osAssets) {
+              if (asset.tokenId == 0) {
+                console.log(JSON.stringify(asset, null, 2));
               }
-              const elapsed = parseInt(new Date() / 1000) - timestamp;
-              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + i + " (BATCH SIZE " + BATCHSIZE + ") OF " + this.getTotalSupply + ". ELAPSED " + elapsed + " SECONDS. REFRESH THIS WEBPAGE AFTER THIS PROCESS IS COMPLETED FOR THE DOWNLOADED RESULTS TO BE USED";
-              const data = await fetch(url).then(response => response.json());
-              if (data.assets && data.assets.length > 0) {
-                for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
-                  const asset = data.assets[assetIndex];
-                  records.push({ tokenId: asset.token_id, asset: asset, timestamp: timestamp });
+              let lastSale = null;
+              if (asset.asset.last_sale) {
+                lastSale = {
+                  amount: asset.asset.last_sale.total_price,
+                  symbol: asset.asset.last_sale.payment_token.symbol,
+                  decimals: asset.asset.last_sale.payment_token.decimals,
+                  ethPrice: asset.asset.last_sale.payment_token.eth_price,
+                  usdPrice: asset.asset.last_sale.payment_token.usd_price,
+                  tx: asset.asset.last_sale.transaction.transaction_hash,
+                  assetBundle: asset.asset.last_sale.asset_bundle,
+                  eventType: asset.asset.last_sale.event_type,
+                  eventTimestamp: asset.asset.last_sale.event_timestamp,
                 }
               }
-              await delay(DELAY);
-
-              console.log(JSON.stringify(records));
-              await db0.apiData.bulkPut(records).then (function(){
-                return db0.apiData.get(3);
-              }).then(function (item) {
-                // console.log("timestamp: " + item);
-              }).catch(function(error) {
-                console.log("error: " + error);
-              });
-
-              // data.forEach((datum) => {
-              //   records.push({ rescueIndex: datum.details.rescueIndex, catId: datum.details.catId, data: datum, timestamp: timestamp });
-              //   // console.log(JSON.stringify(records[records.length - 1], null, 2));
-              //   // Vue.set(t.traitData, datum.details.catId, datum);
-              //   // logDebug("NFTPostcard", "loadCatData() rescueIndex: " + datum.details.rescueIndex);
-              //   // logDebug("NFTPostcard", "loadCatData() datum: " + JSON.stringify(datum, null, 2));
-              //   // logDebug("NFTPostcard", "loadCatData() datum: " + JSON.stringify(t.traitData[datum.details.rescueIndex], null, 2));
-              // });
-              // await db0.apiData.bulkPut(records).then (function(){
-              //   return db0.apiData.get(3);
-              // }).then(function (item) {
-              //   logDebug("moonCatDataModule", "loadMoonCatData() - timestamp: " + item.timestamp);
-              // }).catch(function(error) {
-              //    logError("moonCatDataModule", "loadMoonCatData() - error: " + error);
-              // });
-              //
-              // const data1 = await db0.apiData.toArray();
-              // logDebug("moonCatDataModule", "loadMoonCatData() Dexie - data1: " + JSON.stringify(data1));
-
-
-            }
-            this.processing = null;
-          },
-
-          saveTags() {
-            for (const [key, value] of Object.entries(this.tags)) {
-              if (value.length == 0) {
-                Vue.delete(this.tags, key);
+              let sellOrders = null;
+              if (asset.asset.sell_orders) {
+                sellOrders = [];
+                for (const sellOrder of asset.asset.sell_orders) {
+                  sellOrders.push({
+                    basePrice: sellOrder.base_price,
+                    currentPrice: new BigNumber(sellOrder.current_price).shift(-18),
+                    symbol: sellOrder.payment_token_contract.symbol,
+                    decimals: sellOrder.payment_token_contract.decimals,
+                    ethPrice: sellOrder.payment_token_contract.eth_price,
+                    usdPrice: sellOrder.payment_token_contract.usd_price,
+                    cancelled: sellOrder.cancelled,
+                    feeMethod: sellOrder.fee_method,
+                    side: sellOrder.side,
+                    saleKind: sellOrder.sale_kind,
+                    createdDate: sellOrder.created_date,
+                    closingDate: sellOrder.closing_date,
+                    closingExtendable: sellOrder.closing_extendable,
+                    expirationTime: sellOrder.expiration_time,
+                    listingTime: sellOrder.listing_time,
+                  });
+                }
               }
+              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
             }
-            localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
+            // console.log(JSON.stringify(osData, null, 8));
+            this.osData = osData;
+            console.log(new Date().toUTCString() + " processOSData() completed");
           },
-          ensOrShortName(address) {
-            let name = this.ensMap[address.toLowerCase()];
-            if (name != null) {
-              name = name.substring(0, 16);
-            }
-            return name;
-          },
+
           calculateData() {
             const results = [];
             for (let i in BASTARDDATA) {
@@ -826,7 +788,9 @@
             }
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
-            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") completed");
+            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
+            await this.processOSData();
+            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
           filterChange(category, option) {
             if (!this.categoryFilter[category]) {
@@ -853,6 +817,8 @@
             });
             return results;
           },
+
+          // --- Web3 Connection ---
           async connect() {
             if (!window.ethereum) {
               alert("Please use the https://metamask.io addon with Firefox, Chromium, Opera or Chrome, or any other other web3 browser, if you would like to view your Ethereum wallet's BGANPUNKSV2.");
@@ -928,7 +894,7 @@
                 this.ensMap = ensMap;
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
                 this.processing = "RECALCULATING DATA";
-                this.recalculate('web3 data retrieval');
+                this.recalculate('data loaded via web3');
                 this.processing = null;
               } else {
                 alert("Please switch to the Ethereum mainnet and refresh");
@@ -938,6 +904,48 @@
           disconnect() {
             this.connected = false;
           },
+
+          // --- OS Data Retrieval ---
+          async loadOSData() {
+            console.log(new Date().toUTCString() + " loadOSData() start");
+            var db0 = new Dexie("BastardDB");
+            db0.version(1).stores({
+              apiData: '&tokenId,asset,timestamp'
+            });
+            const timestamp = parseInt(new Date() / 1000);
+            const BATCHSIZE = 50; // Max 50
+            const DELAYINMILLIS = 1000;
+            let page = 0;
+            const records = [];
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+            await delay(DELAYINMILLIS);
+            const to = this.getTotalSupply;
+            for (let i = 0; i < to; i += BATCHSIZE) {
+              let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=" + BASTARDADDRESS + "\&order_direction=desc\&limit=50\&offset=0";
+              for (let j = i; j < i + BATCHSIZE && j < to; j++) {
+                url = url + "&token_ids=" + j;
+              }
+              const elapsed = parseInt(new Date() / 1000) - timestamp;
+              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + i + " (BATCH SIZE " + BATCHSIZE + ") OF " + this.getTotalSupply + ". ELAPSED " + elapsed + " SECONDS. REFRESH THIS WEBPAGE AFTER THIS PROCESS IS COMPLETED FOR THE DOWNLOADED RESULTS TO BE USED";
+              const data = await fetch(url).then(response => response.json());
+              if (data.assets && data.assets.length > 0) {
+                for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
+                  const asset = data.assets[assetIndex];
+                  records.push({ tokenId: asset.token_id, asset: asset, timestamp: timestamp });
+                }
+              }
+              await delay(DELAYINMILLIS);
+              await db0.apiData.bulkPut(records).then (function(){
+              }).catch(function(error) {
+                console.log("error: " + error);
+              });
+            }
+            this.recalculate('loaded os data');
+            this.processing = null;
+            console.log(new Date().toUTCString() + " loadOSData() completed");
+          },
+
+          // --- GIF Frame Extraction ---
           async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', this.data[tokenId].osimage);
@@ -975,6 +983,37 @@
               this.selectedItemGIF.move_to(this.selectedItemFrame);
             }
           },
+
+          // --- Utilities ---
+          formatETH(e) {
+            return ethers.utils.commify(e.toString());
+          },
+          formatDate(d) {
+            if (d == 0) {
+              return "";
+            } else {
+              if (new RegExp('^[0-9]+$').test(d)) {
+                return new Date(parseInt(d) * 1000).toUTCString();
+              } else {
+                return new Date(d).toUTCString();
+              }
+            }
+          },
+          saveTags() {
+            for (const [key, value] of Object.entries(this.tags)) {
+              if (value.length == 0) {
+                Vue.delete(this.tags, key);
+              }
+            }
+            localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
+          },
+          ensOrShortName(address) {
+            let name = this.ensMap[address.toLowerCase()];
+            if (name != null) {
+              name = name.substring(0, 16);
+            }
+            return name;
+          },
         },
 
 
@@ -1004,64 +1043,6 @@
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
           }
-          const t = this;
-          async function loadData() {
-            console.log("loadData");
-            var db0 = new Dexie("BastardDB");
-            db0.version(1).stores({
-              apiData: '&tokenId,asset,timestamp'
-            });
-            const osAssets = await db0.apiData.toArray();
-            const osData = {};
-            // console.log(JSON.stringify(osAssets[4553], null, 2));
-            for (const asset of osAssets) {
-              if (asset.tokenId == 0) {
-                console.log(JSON.stringify(asset, null, 2));
-              }
-              let lastSale = null;
-              if (asset.asset.last_sale) {
-                lastSale = {
-                  amount: asset.asset.last_sale.total_price,
-                  symbol: asset.asset.last_sale.payment_token.symbol,
-                  decimals: asset.asset.last_sale.payment_token.decimals,
-                  ethPrice: asset.asset.last_sale.payment_token.eth_price,
-                  usdPrice: asset.asset.last_sale.payment_token.usd_price,
-                  tx: asset.asset.last_sale.transaction.transaction_hash,
-                  assetBundle: asset.asset.last_sale.asset_bundle,
-                  eventType: asset.asset.last_sale.event_type,
-                  eventTimestamp: asset.asset.last_sale.event_timestamp,
-                }
-              }
-              let sellOrders = null;
-              if (asset.asset.sell_orders) {
-                sellOrders = [];
-                for (const sellOrder of asset.asset.sell_orders) {
-                  sellOrders.push({
-                    basePrice: sellOrder.base_price,
-                    currentPrice: new BigNumber(sellOrder.current_price).shift(-18),
-                    symbol: sellOrder.payment_token_contract.symbol,
-                    decimals: sellOrder.payment_token_contract.decimals,
-                    ethPrice: sellOrder.payment_token_contract.eth_price,
-                    usdPrice: sellOrder.payment_token_contract.usd_price,
-                    cancelled: sellOrder.cancelled,
-                    feeMethod: sellOrder.fee_method,
-                    side: sellOrder.side,
-                    saleKind: sellOrder.sale_kind,
-                    createdDate: sellOrder.created_date,
-                    closingDate: sellOrder.closing_date,
-                    closingExtendable: sellOrder.closing_extendable,
-                    expirationTime: sellOrder.expiration_time,
-                    listingTime: sellOrder.listing_time,
-                  });
-                }
-              }
-              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
-            }
-
-            // console.log(JSON.stringify(osData, null, 8));
-            t.osData = osData;
-          }
-          loadData();
           this.recalculate("mounted");
         }
       })
