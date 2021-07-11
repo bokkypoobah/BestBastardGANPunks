@@ -280,11 +280,11 @@
                           <h6 class="mt-5 mb-2">Last Sale</h6>
                           <p>
                             <font size="-2">
-                              {{ formatETH(osData[data.item.tokenId].lastSale.ethPrice) }} ETH {{ parseFloat(osData[data.item.tokenId].lastSale.usdPrice).toFixed(2) }} USD
-                              @
                               <b-link :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW IN BLOCK EXLPORER'" target="_blank">
-                                {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
+                                {{ formatETH(osData[data.item.tokenId].lastSale.ethPrice) }}
                               </b-link>
+                              ETH
+                              {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
                             </font>
                           </p>
                         </div>
@@ -609,7 +609,7 @@
             const osData = {};
             // console.log(JSON.stringify(osAssets[4553], null, 2));
             for (const asset of osAssets) {
-              if (asset.tokenId == 0) {
+              if (asset.tokenId == 17) {
                 console.log(JSON.stringify(asset, null, 2));
               }
               let lastSale = null;
@@ -1017,9 +1017,9 @@
               return "";
             } else {
               if (new RegExp('^[0-9]+$').test(d)) {
-                return new Date(parseInt(d) * 1000).toUTCString();
+                return new Date(parseInt(d) * 1000).toDateString();
               } else {
-                return new Date(d).toUTCString();
+                return new Date(d).toDateString();
               }
             }
           },
