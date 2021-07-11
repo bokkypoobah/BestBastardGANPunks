@@ -253,6 +253,18 @@
 
                         <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
 
+                        <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrders">
+                          <pre>
+                            Sell orders: {{ JSON.stringify(osData[data.item.tokenId].sellOrders, null, 2) }}
+                          </pre>
+                        </div>
+
+                        <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].lastSale">
+                          <pre>
+                            Last sale: {{ JSON.stringify(osData[data.item.tokenId].lastSale, null, 2) }}
+                          </pre>
+                        </div>
+
                       </template>
                       <template #cell(description)="data">
                         <span v-for="line in data.item.description.split('\n')">
@@ -433,6 +445,7 @@
           owners: [],
           ensMap: {},
           osAssets: {},
+          osData: {},
           tags: {},
           selectedTags: [],
           collatedOwners: [],
@@ -607,7 +620,7 @@
 
             }
             this.processing = null;
-            this.osAssets = osAssets;
+            // this.osAssets = osAssets;
             // localStorage.setItem('bastardsOSAssets', JSON.stringify(osAssets));
           },
 
@@ -961,10 +974,77 @@
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
           }
-          if (localStorage.getItem('bastardsOSAssets')) {
-            this.osAssets = JSON.parse(localStorage.getItem('bastardsOSAssets'));
-            console.log(JSON.stringify(this.osAssets[0], null, 2));
+          // if (localStorage.getItem('bastardsOSAssets')) {
+          //   this.osAssets = JSON.parse(localStorage.getItem('bastardsOSAssets'));
+          //   console.log(JSON.stringify(this.osAssets[0], null, 2));
+          // }
+          const t = this;
+          async function loadData() {
+            console.log("loadData");
+            var db0 = new Dexie("BastardDB");
+            db0.version(1).stores({
+              apiData: '&tokenId,asset,timestamp'
+            });
+            const osAssets = await db0.apiData.toArray();
+            const osData = {};
+            // console.log(JSON.stringify(osAssets[4553], null, 2));
+            for (const asset of osAssets) {
+              let lastSale = null;
+              if (asset.asset.last_sale) {
+                if (asset.tokenId == 31) {
+                  console.log(JSON.stringify(asset, null, 2));
+                }
+                lastSale = {
+                  amount: asset.asset.last_sale.total_price,
+                  symbol: asset.asset.last_sale.payment_token.symbol,
+                  decimals: asset.asset.last_sale.payment_token.decimals,
+                  ethPrice: asset.asset.last_sale.payment_token.eth_price,
+                  usdPrice: asset.asset.last_sale.payment_token.usd_price,
+                  tx: asset.asset.last_sale.transaction.transaction_hash,
+                  assetBundle: asset.asset.last_sale.asset_bundle,
+                  eventType: asset.asset.last_sale.event_type,
+                  eventTimestamp: asset.asset.last_sale.event_timestamp,
+                }
+              }
+              let sellOrders = null;
+              if (asset.asset.sell_orders) {
+                sellOrders = [];
+                for (const sellOrder of asset.asset.sell_orders) {
+                  sellOrders.push({
+                    basePrice: sellOrder.base_price,
+                    currentPrice: sellOrder.current_price,
+                    symbol: sellOrder.payment_token_contract.symbol,
+                    decimals: sellOrder.payment_token_contract.decimals,
+                    ethPrice: sellOrder.payment_token_contract.eth_price,
+                    usdPrice: sellOrder.payment_token_contract.usd_price,
+                    cancelled: sellOrder.cancelled,
+                    feeMethod: sellOrder.fee_method,
+                    side: sellOrder.side,
+                    saleKind: sellOrder.sale_kind,
+                    createdDate: sellOrder.created_date,
+                    closingDate: sellOrder.closing_date,
+                    closingExtendable: sellOrder.closing_extendable,
+                    expirationTime: sellOrder.expiration_time,
+                    listingTime: sellOrder.listing_time,
+                  });
+                }
+              }
+              // // const lastSaleAmount = asset.asset.last_sale ? asset.asset.last_sale.total_price : null;
+              // if (asset.tokenId == 7826) {
+              //   // console.log(JSON.stringify(asset.asset.sell_orders, null, 8));
+              //   console.log(JSON.stringify(lastSale, null, 8));
+              //   console.log(JSON.stringify(sellOrders, null, 8));
+              //   // console.log(JSON.stringify(asset.asset.current_price, null, 8));
+              //   // console.log(JSON.stringify(asset.asset.last_sale, null, 8));
+              // }
+              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
+            }
+
+            // console.log(JSON.stringify(osData, null, 8));
+            t.osData = osData;
+            // t.osAssets = osAssets;
           }
+          loadData();
           this.recalculate("mounted");
         }
       })
