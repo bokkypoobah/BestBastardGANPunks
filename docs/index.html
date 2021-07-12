@@ -203,6 +203,9 @@
                           <template #header>
                             <div variant="secondary" class="small truncate">
                               {{ '#' + record.tokenId }}
+                              <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                                {{ ensOrShortName(owners[record.tokenId]) }}
+                              </b-link>
                             </div>
                             <div v-if="cardImageSizeCurrent >= 200">
                               <font size="-2">
@@ -516,7 +519,7 @@
             { value: '500', text: '500%' },
             { value: '750', text: '750%' },
             { value: '1000', text: '1,000%' },
-            { value: '1250', text: '1,250%' },
+            { value: '1500', text: '1,500%' },
           ],
 
           categoryFields: [
