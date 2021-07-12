@@ -520,6 +520,9 @@
             { value: '750', text: '750%' },
             { value: '1000', text: '1,000%' },
             { value: '1500', text: '1,500%' },
+            { value: '3000', text: '3,000%' },
+            { value: '6000', text: '6,000%' },
+            { value: '12000', text: '12,000%' },
           ],
 
           categoryFields: [
@@ -617,6 +620,7 @@
             await this.processOSData();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
+
           calculateData() {
             const results = [];
             for (let i in BASTARDDATA) {
@@ -637,62 +641,6 @@
             console.log(new Date().toUTCString() + " - calculateData() completed");
             return results;
           },
-          async processOSData() {
-            console.log(new Date().toUTCString() + " processOSData() start");
-            var db0 = new Dexie("BastardDB");
-            db0.version(1).stores({
-              apiData: '&tokenId,asset,timestamp'
-            });
-            const osAssets = await db0.apiData.toArray();
-            const osData = {};
-            // console.log(JSON.stringify(osAssets[4553], null, 2));
-            for (const asset of osAssets) {
-              if (asset.tokenId == 17) {
-                console.log(JSON.stringify(asset, null, 2));
-              }
-              let lastSale = null;
-              if (asset.asset.last_sale) {
-                lastSale = {
-                  totalPrice: new BigNumber(asset.asset.last_sale.total_price).shift(-18),
-                  symbol: asset.asset.last_sale.payment_token.symbol,
-                  decimals: asset.asset.last_sale.payment_token.decimals,
-                  ethPrice: asset.asset.last_sale.payment_token.eth_price,
-                  usdPrice: asset.asset.last_sale.payment_token.usd_price,
-                  tx: asset.asset.last_sale.transaction.transaction_hash,
-                  assetBundle: asset.asset.last_sale.asset_bundle,
-                  eventType: asset.asset.last_sale.event_type,
-                  eventTimestamp: asset.asset.last_sale.event_timestamp,
-                }
-              }
-              let sellOrders = null;
-              if (asset.asset.sell_orders) {
-                sellOrders = [];
-                for (const sellOrder of asset.asset.sell_orders) {
-                  sellOrders.push({
-                    basePrice: sellOrder.base_price,
-                    currentPrice: new BigNumber(sellOrder.current_price).shift(-18),
-                    symbol: sellOrder.payment_token_contract.symbol,
-                    decimals: sellOrder.payment_token_contract.decimals,
-                    ethPrice: sellOrder.payment_token_contract.eth_price,
-                    usdPrice: sellOrder.payment_token_contract.usd_price,
-                    cancelled: sellOrder.cancelled,
-                    feeMethod: sellOrder.fee_method,
-                    side: sellOrder.side,
-                    saleKind: sellOrder.sale_kind,
-                    createdDate: sellOrder.created_date,
-                    closingDate: sellOrder.closing_date,
-                    closingExtendable: sellOrder.closing_extendable,
-                    expirationTime: sellOrder.expiration_time,
-                    listingTime: sellOrder.listing_time,
-                  });
-                }
-              }
-              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
-            }
-            // console.log(JSON.stringify(osData, null, 8));
-            this.osData = osData;
-            console.log(new Date().toUTCString() + " processOSData() completed");
-          },
 
           calculateTokensOwned() {
             const results = [];
@@ -709,6 +657,7 @@
             console.log(new Date().toUTCString() + " - calculateTokensOwned() completed: " + JSON.stringify(results));
             return results;
           },
+
           calculateCategories() {
             const collator = {};
             for (let i in this.data) {
@@ -730,6 +679,7 @@
             console.log(new Date().toUTCString() + " - calculateCategories() completed");
             return collator;
           },
+
           calculateSearchResults() {
             let results = [];
             let data = this.data.slice(0);
@@ -796,6 +746,7 @@
             console.log(new Date().toUTCString() + " - calculateSearchResults() completed");
             return results;
           },
+
           calculateCollatedOwners() {
             let results = [];
             if (this.owners.length > 0) {
@@ -821,30 +772,62 @@
             console.log(new Date().toUTCString() + " - calculateCollatedOwners() completed");
             return results;
           },
-          filterChange(category, option) {
-            if (!this.categoryFilter[category]) {
-              Vue.set(this.categoryFilter, category, {});
-            }
-            if (this.categoryFilter[category][option]) {
-              Vue.delete(this.categoryFilter[category], option);
-              if (Object.keys(this.categoryFilter[category]) == 0) {
-                Vue.delete(this.categoryFilter, category);
-              }
-            } else {
-              Vue.set(this.categoryFilter[category], option, true);
-            }
-            this.recalculate('filterChange');
-          },
-          getSortedValuesForCategory(category) {
-            const results = [];
-            for (let categoryKey in this.categories[category]) {
-              const c = this.categories[category][categoryKey];
-              results.push({ categoryOption: categoryKey, categoryTotal: c })
-            }
-            results.sort(function(a, b) {
-              return b.categoryTotal - a.categoryTotal;
+
+          async processOSData() {
+            console.log(new Date().toUTCString() + " processOSData() start");
+            var db0 = new Dexie("BastardDB");
+            db0.version(1).stores({
+              apiData: '&tokenId,asset,timestamp'
             });
-            return results;
+            const osAssets = await db0.apiData.toArray();
+            const osData = {};
+            // console.log(JSON.stringify(osAssets[4553], null, 2));
+            for (const asset of osAssets) {
+              if (asset.tokenId == 17) {
+                console.log(JSON.stringify(asset, null, 2));
+              }
+              let lastSale = null;
+              if (asset.asset.last_sale) {
+                lastSale = {
+                  totalPrice: new BigNumber(asset.asset.last_sale.total_price).shift(-18),
+                  symbol: asset.asset.last_sale.payment_token.symbol,
+                  decimals: asset.asset.last_sale.payment_token.decimals,
+                  ethPrice: asset.asset.last_sale.payment_token.eth_price,
+                  usdPrice: asset.asset.last_sale.payment_token.usd_price,
+                  tx: asset.asset.last_sale.transaction.transaction_hash,
+                  assetBundle: asset.asset.last_sale.asset_bundle,
+                  eventType: asset.asset.last_sale.event_type,
+                  eventTimestamp: asset.asset.last_sale.event_timestamp,
+                }
+              }
+              let sellOrders = null;
+              if (asset.asset.sell_orders) {
+                sellOrders = [];
+                for (const sellOrder of asset.asset.sell_orders) {
+                  sellOrders.push({
+                    basePrice: sellOrder.base_price,
+                    currentPrice: new BigNumber(sellOrder.current_price).shift(-18),
+                    symbol: sellOrder.payment_token_contract.symbol,
+                    decimals: sellOrder.payment_token_contract.decimals,
+                    ethPrice: sellOrder.payment_token_contract.eth_price,
+                    usdPrice: sellOrder.payment_token_contract.usd_price,
+                    cancelled: sellOrder.cancelled,
+                    feeMethod: sellOrder.fee_method,
+                    side: sellOrder.side,
+                    saleKind: sellOrder.sale_kind,
+                    createdDate: sellOrder.created_date,
+                    closingDate: sellOrder.closing_date,
+                    closingExtendable: sellOrder.closing_extendable,
+                    expirationTime: sellOrder.expiration_time,
+                    listingTime: sellOrder.listing_time,
+                  });
+                }
+              }
+              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
+            }
+            // console.log(JSON.stringify(osData, null, 8));
+            this.osData = osData;
+            console.log(new Date().toUTCString() + " processOSData() completed");
           },
 
           // --- Web3 Connection ---
@@ -1011,6 +994,33 @@
             if (this.selectedItemGIF) {
               this.selectedItemGIF.move_to(this.selectedItemFrame);
             }
+          },
+
+          // --- UI Misc ---
+          filterChange(category, option) {
+            if (!this.categoryFilter[category]) {
+              Vue.set(this.categoryFilter, category, {});
+            }
+            if (this.categoryFilter[category][option]) {
+              Vue.delete(this.categoryFilter[category], option);
+              if (Object.keys(this.categoryFilter[category]) == 0) {
+                Vue.delete(this.categoryFilter, category);
+              }
+            } else {
+              Vue.set(this.categoryFilter[category], option, true);
+            }
+            this.recalculate('filterChange');
+          },
+          getSortedValuesForCategory(category) {
+            const results = [];
+            for (let categoryKey in this.categories[category]) {
+              const c = this.categories[category][categoryKey];
+              results.push({ categoryOption: categoryKey, categoryTotal: c })
+            }
+            results.sort(function(a, b) {
+              return b.categoryTotal - a.categoryTotal;
+            });
+            return results;
           },
 
           // --- Utilities ---
