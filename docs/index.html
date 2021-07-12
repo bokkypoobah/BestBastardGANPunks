@@ -284,7 +284,7 @@
                           <p>
                             <font size="-2">
                               <b-link :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW IN BLOCK EXLPORER'" target="_blank">
-                                {{ formatETH(osData[data.item.tokenId].lastSale.ethPrice) }}
+                                {{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}
                               </b-link>
                               ETH
                               {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
@@ -618,7 +618,7 @@
               let lastSale = null;
               if (asset.asset.last_sale) {
                 lastSale = {
-                  amount: asset.asset.last_sale.total_price,
+                  totalPrice: new BigNumber(asset.asset.last_sale.total_price).shift(-18),
                   symbol: asset.asset.last_sale.payment_token.symbol,
                   decimals: asset.asset.last_sale.payment_token.decimals,
                   ethPrice: asset.asset.last_sale.payment_token.eth_price,
