@@ -202,9 +202,22 @@
                         <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0">
                           <template #header>
                             <div variant="secondary" class="small truncate">
-                              {{ '#' + record.tokenId }}
+                              <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                                {{ '#' + record.tokenId }}
+                              </b-link>
                               <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                                 {{ ensOrShortName(owners[record.tokenId]) }}
+                              </b-link>
+                              <b-link size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                                <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
+                              </b-link>
+                              <span v-if="record.mosaicurl != null">
+                                <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
+                                  <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
+                                </b-link>
+                              </span>
+                              <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
+                                $
                               </b-link>
                             </div>
                             <div v-if="cardImageSizeCurrent >= 200">
@@ -248,11 +261,6 @@
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                             <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
                           </b-link>
-                          <!--
-                          <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'View in OpenSea'" target="_blank">
-                            <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
-                          </b-link>
-                          -->
                         </span>
                         <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
