@@ -220,18 +220,15 @@
                                 $
                               </b-link>
                             </div>
-                            <div v-if="cardImageSizeCurrent >= 200">
-                              <font size="-2">
-                                <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
-                              </font>
-                            </div>
                           </template>
-                          <!--
-                          <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                            <b-img-lazy width="220%" :src="record.osimage" />
-                            -->
-                            <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
-                          <!-- </b-link> -->
+                          <template #footer>
+                            <span v-if="cardImageSizeCurrent >= 200">
+                              <font size="-2">
+                                <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
+                              </font>
+                            </span>
+                          </template>
+                          <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.osimage" />
                           </b-link>
@@ -621,7 +618,7 @@
           async recalculate(from) {
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
             if (from != 'selectedTags') {
-              this.data = this.calculateData();
+              this.calculateData();
               this.tokensOwned = this.calculateTokensOwned();
               this.categories = this.calculateCategories();
             }
@@ -633,24 +630,29 @@
           },
 
           calculateData() {
-            const results = [];
-            for (let i in BASTARDDATA) {
-              const item = BASTARDDATA[i];
-              item.mosaicurl = null;
-              for (let k in item.attributes) {
-                const attribute = item.attributes[k];
-                if (attribute.trait_type == 'HYPE TYPE') {
-                  if (attribute.value == 'HYPED AF (ANIMATED)') {
-                    if (item.tokenId < 9000) {
-                      item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+            console.log(new Date().toUTCString() + " - calculateData() begin");
+            if (this.data == null) {
+              for (let i in BASTARDDATA) {
+                const item = BASTARDDATA[i];
+                item.mosaicurl = null;
+                for (let k in item.attributes) {
+                  const attribute = item.attributes[k];
+                  if (attribute.trait_type == 'HYPE TYPE') {
+                    if (attribute.value == 'HYPED AF (ANIMATED)') {
+                      if (item.tokenId < 9000) {
+                        item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+                        break;
+                      }
                     }
                   }
                 }
               }
-              results.push(item);
+              this.data = BASTARDDATA;
+              console.log(new Date().toUTCString() + " - calculateData() completed - Calculated for the first time");
+            } else {
+              this.data = BASTARDDATA;
+              console.log(new Date().toUTCString() + " - calculateData() completed - Skipped recalculation");
             }
-            console.log(new Date().toUTCString() + " - calculateData() completed");
-            return results;
           },
 
           calculateTokensOwned() {
@@ -794,7 +796,7 @@
             const osData = {};
             // console.log(JSON.stringify(osAssets[4553], null, 2));
             for (const asset of osAssets) {
-              if (asset.tokenId == 17) {
+              if (asset.tokenId == 1712345) {
                 console.log(JSON.stringify(asset, null, 2));
               }
               let lastSale = null;
@@ -816,7 +818,7 @@
                 sellOrders = [];
                 const numberSellOrders = asset.asset.sell_orders.length;
                 if (numberSellOrders > 1) {
-                  console.log(JSON.stringify(asset.asset, null, 2));
+                  console.log("WARNING: numberSellOrders > 1 #" + asset.tokenId + " " + JSON.stringify(asset.asset, null, 2));
                 }
                 for (const sellOrder of asset.asset.sell_orders) {
                   sellOrders.push({
