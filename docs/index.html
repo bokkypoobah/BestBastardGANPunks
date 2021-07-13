@@ -202,39 +202,6 @@
                     <b-card-group deck>
                       <div v-for="record in pagedTokensResults">
                         <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-2 p-1 border-0">
-                          <!--
-                          <template #header>
-                            <div variant="secondary" class="small truncate">
-                              <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
-                                {{ '#' + record.tokenId }}
-                              </b-link>
-                              <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
-                                {{ ensOrShortName(owners[record.tokenId]) }}
-                              </b-link>
-                              <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
-                                <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
-                              </b-link>
-                              <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
-                                <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
-                                  <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
-                                </b-link>
-                              </span>
-                              <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
-                                $
-                              </b-link>
-                            </div>
-                          </template>
-                          -->
-                          <!--
-                          <template #footer>
-                            <span v-if="cardImageSizeCurrent >= 200">
-                              <font size="-2">
-                                <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
-                              </font>
-                            </span>
-                          </template>
-                          -->
-                          <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.osimage" />
                           </b-link>
@@ -268,6 +235,7 @@
                       </div>
                     </b-card-group>
                   </div>
+
                   <div v-if="view == 'list'">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(image)="data">
@@ -275,12 +243,7 @@
                           <b-img-lazy width="300%" :src="data.item.osimage" />
                           <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
-                        <!--
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'View on OpenSea.io'" target="_blank">
-                        </b-link>
-                        -->
                       </template>
-
                       <template #cell(tokenId)="data">
                         <b-link :href="'https://www.bastardganpunks.club/v2/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
                           {{ '#' + data.item.tokenId }}
@@ -302,39 +265,19 @@
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
                           $
                         </b-link>
-
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
-
-                        <!--
-                        <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrders">
-                          <h6 class="mt-5 mb-2">Sell Orders</h6>
-                          <font size="-2">
-                            <b-table small :fields="sellOrdersFields" :items="osData[data.item.tokenId].sellOrders">
-                              <template #cell(eth)="data">
-                                {{ formatETH(data.item.currentPrice) }}
-                              </template>
-                              <template #cell(created)="data">
-                                {{ formatDate(data.item.listingTime) }}
-                              </template>
-                            </b-table>
-                          </font>
-                        </div>
-                        -->
-
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
                           <b-button size="sm" variant="warning" :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].sellOrder.currentPrice) }}</b-badge>
                             {{ osData[data.item.tokenId].sellOrder.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].sellOrder.listingTime) }}</font>
                           </b-button>
                         </div>
-
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].lastSale">
                           <b-button size="sm" variant="success" :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW PURCHASE IN BLOCK EXLPORER'" target="_blank" class="m-1 p-1">
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
                             {{ osData[data.item.tokenId].lastSale.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}</font>
                           </b-button>
                         </div>
-
                       </template>
                       <template #cell(description)="data">
                         <span v-for="line in data.item.description.split('\n')">
@@ -372,11 +315,6 @@
               <b-tab lazy title="OWNERS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
-                    <!--
-                    <div>
-                      <b-form-input type="text" size="sm" @change="recalculate('search')" v-model.trim="searchString" debounce="600" placeholder="SEARCH..." v-b-popover.hover="'SEARCH BY TOKENID, WORD IN LYRICS OR OWNER ADDRESS'"></b-form-input>
-                    </div>
-                    -->
                     <div class="pr-1 flex-grow-1">
                     </div>
                     <div class="pl-2">
@@ -388,14 +326,6 @@
                     <div class="pl-2">
                       <b-form-select size="sm" v-model="ownersPageSize" :options="pageSizes"></b-form-select>
                     </div>
-                    <!--
-                    <div class="pl-2">
-                      <b-form-select size="sm" v-model="view" :options="viewOptions"></b-form-select>
-                    </div>
-                    <div class="pl-2">
-                      <b-button v-b-toggle.sidebar-border size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-search shift-v="+1" font-scale="1.3"></b-icon-search></b-button></b-button>
-                    </div>
-                    -->
                   </div>
 
                   <b-table small :fields="ownersFields" :items="pagedCollatedOwnersResults" responsive="sm">
@@ -653,7 +583,7 @@
           async recalculate(from) {
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
             if (from != 'selectedTags') {
-              this.calculateData();
+              this.data = BASTARDDATA;
               this.tokensOwned = this.calculateTokensOwned();
               this.categories = this.calculateCategories();
             }
@@ -662,35 +592,6 @@
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
             await this.processOSData();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
-          },
-
-          calculateData() {
-            console.log(new Date().toUTCString() + " - calculateData() begin");
-            // // if (this.data == null) {
-            //   for (let i in BASTARDDATA) {
-            //     const item = BASTARDDATA[i];
-            //     if (i == 0) {
-            //       console.log(JSON.stringify(item, null, 2));
-            //     }
-            //     item.mosaicurl = null;
-            //     for (let k in item.attributes) {
-            //       const attribute = item.attributes[k];
-            //       if (attribute.trait_type == 'HYPE TYPE') {
-            //         if (attribute.value == 'HYPED AF (ANIMATED)') {
-            //           if (item.tokenId < 9000) {
-            //             item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
-            //             break;
-            //           }
-            //         }
-            //       }
-            //     }
-            //   }
-              this.data = BASTARDDATA;
-              console.log(new Date().toUTCString() + " - calculateData() completed - Calculated for the first time");
-            // } else {
-            //   this.data = BASTARDDATA;
-            //   console.log(new Date().toUTCString() + " - calculateData() completed - Skipped recalculation");
-            // }
           },
 
           calculateTokensOwned() {
