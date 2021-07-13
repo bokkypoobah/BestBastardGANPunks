@@ -39,12 +39,28 @@ for (let i = 0; i < TOTALSUPPLY; i++) {
     if (!osData) {
       console.log("Cannot find OS data for: " + data.tokenId);
     }
+    let hasMosaic = false;
+    for (let k in data.attributes) {
+      const attribute = data.attributes[k];
+      if (attribute.trait_type == 'HYPE TYPE') {
+        if (attribute.value == 'HYPED AF (ANIMATED)') {
+          // TODO: Update when post-mint mosaics have been organised into folders
+          if (data.tokenId < 9000) {
+            hasMosaic = true;
+            break;
+          }
+        }
+      }
+    }
+
     records.push({
       tokenId: data.tokenId,
       name: data.name,
+      owner: osData.owner.address,
       image: data.image,
       osimage: osData == null ? null : osData.image_url,
       permalink: osData == null ? null : osData.permalink,
+      hasMosaic: hasMosaic,
       description: data.description,
       attributes: data.attributes,
     });
@@ -61,9 +77,10 @@ const OUTPUTMINREPORT = "bastardData.min.js";
   });
 })();
 
+
 const OUTPUTREPORT = "bastardData.js";
 (async () => {
-  await fs.writeFile(OUTPUTREPORT, "const BASTARDDATA=" + JSON.stringify(records, null, 2) + ";", (err) => {
+  await fs.writeFile(OUTPUTREPORT, "const BASTARDDATA=" + JSON.stringify(records, null, 2) + ";\n\nmodule.exports = {\n  BASTARDDATA\n}", (err) => {
       if (err) throw err;
       console.log('Data written to file: ' + OUTPUTREPORT);
   });

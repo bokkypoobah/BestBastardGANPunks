@@ -292,8 +292,8 @@
                         <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                         </b-link>
-                        <span v-if="data.item.mosaicurl != null">
-                          <b-link :href="data.item.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
+                        <span v-if="data.item.hasMosaic">
+                          <b-link :href="'hypedafmosaic/' + data.item.tokenId + '.png'" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
@@ -661,28 +661,31 @@
 
           calculateData() {
             console.log(new Date().toUTCString() + " - calculateData() begin");
-            if (this.data == null) {
-              for (let i in BASTARDDATA) {
-                const item = BASTARDDATA[i];
-                item.mosaicurl = null;
-                for (let k in item.attributes) {
-                  const attribute = item.attributes[k];
-                  if (attribute.trait_type == 'HYPE TYPE') {
-                    if (attribute.value == 'HYPED AF (ANIMATED)') {
-                      if (item.tokenId < 9000) {
-                        item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
+            // // if (this.data == null) {
+            //   for (let i in BASTARDDATA) {
+            //     const item = BASTARDDATA[i];
+            //     if (i == 0) {
+            //       console.log(JSON.stringify(item, null, 2));
+            //     }
+            //     item.mosaicurl = null;
+            //     for (let k in item.attributes) {
+            //       const attribute = item.attributes[k];
+            //       if (attribute.trait_type == 'HYPE TYPE') {
+            //         if (attribute.value == 'HYPED AF (ANIMATED)') {
+            //           if (item.tokenId < 9000) {
+            //             item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+            //             break;
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
               this.data = BASTARDDATA;
               console.log(new Date().toUTCString() + " - calculateData() completed - Calculated for the first time");
-            } else {
-              this.data = BASTARDDATA;
-              console.log(new Date().toUTCString() + " - calculateData() completed - Skipped recalculation");
-            }
+            // } else {
+            //   this.data = BASTARDDATA;
+            //   console.log(new Date().toUTCString() + " - calculateData() completed - Skipped recalculation");
+            // }
           },
 
           calculateTokensOwned() {
@@ -1094,15 +1097,16 @@
             localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
           },
           ensOrShortName(address) {
-            try {
+            // try {
+              // let name = address;
               let name = this.ensMap[address.toLowerCase()];
               if (name != null) {
                 name = name.substring(0, 16);
               }
-            } catch (e) {
-              name = "";
-            }
-            return name;
+            // } catch (e) {
+            //   name = "ERROR";
+            // }
+              return name;
           },
         },
 
@@ -1129,6 +1133,7 @@
           }
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
+            console.log(JSON.stringify(this.ensMap, null, 2));
           }
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
