@@ -7,7 +7,14 @@ The code is mostly in [docs/index.html](docs/index.html), with data generation s
 <br />
 
 ## 57 BGANPUNKV2 HOODIES FOR YOUR REFERENCE
-<kbd><img src="images/bganpunksv2_57hoodies.png.png" /></kbd>
+
+```
+BastardsTags: {"9":["HOODIE"],"366":["HOODIE"],"590":["HOODIE"],"722":["HOODIE"],"816":["HOODIE"],"847":["HOODIE"],"1057":["HOODIE"],"1097":["HOODIE"],"1278":["HOODIE"],"1313":["HOODIE"],"1620":["HOODIE"],"1693":["HOODIE"],"1714":["HOODIE"],"2110":["HOODIE"],"2415":["HOODIE"],"2521":["HOODIE"],"2662":["HOODIE"],"2890":["HOODIE"],"2964":["HOODIE"],"3212":["HOODIE"],"3716":["HOODIE"],"4075":["HOODIE"],"4140":["HOODIE"],"4211":["HOODIE"],"4284":["HOODIE"],"4500":["HOODIE"],"4738":["HOODIE"],"4752":["HOODIE"],"5432":["HOODIE"],"5542":["HOODIE"],"5720":["HOODIE"],"5785":["HOODIE"],"6203":["HOODIE"],"6408":["HOODIE"],"6719":["HOODIE"],"7091":["HOODIE"],"7096":["HOODIE"],"7426":["HOODIE"],"7458":["HOODIE"],"7567":["HOODIE"],"7725":["HOODIE"],"7825":["HOODIE"],"8024":["HOODIE"],"8187":["HOODIE"],"8428":["HOODIE"],"8550":["HOODIE"],"8667":["HOODIE"],"8671":["HOODIE"],"8718":["HOODIE"],"8860":["HOODIE"],"8915":["HOODIE"],"9321":["HOODIE"],"9379":["HOODIE"],"9387":["HOODIE"],"9786":["HOODIE"],"10267":["HOODIE"],"10991":["HOODIE"]}
+```
+
+<br />
+
+<kbd><img src="images/bganpunksv2_57hoodies.png" /></kbd>
 
 <br />
 
