@@ -427,7 +427,7 @@
 
                   THIS SITE CURRENTLY LISTS BGANPUNKV2 (VERSION 2) NFTS, NOT BGANPUNKV1 (VERSION 1) <a href="https://bganpunks.eth.link/" target="_blank">https://bganpunks.eth.link/</a>.
 
-                  READ MORE ABOUT BGANPUNKS AT <a href="https://mooncat888.medium.com/introduction-to-bastard-gan-punk-v2-nft-art-collection-c5bb0750432c" target="_blank">Introduction to Bastard Gan Punk V2 NFT art collection</a>.
+                  READ MORE ABOUT BGANPUNKS AT <a href="https://mooncat888.medium.com/introduction-to-bastard-gan-punk-v2-nft-art-collection-c5bb0750432c" target="_blank">Introduction to Bastard Gan Punk V2 NFT art collection</a> and <a href="https://everipedia.org/wiki/lang_en/bastard-gan-punks" target="_blank">Bastard Gan Punks</a>.
                 </b-card-text>
 
                 <b-card-text>
@@ -694,8 +694,8 @@
             const results = [];
             if (this.owners.length > 0 && this.account) {
               const account = this.account.toLowerCase();
-              for (let i in this.data) {
-                const item = this.data[i];
+              for (let i in BASTARDDATA) {
+                const item = BASTARDDATA[i];
                 const owner = this.owners[i];
                 if (owner && owner.toLowerCase() == account) {
                   results.push(item.tokenId);
@@ -1131,17 +1131,14 @@
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
           } else {
             this.owners = OWNERSSNAPSHOT;
-            // console.log("Loading OWNERSSNAPSHOT: " + JSON.stringify(this.owners, null, 2));            
           }
           if (localStorage.getItem('bastardMyAccount')) {
             this.account = JSON.parse(localStorage.getItem('bastardMyAccount'));
           }
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
-            console.log(JSON.stringify(this.ensMap, null, 2));
           } else {
             this.ensMap = ENSMAPSNAPSHOT;
-            // console.log("Loading ENSMAPSNAPSHOT: " + JSON.stringify(this.ensMap, null, 2));
           }
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
