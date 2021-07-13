@@ -199,7 +199,8 @@
                   <div v-if="view == 'cards'">
                     <b-card-group deck>
                       <div v-for="record in pagedTokensResults">
-                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0">
+                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-2 p-1 border-0">
+                          <!--
                           <template #header>
                             <div variant="secondary" class="small truncate">
                               <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
@@ -208,19 +209,21 @@
                               <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                                 {{ ensOrShortName(owners[record.tokenId]) }}
                               </b-link>
-                              <b-link size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                              <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                                 <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                               </b-link>
-                              <span v-if="record.mosaicurl != null">
+                              <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
                                 <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                                   <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
                                 </b-link>
                               </span>
-                              <b-link :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
+                              <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
                                 $
                               </b-link>
                             </div>
                           </template>
+                          -->
+                          <!--
                           <template #footer>
                             <span v-if="cardImageSizeCurrent >= 200">
                               <font size="-2">
@@ -228,10 +231,37 @@
                               </font>
                             </span>
                           </template>
+                          -->
                           <!-- <b-avatar rounded="sm" variant="light" size="15.0rem" :src="record.osimage"></b-avatar> -->
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.osimage" />
                           </b-link>
+
+                          <b-card-text>
+                            <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                              {{ '#' + record.tokenId }}
+                            </b-link>
+                            <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                              {{ ensOrShortName(owners[record.tokenId]) }}
+                            </b-link>
+                            <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                              <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
+                            </b-link>
+                            <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
+                              <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
+                                <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
+                              </b-link>
+                            </span>
+                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
+                              $
+                            </b-link>
+                            <span v-if="cardImageSizeCurrent >= 200">
+                              <font size="-2">
+                                <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1 mw-100"></b-form-tags>
+                              </font>
+                            </span>
+                          </b-card-text>
+
                         </b-card>
                       </div>
                     </b-card-group>
