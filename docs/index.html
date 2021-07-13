@@ -1094,9 +1094,13 @@
             localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
           },
           ensOrShortName(address) {
-            let name = this.ensMap[address.toLowerCase()];
-            if (name != null) {
-              name = name.substring(0, 16);
+            try {
+              let name = this.ensMap[address.toLowerCase()];
+              if (name != null) {
+                name = name.substring(0, 16);
+              }
+            } catch (e) {
+              name = "";
             }
             return name;
           },
