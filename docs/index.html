@@ -584,8 +584,8 @@
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
             if (from != 'selectedTags') {
               this.data = BASTARDDATA;
-              this.tokensOwned = this.calculateTokensOwned();
-              this.categories = this.calculateCategories();
+              this.calculateTokensOwned();
+              this.calculateCategories();
             }
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
@@ -607,7 +607,7 @@
               }
             }
             console.log(new Date().toUTCString() + " - calculateTokensOwned() completed: " + JSON.stringify(results));
-            return results;
+            this.tokensOwned = results;
           },
 
           calculateCategories() {
@@ -629,7 +629,7 @@
               }
             }
             console.log(new Date().toUTCString() + " - calculateCategories() completed");
-            return collator;
+            this.categories = collator;
           },
 
           calculateSearchResults() {
