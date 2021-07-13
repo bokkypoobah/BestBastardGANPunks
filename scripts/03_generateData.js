@@ -56,7 +56,7 @@ for (let i = 0; i < TOTALSUPPLY; i++) {
     records.push({
       tokenId: data.tokenId,
       name: data.name,
-      owner: osData.owner.address,
+      // owner: osData.owner.address,
       image: data.image,
       osimage: osData == null ? null : osData.image_url,
       permalink: osData == null ? null : osData.permalink,

@@ -33,6 +33,8 @@
 
     <script src="bastardData.min.js"></script>
     <script src="deploymentData.js"></script>
+    <script src="ensMapSnapshot.js"></script>
+    <script src="ownersSnapshot.js"></script>
 
     <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
@@ -1127,6 +1129,9 @@
         mounted() {
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
+          } else {
+            this.owners = OWNERSSNAPSHOT;
+            // console.log("Loading OWNERSSNAPSHOT: " + JSON.stringify(this.owners, null, 2));            
           }
           if (localStorage.getItem('bastardMyAccount')) {
             this.account = JSON.parse(localStorage.getItem('bastardMyAccount'));
@@ -1134,6 +1139,9 @@
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
             console.log(JSON.stringify(this.ensMap, null, 2));
+          } else {
+            this.ensMap = ENSMAPSNAPSHOT;
+            // console.log("Loading ENSMAPSNAPSHOT: " + JSON.stringify(this.ensMap, null, 2));
           }
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
