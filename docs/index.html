@@ -320,6 +320,13 @@
                         </div>
 
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].lastSale">
+                          <font size="-2">
+                            <b-button size="sm" variant="success" :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW PURCHASE IN BLOCK EXLPORER'" target="_blank" class="m-1 p-1">
+                              <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
+                              {{ osData[data.item.tokenId].lastSale.symbol }} {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
+                            </b-button>
+                          </font>
+                          <!--
                           <h6 class="mt-5 mb-2">Last Sale</h6>
                           <p>
                             <font size="-2">
@@ -330,6 +337,7 @@
                               {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
                             </font>
                           </p>
+                          -->
                         </div>
 
                       </template>
@@ -1086,7 +1094,7 @@
               if (new RegExp('^[0-9]+$').test(d)) {
                 return new Date(parseInt(d) * 1000).toDateString();
               } else {
-                return new Date(d).toDateString();
+                return new Date(d).toDateString().substring(4);
               }
             }
           },
