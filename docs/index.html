@@ -303,7 +303,7 @@
                           $
                         </b-link>
 
-                        <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
+                        <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
 
                         <!--
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrders">
