@@ -156,6 +156,9 @@
                     <div class="pl-2">
                       <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="3" variant="outline-primary"></b-form-select>
                     </div>
+                    <div class="pl-2">
+                      <b-button size="sm" :pressed.sync="showSalesOnly" @click="recalculate('selectedTags')" variant="warning" v-b-popover.hover="'DISPLAY ON SALE ONLY'">$</b-button>
+                    </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
                     <div class="pl-2">
@@ -174,7 +177,7 @@
                       <b-form-select size="sm" v-model="cardImageSizeCurrent" :options="cardImageSizeOptions"></b-form-select>
                     </div>
                     <div class="pl-2">
-                      <b-button v-b-toggle.sidebar-border size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-search shift-v="+1" font-scale="1.3"></b-icon-search></b-button></b-button>
+                      <b-button v-b-toggle.sidebar-border size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'"><b-icon-search shift-v="+1" font-scale="1.3"></b-icon-search></b-button></b-button>
                     </div>
                   </div>
 
@@ -451,6 +454,7 @@
           tabIndex: 0,
           searchString: '',
           searchAccount: '',
+          showSalesOnly: false,
 
           data: [],
           categories: {},
@@ -506,9 +510,9 @@
           categoryFilter: {},
           fields: [
             { key: 'image', label: 'BASTARD', thStyle: 'width: 25%;' },
-            { key: 'tokenId', label: 'INFO', thStyle: 'width: 15%;' },
+            { key: 'tokenId', label: 'INFO', thStyle: 'width: 25%;' },
             { key: 'attributes', label: 'ATTRIBUTES', thStyle: 'width: 25%;' },
-            { key: 'description', label: 'LYRICS', thStyle: 'width: 35%;' },
+            { key: 'description', label: 'LYRICS', thStyle: 'width: 25%;' },
           ],
           sellOrdersFields: [
             { key: 'eth', label: 'ETH' },
