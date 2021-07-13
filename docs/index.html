@@ -209,7 +209,7 @@
                             </div>
                             <div v-if="cardImageSizeCurrent >= 200">
                               <font size="-2">
-                                <b-form-tags small @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
+                                <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
                               </font>
                             </div>
                           </template>
@@ -240,8 +240,8 @@
                       </template>
 
                       <template #cell(tokenId)="data">
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
-                          {{ data.item.tokenId }}
+                        <b-link :href="'https://www.bastardganpunks.club/v2/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                          {{ '#' + data.item.tokenId }}
                         </b-link>
                         <br />
                         <span v-if="owners.length > 0">
@@ -255,15 +255,18 @@
                           -->
                         </span>
                         <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
-                          <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
+                          <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                         </b-link>
                         <span v-if="data.item.mosaicurl != null">
                           <b-link :href="data.item.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
+                          $
+                        </b-link>
 
-                        <b-form-tags @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
+                        <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
 
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrders">
                           <h6 class="mt-5 mb-2">Sell Orders</h6>
@@ -803,6 +806,10 @@
               let sellOrders = null;
               if (asset.asset.sell_orders) {
                 sellOrders = [];
+                const numberSellOrders = asset.asset.sell_orders.length;
+                if (numberSellOrders > 1) {
+                  console.log(JSON.stringify(asset.asset, null, 2));
+                }
                 for (const sellOrder of asset.asset.sell_orders) {
                   sellOrders.push({
                     basePrice: sellOrder.base_price,
