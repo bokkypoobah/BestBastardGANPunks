@@ -305,6 +305,7 @@
 
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " placeholder="ENTER NEW TAGS" class="ml-0 mt-1"></b-form-tags>
 
+                        <!--
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrders">
                           <h6 class="mt-5 mb-2">Sell Orders</h6>
                           <font size="-2">
@@ -318,26 +319,20 @@
                             </b-table>
                           </font>
                         </div>
+                        -->
+
+                        <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
+                          <b-button size="sm" variant="warning" :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
+                            <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].sellOrder.currentPrice) }}</b-badge>
+                            {{ osData[data.item.tokenId].sellOrder.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].sellOrder.listingTime) }}</font>
+                          </b-button>
+                        </div>
 
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].lastSale">
-                          <font size="-2">
-                            <b-button size="sm" variant="success" :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW PURCHASE IN BLOCK EXLPORER'" target="_blank" class="m-1 p-1">
-                              <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
-                              {{ osData[data.item.tokenId].lastSale.symbol }} {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
-                            </b-button>
-                          </font>
-                          <!--
-                          <h6 class="mt-5 mb-2">Last Sale</h6>
-                          <p>
-                            <font size="-2">
-                              <b-link :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW IN BLOCK EXLPORER'" target="_blank">
-                                {{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}
-                              </b-link>
-                              ETH
-                              {{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}
-                            </font>
-                          </p>
-                          -->
+                          <b-button size="sm" variant="success" :href="'https://etherscan.io/tx/' + osData[data.item.tokenId].lastSale.tx" v-b-popover.hover="'VIEW PURCHASE IN BLOCK EXLPORER'" target="_blank" class="m-1 p-1">
+                            <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
+                            {{ osData[data.item.tokenId].lastSale.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}</font>
+                          </b-button>
                         </div>
 
                       </template>
@@ -856,34 +851,33 @@
                   eventTimestamp: asset.asset.last_sale.event_timestamp,
                 }
               }
-              let sellOrders = null;
+              let sellOrder = null;
               if (asset.asset.sell_orders) {
-                sellOrders = [];
                 const numberSellOrders = asset.asset.sell_orders.length;
                 if (numberSellOrders > 1) {
                   console.log("WARNING: numberSellOrders > 1 #" + asset.tokenId + " " + JSON.stringify(asset.asset, null, 2));
                 }
-                for (const sellOrder of asset.asset.sell_orders) {
-                  sellOrders.push({
-                    basePrice: sellOrder.base_price,
-                    currentPrice: new BigNumber(sellOrder.current_price).shift(-18),
-                    symbol: sellOrder.payment_token_contract.symbol,
-                    decimals: sellOrder.payment_token_contract.decimals,
-                    ethPrice: sellOrder.payment_token_contract.eth_price,
-                    usdPrice: sellOrder.payment_token_contract.usd_price,
-                    cancelled: sellOrder.cancelled,
-                    feeMethod: sellOrder.fee_method,
-                    side: sellOrder.side,
-                    saleKind: sellOrder.sale_kind,
-                    createdDate: sellOrder.created_date,
-                    closingDate: sellOrder.closing_date,
-                    closingExtendable: sellOrder.closing_extendable,
-                    expirationTime: sellOrder.expiration_time,
-                    listingTime: sellOrder.listing_time,
-                  });
+                for (const so of asset.asset.sell_orders) {
+                  sellOrder = {
+                    basePrice: so.base_price,
+                    currentPrice: new BigNumber(so.current_price).shift(-18),
+                    symbol: so.payment_token_contract.symbol,
+                    decimals: so.payment_token_contract.decimals,
+                    ethPrice: so.payment_token_contract.eth_price,
+                    usdPrice: so.payment_token_contract.usd_price,
+                    cancelled: so.cancelled,
+                    feeMethod: so.fee_method,
+                    side: so.side,
+                    saleKind: so.sale_kind,
+                    createdDate: so.created_date,
+                    closingDate: so.closing_date,
+                    closingExtendable: so.closing_extendable,
+                    expirationTime: so.expiration_time,
+                    listingTime: so.listing_time,
+                  };
                 }
               }
-              osData[asset.tokenId] = { sellOrders: sellOrders, lastSale: lastSale };
+              osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
             }
             // console.log(JSON.stringify(osData, null, 8));
             this.osData = osData;
@@ -1092,7 +1086,7 @@
               return "";
             } else {
               if (new RegExp('^[0-9]+$').test(d)) {
-                return new Date(parseInt(d) * 1000).toDateString();
+                return new Date(parseInt(d) * 1000).toDateString().substring(4);
               } else {
                 return new Date(d).toDateString().substring(4);
               }
