@@ -154,11 +154,16 @@
                       <b-button size="sm" @click="searchAccount = account; recalculate('mytokens')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
+                      <b-button size="sm" :pressed.sync="settings.advanceSearch" @click="saveSettings('advanceSearch')" variant="outline-primary" v-b-popover.hover="'SIDEBAR SEARCH'"><span v-if="settings.advanceSearch"><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span><span v-else><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span></b-button>
+                    </div>
+                    <div class="pl-2">
                       <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="3" variant="outline-primary"></b-form-select>
                     </div>
+                    <!---
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="showSalesOnly" @click="recalculate('selectedTags')" variant="warning" v-b-popover.hover="'DISPLAY ON SALE ONLY'">$</b-button>
                     </div>
+                    -->
                     <div class="pr-1 flex-grow-1">
                     </div>
                     <div class="pl-2">
@@ -183,7 +188,7 @@
 
                   <div>
                     <!-- visible -->
-                    <b-collapse id="collapse-search" class="m-2">
+                    <b-collapse v-model="settings.advanceSearch" class="m-2">
                       <b-card>
                         <b-row v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
                           <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
@@ -356,6 +361,12 @@
                 </b-card-text>
               </b-tab>
 
+              <b-tab title="LOADMAP">
+                <b-card-text>
+                  LOTS OF FEATURES INCLUDING NAMING YOUR BASTARDS ON-CHAIN (FOR #ETHERNITY, IN ALL SPACETIME HUMANS WILL VENTURE TO); A DECENTRALISED NFT EXCHANGE. THE DECENRALISED DESING SPACE IS STIL BEING EXPLORED, AND IS SOOO SWEET. NO PROMISES. SOFTWARE GETS DONE WHEN IT GETS DONE. IF YOU WANT TO HELP CONTRIBUTE TO BUILDING THIS SPACE, SEND A FEW (OR LOTS) OF YOUR FLOOR (OR YOUR BEST) BGANPUNKS TO BOKKYPOOBAH.ETH! FOR AWARDING IN THE UPCOMING ETHEREUM DEV/COMMUNITY OG AWARDS! TO THE MANY PEOPLE WHO HAVE BEEN BUIDLING THE DECETRALISED TECHNOLOGY YOU ARE NOW USING. THEY ARE BUIDLING OUR FUTURE. AND OUR CHILDREN^CHILDREN'S FUTURE. ANY UN-ADOPTED DONATED BGANPUNGS WILL BE SENT BACK TO THE ORIGINAL ADDRESS AFTER THEH AWARDS. DON'T BE A FUCKING STINGY BASTARD!
+                </b-card-text>
+              </b-tab>
+
               <b-tab title="INFO">
                 <h6 class="mb-1">WHAT IS THIS WEBSHITE ABOUT?</h6>
                 <b-card-text>
@@ -454,10 +465,14 @@
           tabIndex: 0,
           searchString: '',
           searchAccount: '',
-          showSalesOnly: false,
+          // showSalesOnly: false,
 
           data: [],
           categories: {},
+
+          settings: {
+            advanceSearch: false,
+          },
 
           tokensSearchResults: [],
 
@@ -586,6 +601,7 @@
           <!-- Recalculation -->
           async recalculate(from) {
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
+
             if (from != 'selectedTags') {
               this.data = BASTARDDATA;
               this.calculateTokensOwned();
@@ -1005,6 +1021,9 @@
             }
             localStorage.setItem('bastardsTags', JSON.stringify(this.tags));
           },
+          saveSettings() {
+            localStorage.setItem('bastardsSettings', JSON.stringify(this.settings));
+          },
           ensOrShortName(address) {
             // try {
               // let name = address;
@@ -1049,6 +1068,9 @@
           }
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
+          }
+          if (localStorage.getItem('bastardsSettings')) {
+            this.settings = JSON.parse(localStorage.getItem('bastardsSettings'));
           }
           this.recalculate("mounted");
         }
