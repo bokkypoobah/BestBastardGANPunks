@@ -185,7 +185,6 @@
                               <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY" class="mb-2"></b-form-input>
                             </b-card-text>
                           </b-card>
-
                           <b-card header="FILTER BY TAGS" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
                             <b-card-text>
                               <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="10" variant="outline-primary"></b-form-select>
@@ -224,7 +223,6 @@
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.osimage" />
                           </b-link>
-
                           <b-card-text>
                             <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
                               {{ '#' + record.tokenId }}
@@ -249,7 +247,6 @@
                               </font>
                             </span>
                           </b-card-text>
-
                         </b-card>
                       </div>
                     </b-card-group>
@@ -598,9 +595,9 @@
               }
             }
             let results = [];
-            results.push( { value: null, text: '(All)' });
+            results.push({ value: null, text: '(All)' });
             for (const [key, value] of Object.entries(collator)) {
-              results.push( { value: key, text: key + ' (' + value + ')' });
+              results.push({ value: key, text: key + ' (' + value + ')' });
             }
             results.sort(function(a, b) {
               return b.count - a.count;
@@ -864,7 +861,7 @@
                 const NFTOWNERBATCHSIZE = 500;
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
-                  this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + i + " - " + (parseInt(to) - 1) + " OF " + totalSupply;
+                  this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
                   const ownersResult = await erc721Helper.owners(BASTARDADDRESS, i, to);
                   console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
                   for (let j = 0; j < ownersResult[0].length; j++) {
@@ -885,7 +882,7 @@
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
                 const ENSOWNERBATCHSIZE = 500;
                 for (let i = 0; i < addresses.length; i += ENSOWNERBATCHSIZE) {
-                  this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + i + " OF " + addresses.length;
+                  this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " OF " + ethers.utils.commify(addresses.length);
                   const batch = addresses.slice(i, parseInt(i) + ENSOWNERBATCHSIZE);
                   const allnames = await ensReverseRecordsContract.getNames(batch);
                   // NOT CHECKING ADDRESSES AS THE ADDRESSES CAME FROM A CONTRACT. AND account. const validNames = allnames.filter((n) => normalize(n) === n );
@@ -933,7 +930,7 @@
                 url = url + "&token_ids=" + j;
               }
               const elapsed = parseInt(new Date() / 1000) - timestamp;
-              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + i + " (BATCH SIZE " + BATCHSIZE + ") OF " + this.getTotalSupply + ". ELAPSED " + elapsed + " SECONDS. CONTINUE BROWSING THE BEAUTIFUL BASTRADS IN THE MEANTIME";
+              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + ethers.utils.commify(i) + " (BATCH SIZE " + BATCHSIZE + ") OF " + ethers.utils.commify(this.getTotalSupply) + ". ELAPSED " + elapsed + " SECONDS. CONTINUE BROWSING THE BEAUTIFUL BASTRADS IN THE MEANTIME";
               const data = await fetch(url).then(response => response.json());
               if (data.assets && data.assets.length > 0) {
                 for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
@@ -975,7 +972,7 @@
             const t = this;
             var element = document.getElementById("thegif1")
             if (t.selectedItemIsGIF) {
-              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 400, rubbable: true } );
+              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 400, rubbable: true });
               this.selectedItemGIF.load(function(){
                 t.selectedItemFrames = t.selectedItemGIF.get_length();
                 if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
@@ -1046,33 +1043,15 @@
             localStorage.setItem('bastardsSettings', JSON.stringify(this.settings));
           },
           ensOrShortName(address) {
-            // try {
-              // let name = address;
               let name = this.ensMap[address.toLowerCase()];
               if (name != null) {
                 name = name.substring(0, 16);
               }
-            // } catch (e) {
-            //   name = "ERROR";
-            // }
               return name;
           },
         },
 
 
-        // created() {
-        //   const separator = window.location.href.indexOf("/#/");
-        //   if (separator > 0) {
-        //     const parameter = window.location.href.substring(separator + 3);
-        //     if (new RegExp('^[0-9]+$').test(parameter)) {
-        //       this.settings.searchTokenId = parameter;
-        //     } else {
-        //       this.searchAccount = parameter;
-        //     }
-        //   }
-        // },
-        //
-        //
         mounted() {
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
