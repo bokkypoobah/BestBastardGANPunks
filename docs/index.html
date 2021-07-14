@@ -122,7 +122,7 @@
               </div>
             </template>
 
-            <div v-if="processing == null && searchAccount != null && searchAccount.length > 0 && collatedOwners.length == 0">
+            <div v-if="processing == null && settings.searchAccount != null && settings.searchAccount.length > 0 && collatedOwners.length == 0">
               <b-jumbotron header="WEB3 CONNECTION REQUIRED" bg-variant="info" text-variant="white" border-variant="dark" class="m-5 p-5">
                 TO RETRIEVE ERC-721 TOKEN OWNERSHIP AND ENS INFOMRATION. YOU CAN CONTINUE USING THIS TOOL WITHOUT A CONNECTION BUT OWNER INFORMATION AND SEARCH WILL NOT WORK. CLICK ON THE BUTTON ON THE TOP RIGHT TO CONNECT. CLEAR THE OWNER SEARCH FIELD TO REMOVE THIS MESSAGE.
               </b-jumbotron>
@@ -140,10 +140,15 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 75px;">
                     <div>
-                      <b-form-input type="text" size="sm" @change="recalculate('search')" v-model.trim="searchString" debounce="600" placeholder="🔍 TOKENID/LYRICS"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID"></b-form-input>
                     </div>
+                    <!--
                     <div class="pl-2">
-                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS"></b-form-input>
+                    </div>
+                    -->
+                    <div class="pl-2">
+                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY"></b-form-input>
                     </div>
                     <!--
                     <div class="pl-2">
@@ -151,14 +156,16 @@
                     </div>
                     -->
                     <div class="pl-2">
-                      <b-button size="sm" @click="searchAccount = account; recalculate('mytokens')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
+                      <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="settings.advanceSearch" @click="saveSettings('advanceSearch')" variant="outline-primary" v-b-popover.hover="'SIDEBAR SEARCH'"><span v-if="settings.advanceSearch"><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span><span v-else><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span></b-button>
                     </div>
+                    <!--
                     <div class="pl-2">
                       <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="3" variant="outline-primary"></b-form-select>
                     </div>
+                    -->
                     <!---
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="showSalesOnly" @click="recalculate('selectedTags')" variant="warning" v-b-popover.hover="'DISPLAY ON SALE ONLY'">$</b-button>
@@ -188,20 +195,63 @@
 
                   <div>
                     <!-- visible -->
-                    <b-collapse v-model="settings.advanceSearch" class="m-2">
+                    <b-collapse visible v-model="settings.advanceSearch" class="m-2">
                       <b-card>
-                        <b-row v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
-                          <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
-                          <b-col cols="6">
-                            <font size="-2">
-                              <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
-                                <template #cell(select)="data">
-                                  <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                                </template>
-                              </b-table>
-                            </font>
-                          </b-col>
-                        </b-row>
+                        <b-card-group deck>
+
+                          <b-card header="QUICK FILTER" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                            <b-card-text>
+                              <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID" class="mb-2"></b-form-input>
+                              <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input>
+                              <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY" class="mb-2"></b-form-input>
+                            </b-card-text>
+                          </b-card>
+
+                          <b-card header="FILTER BY TAGS" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                            <b-card-text>
+                              <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="10" variant="outline-primary"></b-form-select>
+                            </b-card-text>
+                          </b-card>
+
+                          <!--
+                          <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryKey">
+                            <b-card style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                              <template #header>
+                                <span variant="secondary">
+                                  {{ categoryKey }}
+                                </span>
+                                <font size="-2">
+                                  <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                                    <template #cell(select)="data">
+                                      <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                                    </template>
+                                  </b-table>
+                                </font>
+                              </template>
+                              <b-card-text>
+                              </b-card-text>
+                            </b-card>
+                          </div>
+                          -->
+
+                          <!--
+                          <br />
+                          <b-row v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
+                            <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
+                            <b-col cols="6">
+                              <font size="-2">
+                                <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                                  <template #cell(select)="data">
+                                    <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                                  </template>
+                                </b-table>
+                              </font>
+                            </b-row>
+                            </b-col>
+                          </b-row>
+                          -->
+
+                        </b-card-group>
                       </b-card>
                     </b-collapse>
                   </div>
@@ -221,7 +271,7 @@
                             <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId]) }}
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                            <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                             </b-link>
                             <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
@@ -262,7 +312,7 @@
                             <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
                           </b-link>
                         </span>
-                        <b-link size="sm" @click="searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                        <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                         </b-link>
                         <span v-if="data.item.hasMosaic">
@@ -312,11 +362,14 @@
               </b-tab>
               -->
 
-              <b-tab title="DATA">
+              <b-tab title="SYNC DATA">
                 <b-card-text>
-                  <b-link @click="loadOSData()">
-                    LOAD DATA
-                  </b-link>
+                  <b-button size="sm" @click="loadOSData()" variant="outline-primary">
+                    SYNC OPENSEA SALES AND LISTINGS DATA
+                  </b-button>
+                </b-card-text>
+                <b-card-text>
+                   TAKES ~ 33 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
                 </b-card-text>
               </b-tab>
 
@@ -346,7 +399,7 @@
                       <b-link :href="'https://opensea.io/accounts/' + data.item.owner + '?search[sortAscending]=false&search[sortBy]=LAST_TRANSFER_DATE'" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                          <b-icon-link shift-v="+1" font-scale="1.0"></b-icon-link>
                       </b-link>
-                      <b-link size="sm" @click="searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary" v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" >
+                      <b-link size="sm" @click="settings.searchAccount = data.item.owner; tabIndex = 0; recalculate('ownerSearch'); " variant="outline-primary" v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" >
                         <b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search>
                       </b-link>
                     </template>
@@ -463,8 +516,6 @@
           selectedTags: [],
           collatedOwners: [],
           tabIndex: 0,
-          searchString: '',
-          searchAccount: '',
           // showSalesOnly: false,
 
           data: [],
@@ -472,6 +523,9 @@
 
           settings: {
             advanceSearch: false,
+            searchTokenId: '',
+            searchLyrics: '',
+            searchAccount: '',
           },
 
           tokensSearchResults: [],
@@ -611,6 +665,7 @@
             this.collatedOwners = this.calculateCollatedOwners();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
             await this.processOSData();
+            this.saveSettings();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
 
@@ -676,14 +731,19 @@
                   break;
                 }
               }
-              if (include && this.searchString != null && this.searchString.length > 0) {
-                const s = this.searchString.toLowerCase();
-                if (d.tokenId != this.searchString && (!d.description || !d.description.toLowerCase().includes(s))) {
+              if (include && this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
+                if (d.tokenId != this.settings.searchTokenId) {
                   include = false;
                 }
               }
-              if (include && this.searchAccount != null && this.searchAccount.length > 0) {
-                const s = this.searchAccount.toLowerCase();
+              if (include && this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
+                const s = this.settings.searchLyrics.toLowerCase();
+                if (!d.description || !d.description.toLowerCase().includes(s)) {
+                  include = false;
+                }
+              }
+              if (include && this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
+                const s = this.settings.searchAccount.toLowerCase();
                 const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
                 const ensName = owner == null ? null : this.ensMap[owner];
                 if (owner != null && owner.includes(s)) {
@@ -913,7 +973,7 @@
                 url = url + "&token_ids=" + j;
               }
               const elapsed = parseInt(new Date() / 1000) - timestamp;
-              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + i + " (BATCH SIZE " + BATCHSIZE + ") OF " + this.getTotalSupply + ". ELAPSED " + elapsed + " SECONDS. REFRESH THIS WEBPAGE AFTER THIS PROCESS IS COMPLETED FOR THE DOWNLOADED RESULTS TO BE USED";
+              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + i + " (BATCH SIZE " + BATCHSIZE + ") OF " + this.getTotalSupply + ". ELAPSED " + elapsed + " SECONDS. CONTINUE BROWSING THE BEAUTIFUL BASTRADS IN THE MEANTIME";
               const data = await fetch(url).then(response => response.json());
               if (data.assets && data.assets.length > 0) {
                 for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
@@ -984,6 +1044,7 @@
             } else {
               Vue.set(this.categoryFilter[category], option, true);
             }
+            this.categoryFilter = this.categoryFilter;
             this.recalculate('filterChange');
           },
           getSortedValuesForCategory(category) {
@@ -1039,19 +1100,19 @@
         },
 
 
-        created() {
-          const separator = window.location.href.indexOf("/#/");
-          if (separator > 0) {
-            const parameter = window.location.href.substring(separator + 3);
-            if (new RegExp('^[0-9]+$').test(parameter)) {
-              this.searchString = parameter;
-            } else {
-              this.searchAccount = parameter;
-            }
-          }
-        },
-
-
+        // created() {
+        //   const separator = window.location.href.indexOf("/#/");
+        //   if (separator > 0) {
+        //     const parameter = window.location.href.substring(separator + 3);
+        //     if (new RegExp('^[0-9]+$').test(parameter)) {
+        //       this.settings.searchTokenId = parameter;
+        //     } else {
+        //       this.searchAccount = parameter;
+        //     }
+        //   }
+        // },
+        //
+        //
         mounted() {
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
@@ -1071,6 +1132,15 @@
           }
           if (localStorage.getItem('bastardsSettings')) {
             this.settings = JSON.parse(localStorage.getItem('bastardsSettings'));
+          }
+          const separator = window.location.href.indexOf("/#/");
+          if (separator > 0) {
+            const parameter = window.location.href.substring(separator + 3);
+            if (new RegExp('^[0-9]+$').test(parameter)) {
+              this.settings.searchTokenId = parameter;
+            } else {
+              this.settings.searchAccount = parameter;
+            }
           }
           this.recalculate("mounted");
         }
