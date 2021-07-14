@@ -240,8 +240,8 @@
                                 <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
                             </span>
-                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
-                              $
+                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
+                              <span v-if="osData[record.tokenId] && osData[record.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></span>
                             </b-link>
                             <span v-if="cardImageSizeCurrent >= 200">
                               <font size="-2">
@@ -281,8 +281,8 @@
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
-                          $
+                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
+                          <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
