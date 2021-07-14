@@ -149,7 +149,7 @@
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
-                      <b-button size="sm" :pressed.sync="settings.advanceSearch" @click="saveSettings('advanceSearch')" variant="outline-primary" v-b-popover.hover="'SIDEBAR SEARCH'"><span v-if="settings.advanceSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
+                      <b-button size="sm" :pressed.sync="settings.advancedSearch" @click="saveSettings('advancedSearch')" variant="outline-primary" v-b-popover.hover="'ADVANCED SEARCH'"><span v-if="settings.advancedSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
@@ -175,7 +175,7 @@
 
                   <div>
                     <!-- visible -->
-                    <b-collapse v-model="settings.advanceSearch" class="m-2">
+                    <b-collapse v-model="settings.advancedSearch" class="m-2">
                       <b-card>
                         <b-card-group deck>
                           <b-card header="QUICK FILTER" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
@@ -479,7 +479,7 @@
           categories: {},
 
           settings: {
-            advanceSearch: false,
+            advancedSearch: false,
             searchTokenId: '',
             searchLyrics: '',
             searchAccount: '',
