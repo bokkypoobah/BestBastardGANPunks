@@ -142,35 +142,15 @@
                     <div>
                       <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID"></b-form-input>
                     </div>
-                    <!--
-                    <div class="pl-2">
-                      <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS"></b-form-input>
-                    </div>
-                    -->
                     <div class="pl-2">
                       <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY"></b-form-input>
                     </div>
-                    <!--
-                    <div class="pl-2">
-                      <b-button v-b-toggle.collapse-search size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
-                    </div>
-                    -->
                     <div class="pl-2">
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
-                      <b-button size="sm" :pressed.sync="settings.advanceSearch" @click="saveSettings('advanceSearch')" variant="outline-primary" v-b-popover.hover="'SIDEBAR SEARCH'"><span v-if="settings.advanceSearch"><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span><span v-else><b-icon-search shift-v="+1" font-scale="1.0"></b-icon-search></span></b-button>
+                      <b-button size="sm" :pressed.sync="settings.advanceSearch" @click="saveSettings('advanceSearch')" variant="outline-primary" v-b-popover.hover="'SIDEBAR SEARCH'"><span v-if="settings.advanceSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
                     </div>
-                    <!--
-                    <div class="pl-2">
-                      <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="3" variant="outline-primary"></b-form-select>
-                    </div>
-                    -->
-                    <!---
-                    <div class="pl-2">
-                      <b-button size="sm" :pressed.sync="showSalesOnly" @click="recalculate('selectedTags')" variant="warning" v-b-popover.hover="'DISPLAY ON SALE ONLY'">$</b-button>
-                    </div>
-                    -->
                     <div class="pr-1 flex-grow-1">
                     </div>
                     <div class="pl-2">
@@ -195,10 +175,9 @@
 
                   <div>
                     <!-- visible -->
-                    <b-collapse visible v-model="settings.advanceSearch" class="m-2">
+                    <b-collapse v-model="settings.advanceSearch" class="m-2">
                       <b-card>
                         <b-card-group deck>
-
                           <b-card header="QUICK FILTER" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
                             <b-card-text>
                               <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID" class="mb-2"></b-form-input>
@@ -233,24 +212,6 @@
                             </b-card>
                           </div>
                           -->
-
-                          <!--
-                          <br />
-                          <b-row v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
-                            <b-col cols="2" class="text-right"> {{ categoryKey }}</b-col>
-                            <b-col cols="6">
-                              <font size="-2">
-                                <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
-                                  <template #cell(select)="data">
-                                    <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                                  </template>
-                                </b-table>
-                              </font>
-                            </b-row>
-                            </b-col>
-                          </b-row>
-                          -->
-
                         </b-card-group>
                       </b-card>
                     </b-collapse>
@@ -276,7 +237,7 @@
                             </b-link>
                             <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
                               <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
-                                <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
+                                <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
                             </span>
                             <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
@@ -317,7 +278,7 @@
                         </b-link>
                         <span v-if="data.item.hasMosaic">
                           <b-link :href="'hypedafmosaic/' + data.item.tokenId + '.png'" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
-                            <b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap>
+                            <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'VIEW NFT IN OPENSEA'" target="_blank">
@@ -516,7 +477,6 @@
           selectedTags: [],
           collatedOwners: [],
           tabIndex: 0,
-          // showSalesOnly: false,
 
           data: [],
           categories: {},
