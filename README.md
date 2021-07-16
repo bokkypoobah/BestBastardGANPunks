@@ -434,4 +434,4 @@ You may find this data useful for your projects.
 
 Enjoy!
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd - Jul 2021. The MIT Licence. Not affiliated with [https://bastardganpunks.club/](https://bastardganpunks.club/).
+(c) BokkyPooBah / Bok Consulting Pty Ltd - Jul 2021. The MIT Licence. Not affiliated with [https://bastardganpunks.club/](https://bastardganpunks.club/). Some images and data copyright their respective owners. DYOR.

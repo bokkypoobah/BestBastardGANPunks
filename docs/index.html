@@ -327,7 +327,7 @@
                   </b-button>
                 </b-card-text>
                 <b-card-text>
-                   TAKES ~ 33 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
+                   TAKES ~ 6 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
                 </b-card-text>
               </b-tab>
 
@@ -920,7 +920,7 @@
             });
             const timestamp = parseInt(new Date() / 1000);
             const BATCHSIZE = 50; // Max 50
-            const DELAYINMILLIS = 1000;
+            const DELAYINMILLIS = 100;
             let page = 0;
             const records = [];
             const delay = ms => new Promise(res => setTimeout(res, ms));
