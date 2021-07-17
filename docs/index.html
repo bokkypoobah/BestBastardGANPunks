@@ -140,10 +140,10 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..."></b-form-input>
                     </div>
                     <div class="pl-2">
-                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY"></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..."></b-form-input>
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
@@ -180,9 +180,33 @@
                         <b-card-group deck>
                           <b-card header="QUICK FILTER" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
                             <b-card-text>
-                              <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 TOKENID" class="mb-2"></b-form-input>
+                              <!-- <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..." class="mb-2"></b-form-input> -->
+
+                              <!-- <b-input-group v-if="selectedItemIsGIF">
+                                <template #prepend>
+                                  <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
+                                  <b-input-group-text>0</b-input-group-text>
+                                </template>
+                                <b-form-input @change="setFrame()" v-model.trim="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
+                                <template #append>
+                                  <b-input-group-text>{{ selectedItemFrames == null ? 0 : (selectedItemFrames - 1) }}</b-input-group-text>
+                                </template>
+                              </b-input-group> -->
+
+                              <!-- <b-input-group size="sm" > -->
+                                <b-form-input type="text" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..." class="mb-2"></b-form-input>
+                                <!-- <template #append>
+                                  <b-button :disabled="settings.searchTokenId.length == 0" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary" class="mb-2">{{ getURL(settings.searchTokenId)}}</b-button>
+                                </template>
+                              </b-input-group> -->
+                              <!-- <b-input-group size="sm" > -->
+                                <b-form-input type="text" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..." class="mb-2"></b-form-input>
+                                <!-- <template #append>
+                                  <b-button :disabled="settings.searchAccount.length == 0" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary" class="mb-2 w-50">{{ getURL(settings.searchAccount)}}</b-button>
+                                </template>
+                              </b-input-group> -->
+
                               <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input>
-                              <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 OWNER ENS/ADDY" class="mb-2"></b-form-input>
                             </b-card-text>
                           </b-card>
                           <b-card header="FILTER BY TAGS" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
@@ -278,6 +302,14 @@
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
+                        <!--
+                        TODO
+                        <span>
+                          <b-link :href="'????/' + data.item.tokenId + '.png'" v-b-popover.hover="'VIEW RAW DATA'" target="_blank">
+                            <b-icon-file-text shift-v="+1" font-scale="0.8"></b-icon-file-text>
+                          </b-link>
+                        </span>
+                        -->
                         <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
                           <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
@@ -309,16 +341,6 @@
                   </div>
                 </b-card-text>
               </b-tab>
-
-              <!--
-              <b-tab title="MY FUCKING WALLET">
-                <b-card-text>
-                  SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
-                  <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
-                  </b-table>
-                </b-card-text>
-              </b-tab>
-              -->
 
               <b-tab title="SYNC DATA">
                 <b-card-text>
@@ -376,6 +398,22 @@
               <b-tab title="LOADMAP">
                 <b-card-text>
                   LOTS OF FEATURES INCLUDING NAMING YOUR BASTARDS ON-CHAIN (FOR #ETHERNITY, IN ALL SPACETIME HUMANS WILL VENTURE TO); A DECENTRALISED NFT EXCHANGE. THE DECENRALISED DESING SPACE IS STIL BEING EXPLORED, AND IS SOOO SWEET. NO PROMISES. SOFTWARE GETS DONE WHEN IT GETS DONE. IF YOU WANT TO HELP CONTRIBUTE TO BUILDING THIS SPACE, SEND A FEW (OR LOTS) OF YOUR FLOOR (OR YOUR BEST) BGANPUNKS TO BOKKYPOOBAH.ETH! FOR AWARDING IN THE UPCOMING ETHEREUM DEV/COMMUNITY OG AWARDS! TO THE MANY PEOPLE WHO HAVE BEEN BUIDLING THE DECETRALISED TECHNOLOGY YOU ARE NOW USING. THEY ARE BUIDLING OUR FUTURE. AND OUR CHILDREN^CHILDREN'S FUTURE. ANY UN-ADOPTED DONATED BGANPUNGS WILL BE SENT BACK TO THE ORIGINAL ADDRESS AFTER THEH AWARDS. DON'T BE A FUCKING STINGY BASTARD!
+                </b-card-text>
+              </b-tab>
+              -->
+
+              <!--
+              <b-tab title="SETTINGS">
+                <b-card-text>
+                  Portfolios: {
+                    "a": [
+                      "0x01",
+                      "0x02",
+                    ]
+                  }
+                  SELECT <em>MY SEXY BASTARDS</em> IN THE PREVIOUS TAB TO VIEW YOUR BASTARDS.<br />
+                  <b-table small :fields="ownedTokenFields" :items="getOwnedTokenIdData" responsive="sm">
+                  </b-table>
                 </b-card-text>
               </b-tab>
               -->
@@ -468,6 +506,7 @@
           processing: null,
           connected: false,
           account: null,
+          // accounts: [],
           tokensOwned: [],
           owners: [],
           ensMap: {},
@@ -667,48 +706,80 @@
           },
 
           calculateSearchResults() {
-            let results = [];
-            let data = this.data.slice(0);
             const accountLowerCase = this.account == null ? null : this.account.toLowerCase();
             const selectedTags = this.selectedTags == null || (this.selectedTags.length == 1 && this.selectedTags[0] == null) ? null : this.selectedTags;
-            for (let i in data) {
-              const d = data[i];
-              let include = true;
-              function getAttribute(data1, category) {
-                for (let attributeIndex in data1.attributes) {
-                  const attribute = data1.attributes[attributeIndex];
-                  if (attribute.trait_type == category) {
-                    return attribute.value;
+
+            function getAttribute(data1, category) {
+              for (let attributeIndex in data1.attributes) {
+                const attribute = data1.attributes[attributeIndex];
+                if (attribute.trait_type == category) {
+                  return attribute.value;
+                }
+              }
+              return null;
+            }
+
+            let data = this.data.slice(0);
+            let stage1Data = data;
+            if (this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
+              const searchTokenIds = this.settings.searchTokenId.split(",");
+              stage1Data = [];
+              for (s of searchTokenIds) {
+                if (s >= 0 && s < this.getTotalSupply) {
+                  stage1Data.push(data[s]);
+                }
+              }
+            }
+
+            let stage2Data = stage1Data;
+            if (this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
+              const s = this.settings.searchLyrics.toLowerCase();
+              console.log("s: " + s);
+              stage2Data = [];
+              for (let i in stage1Data) {
+                const d = stage1Data[i];
+                const include = d.description.toLowerCase().includes(s);
+                if (d.description && d.description.toLowerCase().includes(s)) {
+                  if (i < 10) {
+                    console.log("stage1Data[" + i + "].description: " + JSON.stringify(d.description) + ", include: " + include);
+                  }
+                  stage2Data.push(d);
+                }
+              }
+            }
+            console.log("stage2Data.length: " + stage2Data.length);
+
+            let stage3Data = stage2Data;
+            if (this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
+              const searchAccounts = this.settings.searchAccount.split(",");
+              stage3Data = [];
+              for (let i in stage2Data) {
+                const d = stage2Data[i];
+                const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
+                const ensName = owner == null ? null : this.ensMap[owner];
+                for (searchAccount of searchAccounts) {
+                  const s = searchAccount.toLowerCase();
+                  if (owner != null && owner.includes(s)) {
+                    stage3Data.push(d);
+                    break;
+                  } else if (ensName != null && ensName.includes(s)) {
+                    stage3Data.push(d);
+                    break;
                   }
                 }
-                return null;
               }
+            }
+            console.log("stage3Data.length: " + stage3Data.length);
+
+            let results = [];
+            for (let i in stage3Data) {
+              const d = stage3Data[i];
+              let include = true;
               for (const [key, value] of Object.entries(this.categoryFilter)) {
                 const attributeValue = getAttribute(d, key);
                 if (!value[attributeValue]) {
                   include = false;
                   break;
-                }
-              }
-              if (include && this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
-                if (d.tokenId != this.settings.searchTokenId) {
-                  include = false;
-                }
-              }
-              if (include && this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
-                const s = this.settings.searchLyrics.toLowerCase();
-                if (!d.description || !d.description.toLowerCase().includes(s)) {
-                  include = false;
-                }
-              }
-              if (include && this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
-                const s = this.settings.searchAccount.toLowerCase();
-                const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
-                const ensName = owner == null ? null : this.ensMap[owner];
-                if (owner != null && owner.includes(s)) {
-                } else if (ensName != null && ensName.includes(s)) {
-                } else {
-                  include = false;
                 }
               }
               if (include) {
@@ -895,7 +966,7 @@
                     // const normalized = normalize(address);
                   }
                 }
-                ensMap["0x000000000000000000000000000000000000dEaD".toLowerCase()] = "BurnAddress_";
+                ensMap["0x000000000000000000000000000000000000dEaD".toLowerCase()] = "0DEAD_";
                 ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 this.ensMap = ensMap;
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
@@ -1019,6 +1090,13 @@
           },
 
           // --- Utilities ---
+          getURL(s) {
+            const separator = window.location.href.indexOf("/#/");
+            // if (separator > 0) {
+            //   const parameter = window.location.href.substring(separator + 3);
+            // const prefix = window.location.href.substring(separator + 3);
+            return s;
+          },
           formatETH(e) {
             return ethers.utils.commify(e.toString());
           },
@@ -1077,7 +1155,7 @@
           const separator = window.location.href.indexOf("/#/");
           if (separator > 0) {
             const parameter = window.location.href.substring(separator + 3);
-            if (new RegExp('^[0-9]+$').test(parameter)) {
+            if (new RegExp('^[0-9,]+$').test(parameter)) {
               this.settings.searchTokenId = parameter;
             } else {
               this.settings.searchAccount = parameter;
