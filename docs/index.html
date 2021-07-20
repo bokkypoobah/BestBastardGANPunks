@@ -63,7 +63,7 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <div v-if="getTotalSupply > 100" v-for="item in getSelectedShowcase">
+            <div v-for="item in getSelectedShowcase">
               <b-link @click="displayToken(item)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
@@ -78,13 +78,14 @@
         <div>
           <b-card no-body class="mt-1">
             <div>
-              <b-modal ref="my-modal" hide-footer @shown="onGIFFrameSelectionModalOpened">
+              <!-- <b-modal size="xl" ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" class="w-100"> -->
+              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-75">
                 <template #modal-title>
                   {{ selectedTokenId == null ? null : data[selectedTokenId].name }}
                   <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedTokenId == null ? null : data[selectedTokenId].osimage" :rel:animated_src="selectedTokenId == null ? null : data[selectedTokenId].osimage" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selectedTokenId == null ? null : data[selectedTokenId].osimage" :rel:animated_src="selectedTokenId == null ? null : data[selectedTokenId].osimage" width="800" height="800" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selectedItemIsGIF">
                   <template #prepend>
@@ -167,9 +168,7 @@
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="settings.cardView" @click="saveSettings('cardView')" variant="link" v-b-popover.hover="'LIST OR CARD VIEW'"><span v-if="settings.cardView"><b-icon-list-ol shift-v="+1" font-scale="1.0"></b-icon-list-ol></span><span v-else><b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap></span></b-button>
-                    </div>
-                    <div class="pl-2">
-                      <b-button size="sm" v-b-toggle.sidebar-border variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'"><b-icon-search shift-v="+1" font-scale="1.3"></b-icon-search></b-button></b-button>
+                      <b-button size="sm" v-b-toggle.sidebar-border variant="link" v-b-popover.hover="'ADVANCED SERACH'"class="m-0 p-0"><b-icon-search shift-v="+.5" font-scale="1.2"></b-icon-search></b-button>
                     </div>
                   </div>
 
@@ -477,6 +476,7 @@
                     <li>CAN BE RUN ON YOUR OWN COMPUTER BY CLONING THE GITHUB REPOSITORY AND SERVING THE PAGES USING A WEBSERVER, OR THE "ANYWHERE" SERVER.</li>
                     <li>CAN BE RUN FROM GITHUB PAGES, SO YOU CAN EASILY CLONE, CUSTOMISE AND SERVE YOUR OWN VERSION</li>
                     <li>THIS APP DOES ADD A REF LINK TO MY ACCOUNT TO OPENSEA URLS</li>
+                    <li>HAS SOME CODE FROM THE IS IT CLEAN TOOL BY <a href="https://twitter.com/yungwknd" target="_blank">@yungwknd</a></li>
                   </ul>
                 </b-card-text>
 
@@ -1020,7 +1020,7 @@
           // --- GIF Frame Extraction ---
           async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.data[tokenId].osimage);
+            xhr.open('GET', this.data[tokenId].image);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
@@ -1029,7 +1029,7 @@
                 t.selectedItemIsGIF = false;
               }
               t.selectedTokenId = tokenId;
-              t.$refs['my-modal'].show();
+              t.$refs['gif-frame-extraction-modal'].show();
             }
             xhr.onerror = function() {
               alert('A network error occurred!');
@@ -1040,7 +1040,7 @@
             const t = this;
             var element = document.getElementById("thegif1")
             if (t.selectedItemIsGIF) {
-              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 400, rubbable: true });
+              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 800, rubbable: true });
               this.selectedItemGIF.load(function(){
                 t.selectedItemFrames = t.selectedItemGIF.get_length();
                 if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
