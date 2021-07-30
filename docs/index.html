@@ -65,7 +65,7 @@
             </b-navbar-brand>
             <div v-for="item in getSelectedShowcase">
               <b-link @click="displayToken(item)">
-                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? data[item].osimage : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
             </div>
             <b-navbar-nav class="ml-auto">
@@ -79,13 +79,13 @@
           <b-card no-body class="mt-1">
             <div>
               <!-- <b-modal size="xl" ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" class="w-100"> -->
-              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-75">
+              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-50">
                 <template #modal-title>
                   {{ selectedTokenId == null ? null : data[selectedTokenId].name }}
                   <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedTokenId == null ? null : data[selectedTokenId].osimage" :rel:animated_src="selectedTokenId == null ? null : data[selectedTokenId].osimage" width="800" height="800" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selectedTokenId != null && data[selectedTokenId] ? data[selectedTokenId].osimage : null" :rel:animated_src="selectedTokenId && data[selectedTokenId] ? data[selectedTokenId].osimage : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selectedItemIsGIF">
                   <template #prepend>
@@ -261,6 +261,12 @@
                                 <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
                             </span>
+                            <!-- TODO
+                            <span v-if="record.mosaicurl == null && cardImageSizeCurrent >= 200">
+                              <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
+                                <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
+                              </b-link>
+                            </span> -->
                             <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
                               <span v-if="osData[record.tokenId] && osData[record.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></span>
                             </b-link>
@@ -301,6 +307,7 @@
                             <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                           </b-link>
                         </span>
+
                         <!--
                         TODO
                         <span>
@@ -946,6 +953,8 @@
                   }
                 }
                 ensMap[this.account.toLowerCase()] = this.account;
+                ensMap["0x000000000000000000000000000000000000dEaD".toLowerCase()] = "0DEAD_";
+                ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 let addresses = Object.keys(ensMap);
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
                 const ENSOWNERBATCHSIZE = 500;
@@ -961,8 +970,6 @@
                     // const normalized = normalize(address);
                   }
                 }
-                ensMap["0x000000000000000000000000000000000000dEaD".toLowerCase()] = "0DEAD_";
-                ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 this.ensMap = ensMap;
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
                 this.processing = "RECALCULATING DATA";
@@ -1040,7 +1047,7 @@
             const t = this;
             var element = document.getElementById("thegif1")
             if (t.selectedItemIsGIF) {
-              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 800, rubbable: true });
+              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 600, rubbable: true });
               this.selectedItemGIF.load(function(){
                 t.selectedItemFrames = t.selectedItemGIF.get_length();
                 if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
@@ -1093,7 +1100,7 @@
             return s;
           },
           formatETH(e) {
-            return ethers.utils.commify(e.toString());
+            return e ? ethers.utils.commify(e.toString()) : null;
           },
           formatDate(d) {
             if (d == 0) {
