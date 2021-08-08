@@ -1027,7 +1027,7 @@
           // --- GIF Frame Extraction ---
           async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.data[tokenId].image);
+            xhr.open('GET', this.data[tokenId].osimage);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
