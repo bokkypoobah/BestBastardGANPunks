@@ -944,6 +944,8 @@
                   }
                 }
                 this.owners = owners;
+                console.log("const OWNERSSNAPSHOTTIMESTAMP=" + new Date().getTime() + ";");
+                console.log("const OWNERSSNAPSHOT=" + JSON.stringify(owners) + ";");
                 localStorage.setItem('bastardsOwners', JSON.stringify(owners));
                 const ensMap = {};
                 for (let i in owners) {
@@ -971,6 +973,8 @@
                   }
                 }
                 this.ensMap = ensMap;
+                console.log("const ENSMAPSNAPSHOTTIMESTAMP=" + new Date().getTime() + ";");
+                console.log("const ENSMAPSNAPSHOT=" + JSON.stringify(ensMap) + ";");
                 localStorage.setItem('bastardsENSMap', JSON.stringify(ensMap));
                 this.processing = "RECALCULATING DATA";
                 this.recalculate('data loaded via web3');
