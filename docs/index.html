@@ -401,27 +401,24 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab active lazy title="CATEGORIES">
-                <b-card-text>
-                  Maintained in <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/deploymentData.js</a>. Ping changes to <a href="https://twitter.com/BokkyPooBah" target="_blank">@BokkyPooBah</a>.
-                </b-card-text>
-
+              <b-tab lazy title="CATEGORIES">
                 <b-card-text>
                   <!-- :fields="categoryFields" -->
-                  <!-- <b-table small striped :items="getTokenIdsByTags" head-variant="light"> -->
+                  <b-table small striped :items="getCategories" head-variant="light">
                     <!-- <template #cell(select)="data">
                       <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
                     </template> -->
-                  <!-- </b-table> -->
+                  </b-table>
                 </b-card-text>
-
-
+                <b-card-text>
+                  Maintained in <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js</a>. Submit PR or ping changes to <a href="https://twitter.com/BokkyPooBah" target="_blank">@BokkyPooBah</a>.
+                </b-card-text>
                 <!-- <b-card-text>
                   {{ getTokenIdsByTags }}
                 </b-card-text> -->
-                <b-card-text>
+                <!-- <b-card-text>
                   {{ getCategories }}
-                </b-card-text>
+                </b-card-text> -->
               </b-tab>
               <!--
               <b-tab title="LOADMAP">
