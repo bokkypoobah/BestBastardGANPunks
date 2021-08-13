@@ -24,7 +24,7 @@ const CATEGORIES = [
   },
   {
     "category": "PILOTHELMETPARTIAL",
-    "tokenIds": [ 2099, 8237, 8743, 10038, 10298 ]
+    "tokenIds": [ 2099, 5696, 8237, 8743, 10038, 10298 ]
   },
   {
     "category": "STICK",
