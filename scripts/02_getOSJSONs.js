@@ -6,7 +6,7 @@ const BATCHSIZE = 50;
 const TOTALSUPPLY = 11305;
 
 const downloadFile = (async (url, path) => {
-  const res = await fetch(url);
+  const res = await fetch(url, { timeout: 10000 });
   const fileStream = fs.createWriteStream(path);
   await new Promise((resolve, reject) => {
     res.body.pipe(fileStream);

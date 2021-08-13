@@ -214,6 +214,11 @@
                               <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="10" variant="outline-primary"></b-form-select>
                             </b-card-text>
                           </b-card>
+                          <b-card header="FILTER BY CATEGORIES" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                            <b-card-text>
+                              <b-form-select size="sm" @change="recalculate('selectedCategories')" v-model="selectedCategories" :options="getCategories" multiple :select-size="10" variant="outline-primary"></b-form-select>
+                            </b-card-text>
+                          </b-card>
 
                           <!--
                           <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryKey">
@@ -404,7 +409,7 @@
               <b-tab lazy title="CATEGORIES">
                 <b-card-text>
                   <!-- :fields="categoryFields" -->
-                  <b-table small striped :items="getCategories" head-variant="light">
+                  <b-table small striped :items="getTokenIdsByCategories" head-variant="light">
                     <!-- <template #cell(select)="data">
                       <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
                     </template> -->
@@ -414,7 +419,7 @@
                   Maintained in <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js</a>. Submit PR or ping changes to <a href="https://twitter.com/BokkyPooBah" target="_blank">@BokkyPooBah</a>.
                 </b-card-text>
                 <!-- <b-card-text>
-                  {{ getTokenIdsByTags }}
+                  {{ getTokenIdsByCategories }}
                 </b-card-text> -->
                 <!-- <b-card-text>
                   {{ getCategories }}
@@ -540,6 +545,7 @@
           osData: {},
           tags: {},
           selectedTags: [],
+          selectedCategories: [],
           collatedOwners: [],
           tabIndex: 0,
 
@@ -613,15 +619,10 @@
             { key: 'tokens', label: 'TONKENS' },
           ],
           bokkysBastards: [3053, 4689, 5846, 5982, 6403, 7222, 7333, 7567, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
-          // TODO: Manage tags, including sync (add, remove, update)
-          hoodies: {"9":["HOODIE"],"366":["HOODIE"],"590":["HOODIE"],"722":["HOODIE"],"816":["HOODIE"],"847":["HOODIE"],"1057":["HOODIE"],"1097":["HOODIE"],"1278":["HOODIE"],"1313":["HOODIE"],"1620":["HOODIE"],"1693":["HOODIE"],"1714":["HOODIE"],"2110":["HOODIE"],"2415":["HOODIE"],"2521":["HOODIE"],"2662":["HOODIE"],"2890":["HOODIE"],"2964":["HOODIE"],"3212":["HOODIE"],"3716":["HOODIE"],"4075":["HOODIE"],"4140":["HOODIE"],"4211":["HOODIE"],"4284":["HOODIE"],"4500":["HOODIE"],"4738":["HOODIE"],"4752":["HOODIE"],"5432":["HOODIE"],"5542":["HOODIE"],"5720":["HOODIE"],"5785":["HOODIE"],"6203":["HOODIE"],"6408":["HOODIE"],"6719":["HOODIE"],"7091":["HOODIE"],"7096":["HOODIE"],"7426":["HOODIE"],"7458":["HOODIE"],"7567":["HOODIE"],"7725":["HOODIE"],"7825":["HOODIE"],"8024":["HOODIE"],"8187":["HOODIE"],"8428":["HOODIE"],"8550":["HOODIE"],"8667":["HOODIE"],"8671":["HOODIE"],"8718":["HOODIE"],"8860":["HOODIE"],"8915":["HOODIE"],"9321":["HOODIE"],"9379":["HOODIE"],"9387":["HOODIE"],"9786":["HOODIE"],"10267":["HOODIE"],"10991":["HOODIE"]},
         },
 
 
         computed: {
-          getCategories() {
-            return CATEGORIES;
-          },
           getTotalSupply() {
             return this.data.length;
           },
@@ -670,28 +671,28 @@
             results.unshift({ value: null, text: '(All)' });
             return results;
           },
-          getTokenIdsByTags() {
-            const collator = {};
-            for (const [key, value] of Object.entries(this.tags)) {
-              for (let i = 0; i < value.length; i++) {
-                const tag = value[i];
-                if (!collator[tag]) {
-                  collator[tag] = [key];
-                } else {
-                  collator[tag].push(key)
-                }
-              }
-            }
+          getCategories() {
             let results = [];
-            // // results.push({ value: null, text: '(All)' });
-            for (const [key, value] of Object.entries(collator)) {
-              results.push({ category: key, tokenIds: value });
+            for (const record of CATEGORIES) {
+              // console.log(key + " => " + JSON.stringify(value));
+              results.push({ value: record.category, text: record.category + ' (' + record.tokenIds.length + ')' });
+            }
+            results.sort(function(a, b) {
+              return a.value.localeCompare(b.value);
+            });
+            results.unshift({ value: null, text: '(All)' });
+            return results;
+          },
+          getTokenIdsByCategories() {
+            let results = [];
+            for (const record of CATEGORIES) {
+              results.push({ category: record.category, tokenIds: record.tokenIds });
             }
             results.sort(function(a, b) {
               return a.category.localeCompare(b.category);
             });
             return results;
-          }
+          },
         },
 
 
@@ -779,10 +780,36 @@
             }
 
             let stage2Data = stage1Data;
+            if (this.selectedCategories && this.selectedCategories.length > 0 && this.selectedCategories[0] != null) {
+              // console.log("selectedCategories: " + JSON.stringify(this.selectedCategories));
+              const tokenIds = {};
+              for (const selectedCategory of this.selectedCategories) {
+                // console.log("selectedCategory: " + JSON.stringify(selectedCategory));
+                for (const record of CATEGORIES) {
+                  if (selectedCategory == record.category) {
+                    console.log(record);
+                    for (const tokenId of record.tokenIds) {
+                      tokenIds[tokenId] = 1;
+                    }
+                  }
+                }
+              }
+              // console.log("tokenIds: " + JSON.stringify(tokenIds));
+              stage2Data = [];
+              for (let i in stage1Data) {
+                const d = stage1Data[i];
+                if (tokenIds[d.tokenId]) {
+                  // console.log("tokenId: " + JSON.stringify(d.tokenId));
+                  stage2Data.push(d);
+                }
+              }
+            }
+
+            let stage3Data = stage2Data;
             if (this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
               const s = this.settings.searchLyrics.toLowerCase();
               console.log("s: " + s);
-              stage2Data = [];
+              stage3Data = [];
               for (let i in stage1Data) {
                 const d = stage1Data[i];
                 const include = d.description.toLowerCase().includes(s);
@@ -790,37 +817,37 @@
                   if (i < 10) {
                     console.log("stage1Data[" + i + "].description: " + JSON.stringify(d.description) + ", include: " + include);
                   }
-                  stage2Data.push(d);
+                  stage3Data.push(d);
                 }
               }
             }
-            console.log("stage2Data.length: " + stage2Data.length);
+            // console.log("stage3Data.length: " + stage3Data.length);
 
-            let stage3Data = stage2Data;
+            let stage4Data = stage3Data;
             if (this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
               const searchAccounts = this.settings.searchAccount.split(",");
-              stage3Data = [];
-              for (let i in stage2Data) {
-                const d = stage2Data[i];
+              stage4Data = [];
+              for (let i in stage3Data) {
+                const d = stage3Data[i];
                 const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
                 const ensName = owner == null ? null : this.ensMap[owner];
                 for (searchAccount of searchAccounts) {
                   const s = searchAccount.toLowerCase();
                   if (owner != null && owner.includes(s)) {
-                    stage3Data.push(d);
+                    stage4Data.push(d);
                     break;
                   } else if (ensName != null && ensName.includes(s)) {
-                    stage3Data.push(d);
+                    stage4Data.push(d);
                     break;
                   }
                 }
               }
             }
-            console.log("stage3Data.length: " + stage3Data.length);
+            console.log("stage4Data.length: " + stage4Data.length);
 
             let results = [];
-            for (let i in stage3Data) {
-              const d = stage3Data[i];
+            for (let i in stage4Data) {
+              const d = stage4Data[i];
               let include = true;
               for (const [key, value] of Object.entries(this.categoryFilter)) {
                 const attributeValue = getAttribute(d, key);
@@ -1174,15 +1201,19 @@
             localStorage.setItem('bastardsSettings', JSON.stringify(this.settings));
           },
           ensOrShortName(address) {
+            try {
               let name = this.ensMap[address.toLowerCase()];
               if (name != null) {
                 name = name.substring(0, 16);
               }
               return name;
+            } catch (e) {
+              return address;
+            }
           },
         },
 
-
+        // --- Mounted ---
         mounted() {
           if (localStorage.getItem('bastardsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('bastardsOwners'));
