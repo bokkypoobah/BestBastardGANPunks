@@ -32,6 +32,7 @@
     <script src="js/eth-ens-namehash.js"></script>
 
     <script src="bastardData.min.js"></script>
+    <script src="categories.js"></script>
     <script src="deploymentData.js"></script>
     <script src="ensMapSnapshot.js"></script>
     <script src="ownersSnapshot.js"></script>
@@ -400,6 +401,28 @@
                 </b-card-text>
               </b-tab>
 
+              <b-tab active lazy title="CATEGORIES">
+                <b-card-text>
+                  Maintained in <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/deploymentData.js</a>. Ping changes to <a href="https://twitter.com/BokkyPooBah" target="_blank">@BokkyPooBah</a>.
+                </b-card-text>
+
+                <b-card-text>
+                  <!-- :fields="categoryFields" -->
+                  <!-- <b-table small striped :items="getTokenIdsByTags" head-variant="light"> -->
+                    <!-- <template #cell(select)="data">
+                      <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
+                    </template> -->
+                  <!-- </b-table> -->
+                </b-card-text>
+
+
+                <!-- <b-card-text>
+                  {{ getTokenIdsByTags }}
+                </b-card-text> -->
+                <b-card-text>
+                  {{ getCategories }}
+                </b-card-text>
+              </b-tab>
               <!--
               <b-tab title="LOADMAP">
                 <b-card-text>
@@ -599,6 +622,9 @@
 
 
         computed: {
+          getCategories() {
+            return CATEGORIES;
+          },
           getTotalSupply() {
             return this.data.length;
           },
@@ -638,12 +664,34 @@
               }
             }
             let results = [];
-            results.push({ value: null, text: '(All)' });
             for (const [key, value] of Object.entries(collator)) {
               results.push({ value: key, text: key + ' (' + value + ')' });
             }
             results.sort(function(a, b) {
-              return b.count - a.count;
+              return a.value.localeCompare(b.value);
+            });
+            results.unshift({ value: null, text: '(All)' });
+            return results;
+          },
+          getTokenIdsByTags() {
+            const collator = {};
+            for (const [key, value] of Object.entries(this.tags)) {
+              for (let i = 0; i < value.length; i++) {
+                const tag = value[i];
+                if (!collator[tag]) {
+                  collator[tag] = [key];
+                } else {
+                  collator[tag].push(key)
+                }
+              }
+            }
+            let results = [];
+            // // results.push({ value: null, text: '(All)' });
+            for (const [key, value] of Object.entries(collator)) {
+              results.push({ category: key, tokenIds: value });
+            }
+            results.sort(function(a, b) {
+              return a.category.localeCompare(b.category);
             });
             return results;
           }
