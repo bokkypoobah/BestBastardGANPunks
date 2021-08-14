@@ -424,10 +424,18 @@
               <b-tab lazy title="CATEGORIES">
                 <b-card-text>
                   <!-- :fields="categoryFields" -->
+                  <!-- results.push({ category: record.category, tokenIds: record.tokenIds }); -->
                   <b-table small striped :items="getTokenIdsByCategories" head-variant="light">
-                    <!-- <template #cell(select)="data">
-                      <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                    </template> -->
+                    <template #cell(tokenIds)="data">
+                      <!-- bbb {{ data.item.tokenIds }} -->
+                      <span v-for="tokenId in data.item.tokenIds">
+                        <!-- {{ tokenId + ' ' }} -->
+                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW #' + tokenId + ' IN OPENSEA'" target="_blank">
+                          <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
+                        </b-link>
+                      </span>
+                      <!-- <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox> -->
+                    </template>
                   </b-table>
                 </b-card-text>
                 <b-card-text>
