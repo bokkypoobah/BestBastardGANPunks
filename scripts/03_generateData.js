@@ -24,50 +24,49 @@ for (let i = 0; i < TOTALSUPPLY; i += 50) {
     console.log("Error in file: " + filename);
   }
 }
-console.log(osrecords[666]);
+// console.log(osrecords[0]);
 
 const INPUTDATADIR = "raw/";
 let records = [];
-for (let i = 0; i < TOTALSUPPLY; i++) {
-  var filename = INPUTDATADIR + i + ".json";
-  try {
-    var data = JSON.parse(fs.readFileSync(filename, "utf8"));
-    if (data.description == null || data.description.length == 0) {
-      console.log("Description missing for: " + i);
-    }
-    const osData = osrecords[data.tokenId];
+
+var filename = INPUTDATADIR + "all.json";
+try {
+  var data = JSON.parse(fs.readFileSync(filename, "utf8"));
+  if (data.length != TOTALSUPPLY) {
+    console.log("Error. Expecting data.length: " + data.length + " to be " + TOTALSUPPLY);
+  }
+  console.log(data.length);
+
+  for (const record of data) {
+    const osData = osrecords[record.tokenId];
     if (!osData) {
       console.log("Cannot find OS data for: " + data.tokenId);
     }
-    let hasMosaic = false;
-    for (let k in data.attributes) {
-      const attribute = data.attributes[k];
+    record.imageMosaic = null;
+    for (let k in record.attributes) {
+      const attribute = record.attributes[k];
       if (attribute.trait_type == 'HYPE TYPE') {
         if (attribute.value == 'HYPED AF (ANIMATED)') {
-          // TODO: Update when post-mint mosaics have been organised into folders
-          if (data.tokenId < 9000) {
-            hasMosaic = true;
-            break;
-          }
+          record.imageMosaic = record.tokenId + '.png';
+          break;
         }
       }
     }
+    record.permalink = osData.permalink;
+    record.images = [osData.image_url, record.image, record.imageArweave, osData.image_preview_url, osData.image_thumbnail_url];
+    delete record.image;
+    delete record.imageArweave;
 
-    records.push({
-      tokenId: data.tokenId,
-      name: data.name,
-      // owner: osData.owner.address,
-      image: data.image,
-      osimage: osData == null ? null : osData.image_url,
-      permalink: osData == null ? null : osData.permalink,
-      hasMosaic: hasMosaic,
-      description: data.description,
-      attributes: data.attributes,
-    });
-  } catch (e) {
-    console.log("Error in file: " + filename);
+    if (record.tokenId == 0 || record.tokenId == 1) {
+      console.log(record);
+    }
+    records.push(record);
   }
+} catch (e) {
+  console.log("Error in file: " + filename);
 }
+
+
 console.log(JSON.stringify(records[666], null, 2))
 const OUTPUTMINREPORT = "bastardData.min.js";
 (async () => {
@@ -76,7 +75,6 @@ const OUTPUTMINREPORT = "bastardData.min.js";
       console.log('Data written to file: ' + OUTPUTMINREPORT);
   });
 })();
-
 
 const OUTPUTREPORT = "bastardData.js";
 (async () => {
@@ -87,8 +85,3 @@ const OUTPUTREPORT = "bastardData.js";
 })();
 
 console.log(process.cwd());
-
-
-// module.exports = {
-//   BASTARDDATA
-// }
