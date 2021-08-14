@@ -64,11 +64,11 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
-            <!-- <div v-for="item in getSelectedShowcase">
+            <div v-for="item in getSelectedShowcase">
               <b-link @click="displayToken(item)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? data[item].images[0] : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
-            </div> -->
+            </div>
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT MY FUCKING WALLET</b-button>
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ ensOrShortName(account) }}</b-button>
