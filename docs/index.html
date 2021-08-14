@@ -770,7 +770,7 @@
             let data = this.data.slice(0);
             let stage1Data = data;
             if (this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
-              const searchTokenIds = this.settings.searchTokenId.split(",");
+              const searchTokenIds = this.settings.searchTokenId.split(",").map(function(item) { return item.trim(); });
               stage1Data = [];
               for (s of searchTokenIds) {
                 if (s >= 0 && s < this.getTotalSupply) {
