@@ -380,7 +380,7 @@
                       <font size="-2">Unique Owners: {{ collatedOwners.length }} ({{ ((collatedOwners.length*100)/getTotalSupply).toFixed(2) + '%' }}); Total Supply: {{ getTotalSupply }}. Connect your wallet to retrieve up-to-date owner data</font>
                     </div>
                     <div class="pl-2">
-                      <b-pagination size="sm" v-model="ownersCurrentPage" :total-rows="collatedOwners.length" :per-page="tokensPageSize"></b-pagination>
+                      <b-pagination size="sm" v-model="ownersCurrentPage" :total-rows="collatedOwners.length" :per-page="ownersPageSize"></b-pagination>
                     </div>
                     <div class="pl-2">
                       <b-form-select size="sm" v-model="ownersPageSize" :options="pageSizes"></b-form-select>
@@ -402,10 +402,19 @@
                       </b-link>
                     </template>
                     <template #cell(tokens)="data">
-                      <span v-for="token in data.item.tokens">
-                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + token" v-b-popover.hover="'VIEW IN OPENSEA'" target="_blank">
-                          {{ token }}
+                      <span v-for="tokenId in data.item.tokens">
+                        <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW #' + tokenId + ' IN OPENSEA'" target="_blank">
+                          <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
                         </b-link>
+
+                        <!-- <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW IN OPENSEA'" target="_blank">
+                          {{ tokenId }} <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
+                        </b-link> -->
+                        <!-- <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
+                          <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.images[0]" />
+                        </b-link> -->
+
+
                       </span>
                     </template>
                   </b-table>
@@ -703,6 +712,9 @@
 
 
         methods: {
+          getImagePreview(tokenId) {
+            return this.data[tokenId].images[4];
+          },
 
           <!-- Recalculation -->
           async recalculate(from) {
