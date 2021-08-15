@@ -162,6 +162,9 @@
                       <b-pagination size="sm" v-model="tokensCurrentPage" :total-rows="tokensSearchResults.length" :per-page="tokensPageSize"></b-pagination>
                     </div>
                     <div class="pl-2">
+                      <b-form-input type="text" size="sm" v-model.trim="tokensCurrentPage" debounce="600" class="w-25"></b-form-input>
+                    </div>
+                    <div class="pl-2">
                       <b-form-select size="sm" v-model="tokensPageSize" :options="pageSizes"></b-form-select>
                     </div>
                     <div class="pl-2" v-if="settings.cardView">
