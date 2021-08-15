@@ -257,7 +257,7 @@
                   <div v-if="settings.cardView">
                     <b-card-group deck>
                       <div v-for="record in pagedTokensResults">
-                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-1 border-0">
+                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0 border-0">
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.images[0]" />
                           </b-link>
@@ -267,27 +267,27 @@
                                 {{ '#' + record.tokenId }}
                               </b-link>
                             </b-form-checkbox>
-                            <b-link v-if="cardImageSizeCurrent >= 200" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId]) }}
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                            <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
                               <b-icon-image shift-v="+1" font-scale="0.8"></b-icon-image>
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
                               <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
                             </b-link>
-                            <span v-if="cardImageSizeCurrent >= 200" v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
+                            <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 300">
                               <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                                 <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
                             </span>
-                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
                               <span v-if="osData[record.tokenId] && osData[record.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></span>
                             </b-link>
-                            <span v-if="cardImageSizeCurrent >= 200">
+                            <span v-if="cardImageSizeCurrent >= 300">
                               <font size="-2">
                                 <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1 mw-100"></b-form-tags>
                               </font>
@@ -607,7 +607,7 @@
           pageSizes: [
             { value: 10, text: '10/P' },
             { value: 100, text: '100/P' },
-            { value: 666, text: '666/P' },
+            { value: 500, text: '500/P' },
             { value: 1000, text: '1,000/P' },
             { value: 2145, text: '2,145/P' },
             { value: 66666, text: 'ALL' },
@@ -622,8 +622,8 @@
           cardImageSizeCurrent: '300',
           cardImageSizeOptions: [
             { value: '93', text: '93%' },
-            { value: '100', text: '100%' },
-            { value: '200', text: '200%' },
+            { value: '115', text: '115%' },
+            { value: '240', text: '240%' },
             { value: '300', text: '300%' },
             { value: '500', text: '500%' },
             { value: '750', text: '750%' },
