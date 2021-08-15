@@ -225,7 +225,7 @@
                           <b-card header="SELECTION TOOLS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               {{ getSelectedTokenIds }}
-                              <!-- <b-form-select size="sm" @change="recalculate('selectedCategories')" v-model="selectedCategories" :options="getCategories" multiple :select-size="10" variant="outline-primary"></b-form-select> -->
+                              <b-button size="sm" @click="settings.selection = {}; saveSettings('resetSelection')" variant="outline-primary" v-b-popover.hover="'RESET SELECTION'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
                             </b-card-text>
                           </b-card>
 
