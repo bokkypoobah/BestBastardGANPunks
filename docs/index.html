@@ -178,7 +178,7 @@
                     <b-collapse v-model="settings.advancedSearch" class="m-2">
                       <b-card>
                         <b-card-group deck>
-                          <b-card header="QUICK FILTER" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                          <b-card header="QUICK FILTER" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               <!-- <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..." class="mb-2"></b-form-input> -->
 
@@ -209,20 +209,26 @@
                               <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input>
                             </b-card-text>
                           </b-card>
-                          <b-card header="FILTER BY TAGS" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                          <b-card header="FILTER BY TAGS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="10" variant="outline-primary"></b-form-select>
                             </b-card-text>
                           </b-card>
-                          <b-card header="FILTER BY CATEGORIES" style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                          <b-card header="FILTER BY CATEGORIES" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               <b-form-select size="sm" @change="recalculate('selectedCategories')" v-model="selectedCategories" :options="getCategories" multiple :select-size="10" variant="outline-primary"></b-form-select>
+                            </b-card-text>
+                          </b-card>
+                          <b-card header="SELECTION TOOLS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
+                            <b-card-text>
+                              {{ getSelectedTokenIds }}
+                              <!-- <b-form-select size="sm" @change="recalculate('selectedCategories')" v-model="selectedCategories" :options="getCategories" multiple :select-size="10" variant="outline-primary"></b-form-select> -->
                             </b-card-text>
                           </b-card>
 
                           <!--
                           <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryKey">
-                            <b-card style="min-width: 20rem; max-width: 20rem;" class="mb-2">
+                            <b-card style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                               <template #header>
                                 <span variant="secondary">
                                   {{ categoryKey }}
@@ -248,27 +254,29 @@
                   <div v-if="settings.cardView">
                     <b-card-group deck>
                       <div v-for="record in pagedTokensResults">
-                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-2 p-1 border-0">
+                        <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-1 border-0">
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.images[0]" />
                           </b-link>
                           <b-card-text>
-                            <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
-                              {{ '#' + record.tokenId }}
-                            </b-link>
-                            <b-link :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                            <b-form-checkbox @input="saveSettings('cardViewSelection')" inline v-model="settings.selection[record.tokenId]">
+                              <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                                {{ '#' + record.tokenId }}
+                              </b-link>
+                            </b-form-checkbox>
+                            <b-link v-if="cardImageSizeCurrent >= 200" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId]) }}
                             </b-link>
                             <b-link v-if="cardImageSizeCurrent >= 200" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                             </b-link>
-                            <b-link :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
                               <b-icon-image shift-v="+1" font-scale="0.8"></b-icon-image>
                             </b-link>
-                            <b-link :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 200" :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
                               <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
                             </b-link>
-                            <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
+                            <span v-if="cardImageSizeCurrent >= 200" v-if="record.mosaicurl != null && cardImageSizeCurrent >= 200">
                               <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
                                 <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
@@ -296,9 +304,11 @@
                         </b-link>
                       </template>
                       <template #cell(tokenId)="data">
-                        <b-link :href="'https://www.bastardganpunks.club/v2/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
-                          {{ '#' + data.item.tokenId }}
-                        </b-link>
+                        <b-form-checkbox @input="saveSettings('listViewSelection')" inline v-model="settings.selection[data.item.tokenId]">
+                          <b-link :href="'https://www.bastardganpunks.club/v2/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                            {{ '#' + data.item.tokenId }}
+                          </b-link>
+                        </b-form-checkbox>
                         <br />
                         <span v-if="owners.length > 0">
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
@@ -581,6 +591,7 @@
             searchTokenId: '',
             searchLyrics: '',
             searchAccount: '',
+            selection: {},
           },
 
           tokensSearchResults: [],
@@ -646,6 +657,19 @@
 
 
         computed: {
+          getSelectedTokenIds() {
+            const results = [];
+            for (const key of Object.keys(this.settings.selection)) {
+              const value = this.settings.selection[key];
+              if (value) {
+                results.push(parseInt(key));
+              }
+            }
+            results.sort(function(a, b) {
+              return a - b;
+            });
+            return results;
+          },
           getTotalSupply() {
             return this.data.length;
           },
@@ -1259,7 +1283,7 @@
           }
           if (localStorage.getItem('bastardsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('bastardsSettings'));
-            if (savedSettings.cardView != null) {
+            if (savedSettings.selection != null) {
               this.settings = savedSettings;
             }
           }
