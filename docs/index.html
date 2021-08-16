@@ -224,7 +224,8 @@
                           </b-card>
                           <b-card header="SELECTION TOOLS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
-                              {{ getSelectedTokenIds }}
+                              {{ getSelectedTokenIds }}<br />
+                              <b-button size="sm" @click="copyCurrentFilteredResultsIntoSelection" variant="outline-primary" v-b-popover.hover="'COPY CURRENT FILTERED RESULTS INTO SELECTION'"><b-icon-caret-right-square shift-v="+1" font-scale="1.0"></b-icon-caret-right-square></b-button>
                               <b-button size="sm" @click="settings.selection = {}; saveSettings('resetSelection')" variant="outline-primary" v-b-popover.hover="'RESET SELECTION'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
                             </b-card-text>
                           </b-card>
@@ -747,6 +748,13 @@
 
 
         methods: {
+          copyCurrentFilteredResultsIntoSelection() {
+            const results = {};
+            for (const item of this.tokensSearchResults) {
+              results[item.tokenId] = true;
+            }
+            this.settings.selection = results;
+          },
           getImagePreview(tokenId) {
             return this.data[tokenId].images[4];
           },
