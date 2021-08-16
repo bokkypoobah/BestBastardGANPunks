@@ -98,12 +98,12 @@ const CATEGORIES = [
     "tokenIds": [ 10178 ]
   },
   {
-    "category": "WELDINGGLASSES",
+    "category": "WELDINGGOGGLES",
     "tokenIds": [ 382, 2041, 2411, 2999, 4618, 5973, 6090, 6115, 7295, 7337, 7432, 9040, 9487 ]
   },
   {
-    "category": "WELDINGGLASSES_PARTIAL",
-    "tokenIds": [ 1832 ]
+    "category": "WELDINGGOGGLES_PARTIAL",
+    "tokenIds": [ 1832, 9409 ]
   },
   {
     "category": "PINKWITHHAT",
