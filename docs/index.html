@@ -986,7 +986,7 @@
               let lastSale = null;
               if (asset.asset.last_sale) {
                 lastSale = {
-                  totalPrice: new BigNumber(asset.asset.last_sale.total_price).shift(-last_sale.payment_token.decimals),
+                  totalPrice: new BigNumber(asset.asset.last_sale.total_price).shift(-18),
                   symbol: asset.asset.last_sale.payment_token.symbol,
                   decimals: asset.asset.last_sale.payment_token.decimals,
                   ethPrice: asset.asset.last_sale.payment_token.eth_price,
