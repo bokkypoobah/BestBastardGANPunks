@@ -1,81 +1,37 @@
 var fs = require('fs');
 const util = require('util');
+const fetch = require('node-fetch');
 const BASTARDDATA = require('./bastardData.js');
 
-// Must sync up with 02_getOSJSONs.js
-// const BATCHSIZE = 50;
-// const TOTALSUPPLY = 11305;
+const downloadFile = (async (url, path) => {
+  const res = await fetch(url, { timeout: 15000 });
+  const fileStream = fs.createWriteStream(path);
+  await new Promise((resolve, reject) => {
+    res.body.pipe(fileStream);
+    res.body.on("error", reject);
+    fileStream.on("finish", resolve);
+  });
+});
 
-// console.log(Object.keys(BASTARDDATA).length);
+// console.log(JSON.stringify(BASTARDDATA.BASTARDDATA["0"]));
 
-for (let i in BASTARDDATA) {
-  const d = BASTARDDATA[i];
-  // if (i < 10) {
-    console.log(d);
-  // }
+async function doit() {
+  for (const item of BASTARDDATA.BASTARDDATA) {
+    const tokenId = item.tokenId;
+    const arweaveUrl = item.images[2];
+    const filename = "./images/" + tokenId + "_" + arweaveUrl.replace("https://arweave.net/", "") + (item.imageMosaic == null ? ".png" : ".gif");
+    while (!fs.existsSync(filename)) {
+      console.log(filename + " downloading");
+      try {
+        await downloadFile(arweaveUrl, filename);
+      } catch (e) {
+        console.error("Error downloading: " + arweaveUrl);
+      }
+    // } else {
+    //   console.log(filename + " exists");
+    }
+  }
 }
-
-// const OSINPUTDATADIR = "osraw/";
-// let osrecords = {};
-// for (let i = 0; i < TOTALSUPPLY; i += 50) {
-//   var filename = OSINPUTDATADIR + i + ".json";
-//   // console.log(filename);
-//   try {
-//     var data = JSON.parse(fs.readFileSync(filename, "utf8"));
-//     if (data.assets == null || data.assets.length == 0) {
-//       console.log("Assets missing for: " + i);
-//     }
-//     for (let j = 0; j < data.assets.length; j++) {
-//       const asset = data.assets[j];
-//       osrecords[asset.token_id] = asset;
-//     }
-//   } catch (e) {
-//     console.log("Error in file: " + filename);
-//   }
-// }
-// console.log(osrecords[666]);
-//
-// const INPUTDATADIR = "raw/";
-// let records = [];
-// for (let i = 0; i < TOTALSUPPLY; i++) {
-//   var filename = INPUTDATADIR + i + ".json";
-//   try {
-//     var data = JSON.parse(fs.readFileSync(filename, "utf8"));
-//     if (data.description == null || data.description.length == 0) {
-//       console.log("Description missing for: " + i);
-//     }
-//     const osData = osrecords[data.tokenId];
-//     if (!osData) {
-//       console.log("Cannot find OS data for: " + data.tokenId);
-//     }
-//     records.push({
-//       tokenId: data.tokenId,
-//       name: data.name,
-//       image: data.image,
-//       osimage: osData == null ? null : osData.image_url,
-//       permalink: osData == null ? null : osData.permalink,
-//       description: data.description,
-//       attributes: data.attributes,
-//     });
-//   } catch (e) {
-//     console.log("Error in file: " + filename);
-//   }
-// }
-// console.log(JSON.stringify(records[666], null, 2))
-// const OUTPUTMINREPORT = "bastardData.min.js";
-// (async () => {
-//   await fs.writeFile(OUTPUTMINREPORT, "const BASTARDDATA=" + JSON.stringify(records) + ";", (err) => {
-//       if (err) throw err;
-//       console.log('Data written to file: ' + OUTPUTMINREPORT);
-//   });
-// })();
-//
-// const OUTPUTREPORT = "bastardData.js";
-// (async () => {
-//   await fs.writeFile(OUTPUTREPORT, "const BASTARDDATA=" + JSON.stringify(records, null, 2) + ";", (err) => {
-//       if (err) throw err;
-//       console.log('Data written to file: ' + OUTPUTREPORT);
-//   });
-// })();
+doit();
 
 console.log(process.cwd());
