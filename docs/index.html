@@ -462,7 +462,7 @@
               <b-tab title="SETTINGS">
                 <b-card header="ACCOUNTS" style="min-width: 64rem; max-width: 64rem;" class="mb-2">
                   <b-card-text>
-                    <b-table small striped hover :fields="accountsFields" :items="accounts" responsive="sm">
+                    <b-table small striped hover :fields="accountsFields" :items="accounts" responsive="sm"  show-empty>
                       <template #cell(name)="data">
                         <b-form-input type="text" size="sm" @change="saveAccounts('name')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
                       </template>
@@ -477,6 +477,9 @@
                       </template>
                       <template #head(action)="data">
                         <b-button size="sm" @click="newAccount('action')" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                      </template>
+                      <template #empty="scope">
+                        <h6>Press + to add a new account</h6>
                       </template>
                     </b-table>
                   </b-card-text>
@@ -589,7 +592,7 @@
           processing: null,
           connected: false,
           account: null,
-          accounts: [ { name: "One", account: "0x123456", active: true }, { name: "Two", account: "0x345678", active: false }, ],
+          accounts: [ ],
           tokensOwned: [],
           owners: [],
           ensMap: {},
