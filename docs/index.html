@@ -443,38 +443,46 @@
 
               <b-tab lazy title="CATEGORIES">
                 <b-card-text>
-                  <!-- :fields="categoryFields" -->
-                  <!-- results.push({ category: record.category, tokenIds: record.tokenIds }); -->
                   <b-table small striped :items="getTokenIdsByCategories" head-variant="light">
                     <template #cell(tokenIds)="data">
-                      <!-- bbb {{ data.item.tokenIds }} -->
                       <span v-for="tokenId in data.item.tokenIds">
-                        <!-- {{ tokenId + ' ' }} -->
                         <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW #' + tokenId + ' IN OPENSEA'" target="_blank">
                           <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
                         </b-link>
                       </span>
-                      <!-- <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox> -->
                     </template>
                   </b-table>
                 </b-card-text>
                 <b-card-text>
                   Maintained in <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/categories.js</a>. Submit PR or ping changes to <a href="https://twitter.com/BokkyPooBah" target="_blank">@BokkyPooBah</a>.
                 </b-card-text>
-                <!-- <b-card-text>
-                  {{ getTokenIdsByCategories }}
-                </b-card-text> -->
-                <!-- <b-card-text>
-                  {{ getCategories }}
-                </b-card-text> -->
               </b-tab>
-              <!--
-              <b-tab title="LOADMAP">
-                <b-card-text>
-                  LOTS OF FEATURES INCLUDING NAMING YOUR BASTARDS ON-CHAIN (FOR #ETHERNITY, IN ALL SPACETIME HUMANS WILL VENTURE TO); A DECENTRALISED NFT EXCHANGE. THE DECENRALISED DESING SPACE IS STIL BEING EXPLORED, AND IS SOOO SWEET. NO PROMISES. SOFTWARE GETS DONE WHEN IT GETS DONE. IF YOU WANT TO HELP CONTRIBUTE TO BUILDING THIS SPACE, SEND A FEW (OR LOTS) OF YOUR FLOOR (OR YOUR BEST) BGANPUNKS TO BOKKYPOOBAH.ETH! FOR AWARDING IN THE UPCOMING ETHEREUM DEV/COMMUNITY OG AWARDS! TO THE MANY PEOPLE WHO HAVE BEEN BUIDLING THE DECETRALISED TECHNOLOGY YOU ARE NOW USING. THEY ARE BUIDLING OUR FUTURE. AND OUR CHILDREN^CHILDREN'S FUTURE. ANY UN-ADOPTED DONATED BGANPUNGS WILL BE SENT BACK TO THE ORIGINAL ADDRESS AFTER THEH AWARDS. DON'T BE A FUCKING STINGY BASTARD!
-                </b-card-text>
+
+
+              <b-tab title="SETTINGS">
+                <b-card header="ACCOUNTS" style="min-width: 64rem; max-width: 64rem;" class="mb-2">
+                  <b-card-text>
+                    <b-table small striped hover :fields="accountsFields" :items="accounts" responsive="sm">
+                      <template #cell(name)="data">
+                        <b-form-input type="text" size="sm" @change="saveAccounts('name')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
+                      </template>
+                      <template #cell(account)="data">
+                        <b-form-input type="text" size="sm" @change="saveAccounts('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                      </template>
+                      <template #cell(active)="data">
+                        <b-button size="sm" :pressed.sync="data.item.active" @click="saveAccounts('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
+                      </template>
+                      <template #cell(action)="data">
+                        <b-button size="sm" @click="deleteAccount(data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
+                      </template>
+                      <template #head(action)="data">
+                        <b-button size="sm" @click="newAccount('action')" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                      </template>
+                    </b-table>
+                  </b-card-text>
+                </b-card>
               </b-tab>
-              -->
+
 
               <!--
               <b-tab title="SETTINGS">
@@ -581,7 +589,7 @@
           processing: null,
           connected: false,
           account: null,
-          // accounts: [],
+          accounts: [ { name: "One", account: "0x123456", active: true }, { name: "Two", account: "0x345678", active: false }, ],
           tokensOwned: [],
           owners: [],
           ensMap: {},
@@ -641,6 +649,12 @@
             { value: '12000', text: '12,000%' },
           ],
 
+          accountsFields: [
+            { key: 'name', label: 'NAME', thStyle: 'width: 40%;' },
+            { key: 'account', label: 'ACCOUNT', thStyle: 'width: 40%;', sortable: true },
+            { key: 'active', label: 'ACTIVE?', thStyle: 'width: 10%;', sortable: true },
+            { key: 'action', label: '' },
+          ],
           categoryFields: [
             { key: 'select', label: '', thStyle: 'width: 10%;' },
             { key: 'categoryOption', label: 'TYPE', sortable: true },
@@ -731,7 +745,6 @@
           getCategories() {
             let results = [];
             for (const record of CATEGORIES) {
-              // console.log(key + " => " + JSON.stringify(value));
               results.push({ value: record.category, text: record.category + ' (' + record.tokenIds.length + ')' });
             }
             results.sort(function(a, b) {
@@ -1271,6 +1284,18 @@
           saveSettings() {
             localStorage.setItem('bastardsSettings', JSON.stringify(this.settings));
           },
+          saveAccounts() {
+            localStorage.setItem('bastardAccounts', JSON.stringify(this.accounts));
+          },
+          newAccount() {
+            this.accounts.push( { name: "", account: "", active: false } );
+            this.saveAccounts('newAccount');
+          },
+          deleteAccount(index) {
+            console.log("deleteAccount(" + index + ")");
+            this.accounts.splice(index, 1);
+            this.saveAccounts('deleteAccount');
+          },
           ensOrShortName(address) {
             try {
               let name = this.ensMap[address.toLowerCase()];
@@ -1293,6 +1318,9 @@
           }
           if (localStorage.getItem('bastardMyAccount')) {
             this.account = JSON.parse(localStorage.getItem('bastardMyAccount'));
+          }
+          if (localStorage.getItem('bastardAccounts')) {
+            this.accounts = JSON.parse(localStorage.getItem('bastardAccounts'));
           }
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
