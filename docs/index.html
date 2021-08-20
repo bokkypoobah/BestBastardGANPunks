@@ -70,8 +70,8 @@
               </b-link>
             </div>
             <b-navbar-nav class="ml-auto">
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT MY FUCKING WALLET</b-button>
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">MY FUCKING WALLET {{ ensOrShortName(account) }}</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT WALLET</b-button>
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">{{ ensOrShortName(account) }}</b-button>
             </b-navbar-nav>
           </b-navbar>
         </div>
@@ -281,7 +281,7 @@
                               <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
                             </b-link>
                             <b-link v-if="cardImageSizeCurrent >= 300" :href="'./arweaveimages/' + record.tokenId + '_' + record.images[2].replace('https://arweave.net/', '') + (record.imageMosaic != null ? '.gif' : '.png')" v-b-popover.hover="'VIEW SAVED COPY OF ORIGINAL ARWEAVE IMAGE'" target="_blank">
-                              <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
+                              <b-icon-card-image shift-v="+1" font-scale="0.8"></b-icon-card-image>
                             </b-link>
                             <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 300">
                               <b-link :href="record.mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
@@ -662,7 +662,7 @@
             { key: 'owner', label: 'OWNER' },
             { key: 'tokens', label: 'TONKENS' },
           ],
-          bokkysBastards: [3053, 4689, 5846, 5982, 6403, 7222, 7333, 7567, 9738, 10375, 10456, 10564, 10729, 10731, 10734, 10735, 10738, 10739, 10834, 11106],
+          bokkysBastards: [471, 1133, 1147, 1197, 1322, 1406, 1822, 1835, 2289, 2893, 3053, 3291, 3316, 3569, 3852, 3905, 3906, 4046, 4087, 4113, 4158, 4209, 4272, 4618, 4777, 4793, 4994, 5288, 5601, 5654, 5710, 5775, 5903, 6225, 6285, 6626, 6632, 7008, 7214, 7222, 7266, 7432, 7492, 7567, 7721, 7731, 7776, 7831, 7850, 8621, 8645, 8854, 8895, 9040, 9158, 9260, 9362, 9374, 9401, 9490, 9594, 9595, 9740, 9759, 9783, 9792, 9881, 10050, 10093, 10178, 10192, 10193, 10252, 10341, 10375, 10449, 10456, 10564, 10583, 10592, 10661, 10724, 10727, 10729, 10734, 10735, 10736, 10737, 10834, 11100, 11105, 11140, 11258],
         },
 
 
