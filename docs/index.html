@@ -274,10 +274,13 @@
                             <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON IPFS'" target="_blank">
                               <b-icon-image shift-v="+1" font-scale="0.8"></b-icon-image>
                             </b-link>
-                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON ARWEAVE'" target="_blank">
+                              <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
+                            </b-link>
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="'./arweaveimages/' + record.tokenId + '_' + record.images[2].replace('https://arweave.net/', '') + (record.imageMosaic != null ? '.gif' : '.png')" v-b-popover.hover="'VIEW SAVED COPY OF ORIGINAL ARWEAVE IMAGE'" target="_blank">
                               <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
                             </b-link>
                             <span v-if="record.mosaicurl != null && cardImageSizeCurrent >= 300">
@@ -322,11 +325,14 @@
                         <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                         </b-link>
-                        <b-link :href="data.item.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (IPFS)'" target="_blank">
+                        <b-link :href="data.item.images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON IPFS'" target="_blank">
                           <b-icon-image shift-v="+1" font-scale="0.8"></b-icon-image>
                         </b-link>
-                        <b-link :href="data.item.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE (ARWEAVE)'" target="_blank">
+                        <b-link :href="data.item.images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON ARWEAVE'" target="_blank">
                           <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
+                        </b-link>
+                        <b-link :href="'./arweaveimages/' + data.item.tokenId + '_' + data.item.images[2].replace('https://arweave.net/', '') + (data.item.imageMosaic != null ? '.gif' : '.png')" v-b-popover.hover="'VIEW SAVED COPY OF ORIGINAL ARWEAVE IMAGE'" target="_blank">
+                          <b-icon-card-image shift-v="+1" font-scale="0.8"></b-icon-card-image>
                         </b-link>
                         <span v-if="data.item.imageMosaic != null">
                           <b-link :href="'hypedafmosaic/' + data.item.tokenId + '.png'" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
