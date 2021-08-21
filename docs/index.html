@@ -151,7 +151,7 @@
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div> -->
                     <div class="pl-2">
-                      <b-button size="sm" :pressed.sync="settings.mySexyBastards" @click="saveSettings('mySexyBastards')" variant="outline-primary" v-b-popover.hover="'VIEW ONLY MY SEXY BASTARDS'">MY SEXY BASTARDS</b-button>
+                      <b-button size="sm" :pressed.sync="settings.mySexyBastards" @click="recalculate('searchAccount')" variant="outline-primary" v-b-popover.hover="'VIEW ONLY MY SEXY BASTARDS'">MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="settings.advancedSearch" @click="saveSettings('advancedSearch')" variant="outline-primary" v-b-popover.hover="'ADVANCED SEARCH'"><span v-if="settings.advancedSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
@@ -458,7 +458,7 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab active title="SETTINGS">
+              <b-tab title="SETTINGS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 15px;">
                     <div class="pr-1 flex-grow-1">
@@ -871,6 +871,7 @@
               return null;
             }
 
+            console.log("this.tokensOwned: " + JSON.stringify(this.tokensOwned));
             let data = this.data.slice(0);
             let stage1Data = data;
             if (this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
@@ -880,7 +881,6 @@
                 var range = s.match(/(\d+)-(\d+)/)
                 if (range != null) {
                   for (let i = range[1]; i <= range[2]; i++) {
-                    console.log("Adding: " + i)
                     stage1Data.push(data[i]);
                   }
                 }
@@ -889,13 +889,23 @@
                 }
               }
             }
-
             let stage2Data = stage1Data;
+            if (this.settings.mySexyBastards) {
+              const account = this.account.toLowerCase();
+              stage2Data = [];
+              for (let i in stage1Data) {
+                const d = stage1Data[i];
+                const owner = this.owners[d.tokenId];
+                if (owner && owner.toLowerCase() == account) {
+                  stage2Data.push(d);
+                }
+              }
+            }
+
+            let stage3Data = stage2Data;
             if (this.selectedCategories && this.selectedCategories.length > 0 && this.selectedCategories[0] != null) {
-              // console.log("selectedCategories: " + JSON.stringify(this.selectedCategories));
               const tokenIds = {};
               for (const selectedCategory of this.selectedCategories) {
-                // console.log("selectedCategory: " + JSON.stringify(selectedCategory));
                 for (const record of CATEGORIES) {
                   if (selectedCategory == record.category) {
                     console.log(record);
@@ -905,22 +915,20 @@
                   }
                 }
               }
-              // console.log("tokenIds: " + JSON.stringify(tokenIds));
-              stage2Data = [];
-              for (let i in stage1Data) {
-                const d = stage1Data[i];
+              stage3Data = [];
+              for (let i in stage2Data) {
+                const d = stage2Data[i];
                 if (tokenIds[d.tokenId]) {
-                  // console.log("tokenId: " + JSON.stringify(d.tokenId));
-                  stage2Data.push(d);
+                  stage3Data.push(d);
                 }
               }
             }
 
-            let stage3Data = stage2Data;
+            let stage4Data = stage3Data;
             if (this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
               const s = this.settings.searchLyrics.toLowerCase();
               console.log("s: " + s);
-              stage3Data = [];
+              stage4Data = [];
               for (let i in stage1Data) {
                 const d = stage1Data[i];
                 const include = d.description.toLowerCase().includes(s);
@@ -928,37 +936,36 @@
                   if (i < 10) {
                     console.log("stage1Data[" + i + "].description: " + JSON.stringify(d.description) + ", include: " + include);
                   }
-                  stage3Data.push(d);
+                  stage4Data.push(d);
                 }
               }
             }
-            // console.log("stage3Data.length: " + stage3Data.length);
 
-            let stage4Data = stage3Data;
+            let stage5Data = stage4Data;
             if (this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
               const searchAccounts = this.settings.searchAccount.split(",");
-              stage4Data = [];
-              for (let i in stage3Data) {
-                const d = stage3Data[i];
+              stage5Data = [];
+              for (let i in stage4Data) {
+                const d = stage4Data[i];
                 const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
                 const ensName = owner == null ? null : this.ensMap[owner];
                 for (searchAccount of searchAccounts) {
                   const s = searchAccount.toLowerCase();
                   if (owner != null && owner.includes(s)) {
-                    stage4Data.push(d);
+                    stage5Data.push(d);
                     break;
                   } else if (ensName != null && ensName.includes(s)) {
-                    stage4Data.push(d);
+                    stage5Data.push(d);
                     break;
                   }
                 }
               }
             }
-            console.log("stage4Data.length: " + stage4Data.length);
+            console.log("stage5Data.length: " + stage5Data.length);
 
             let results = [];
-            for (let i in stage4Data) {
-              const d = stage4Data[i];
+            for (let i in stage5Data) {
+              const d = stage5Data[i];
               let include = true;
               for (const [key, value] of Object.entries(this.categoryFilter)) {
                 const attributeValue = getAttribute(d, key);
