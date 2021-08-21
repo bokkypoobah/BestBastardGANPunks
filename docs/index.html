@@ -61,7 +61,7 @@
       <b-container fluid class="m-0 p-2">
         <div>
           <b-navbar variant="light">
-            <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best BastardGANPunks'">
+            <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best Bastard GAN Punks'">
               BESTBASTARDGANPUNKS
             </b-navbar-brand>
             <div v-for="item in getSelectedShowcase">
@@ -142,13 +142,16 @@
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
-                      <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..."></b-form-input>
+                      <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..."></b-form-input>
                     </div>
                     <div class="pl-2">
                       <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..."></b-form-input>
                     </div>
-                    <div class="pl-2">
+                    <!-- <div class="pl-2">
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
+                    </div> -->
+                    <div class="pl-2">
+                      <b-button size="sm" :pressed.sync="settings.mySexyBastards" @click="saveSettings('mySexyBastards')" variant="outline-primary" v-b-popover.hover="'VIEW ONLY MY SEXY BASTARDS'">MY SEXY BASTARDS</b-button>
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="settings.advancedSearch" @click="saveSettings('advancedSearch')" variant="outline-primary" v-b-popover.hover="'ADVANCED SEARCH'"><span v-if="settings.advancedSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
@@ -172,7 +175,7 @@
                     </div>
                     <div class="pl-2">
                       <b-button size="sm" :pressed.sync="settings.cardView" @click="saveSettings('cardView')" variant="link" v-b-popover.hover="'LIST OR CARD VIEW'"><span v-if="settings.cardView"><b-icon-list-ol shift-v="+1" font-scale="1.0"></b-icon-list-ol></span><span v-else><b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap></span></b-button>
-                      <b-button size="sm" v-b-toggle.sidebar-border variant="link" v-b-popover.hover="'ADVANCED SERACH'"class="m-0 p-0"><b-icon-search shift-v="+.5" font-scale="1.2"></b-icon-search></b-button>
+                      <b-button size="sm" v-b-toggle.sidebar-border variant="link" v-b-popover.hover="'ADVANCED SERACH'" class="m-0 p-0"><b-icon-search shift-v="+.5" font-scale="1.2"></b-icon-search></b-button>
                     </div>
                   </div>
 
@@ -197,7 +200,7 @@
                               </b-input-group> -->
 
                               <!-- <b-input-group size="sm" > -->
-                                <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..." class="mb-2"></b-form-input>
+                                <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..." class="mb-2"></b-form-input>
                                 <!-- <template #append>
                                   <b-button :disabled="settings.searchTokenId.length == 0" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary" class="mb-2">{{ getURL(settings.searchTokenId)}}</b-button>
                                 </template>
@@ -288,7 +291,7 @@
                                 <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
                               </b-link>
                             </span>
-                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
+                            <b-link v-if="cardImageSizeCurrent >= 300" :href="record.permalink" target="_blank">
                               <span v-if="osData[record.tokenId] && osData[record.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></span>
                             </b-link>
                             <span v-if="cardImageSizeCurrent >= 300">
@@ -348,12 +351,12 @@
                           </b-link>
                         </span>
                         -->
-                        <b-link :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" target="_blank">
+                        <b-link :href="data.item.permalink" target="_blank">
                           <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
-                          <b-button size="sm" variant="warning" :href="data.item.permalink + '?ref=0x000001f568875F378Bf6d170B790967FE429C81A'" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
+                          <b-button size="sm" variant="warning" :href="data.item.permalink" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].sellOrder.currentPrice) }}</b-badge>
                             {{ osData[data.item.tokenId].sellOrder.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].sellOrder.listingTime) }}</font>
                           </b-button>
@@ -426,15 +429,12 @@
                         <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW #' + tokenId + ' IN OPENSEA'" target="_blank">
                           <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
                         </b-link>
-
                         <!-- <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW IN OPENSEA'" target="_blank">
                           {{ tokenId }} <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
                         </b-link> -->
                         <!-- <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                           <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.images[0]" />
                         </b-link> -->
-
-
                       </span>
                     </template>
                   </b-table>
@@ -458,28 +458,82 @@
                 </b-card-text>
               </b-tab>
 
+              <b-tab active title="SETTINGS">
+                <b-card-text>
+                  <div class="d-flex m-0 p-0" style="height: 15px;">
+                    <div class="pr-1 flex-grow-1">
+                    </div>
+                    <div class="pl-2">
+                      <b-button size="sm" @click="newGroup('action')" variant="link" v-b-popover.hover="'ADD NEW GROUP'" class="m-0 p-0"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                    </div>
+                  </div>
+                </b-card-text>
+                <b-card-text v-if="groups.length == 0">
+                  <h6>CLICK + TO ADD A NEW GROUP</h6>
+                </b-card-text>
+                <b-card-group deck>
+                  <div v-for="(group, groupIndex) in groups">
 
-              <b-tab title="SETTINGS">
-                <b-card header="ACCOUNTS" style="min-width: 64rem; max-width: 64rem;" class="mb-2">
+                    <b-card body-class="p-2" header-class="p-2" footer-class="p-1" style="min-width: 60rem; max-width: 60rem;" class="m-1 p-0 border-0">
+                      <template #header>
+                        <h6 class="mb-0">{{ groupIndex+1 }}. {{ group.name }} <b-button size="sm" class="float-right m-0 p-0" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE GROUP'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button></h6>
+                      </template>
+                      <b-card-text>
+                        <b-form-group label-cols="3" content-cols="9" label="NAME" class="m-0 p-0">
+                          <b-form-input type="text" size="sm" @change="saveGroups('group.name')" v-model.trim="group.name" debounce="600" placeholder="GROUP NAME"></b-form-input>
+                        </b-form-group>
+                        <b-form-group label-cols="3" content-cols="9" label="NOTES" class="m-0 p-0">
+                          <b-form-textarea size="sm" @change="saveGroups('group.notes')" v-model.trim="group.notes" placeholder="NOTES..." rows="3" max-rows="6"></b-form-textarea>
+                        </b-form-group>
+                      </b-card-text>
+                      <b-card-text>
+                        <b-table small striped hover :fields="groupsFields" :items="group.accounts" responsive="sm"  show-empty>
+                          <!-- <template #cell(name)="data">
+                            <b-form-input type="text" size="sm" @change="saveGroups('name')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
+                          </template>
+                          <template #cell(account)="data">
+                            <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                          </template>
+                          <template #cell(active)="data">
+                            <b-button size="sm" :pressed.sync="data.item.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
+                          </template>
+                          <template #cell(action)="data">
+                            <b-button size="sm" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
+                          </template>
+                          <template #head(action)="data">
+                            <b-button size="sm" @click="newGroup('action')" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                          </template>
+                          <template #empty="scope">
+                            <h6>CLICK + TO ADD A NEW GROUP</h6>
+                          </template> -->
+                        </b-table>
+                      </b-card-text>
+                    </b-card>
+                  </div>
+                </b-card-group>
+              </b-tab>
+
+              <b-tab title="OLDSETTINGS">
+                <b-card header="GROUPS" style="min-width: 64rem; max-width: 64rem;" class="mb-2">
                   <b-card-text>
-                    <b-table small striped hover :fields="accountsFields" :items="accounts" responsive="sm"  show-empty>
+                    <b-table small striped hover :fields="groupsFields" :items="groups" responsive="sm"  show-empty>
                       <template #cell(name)="data">
-                        <b-form-input type="text" size="sm" @change="saveAccounts('name')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
+                        <b-form-input type="text" size="sm" @change="saveGroups('name')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
                       </template>
                       <template #cell(account)="data">
-                        <b-form-input type="text" size="sm" @change="saveAccounts('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                        <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
                       </template>
                       <template #cell(active)="data">
-                        <b-button size="sm" :pressed.sync="data.item.active" @click="saveAccounts('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
+                        <b-button size="sm" :pressed.sync="data.item.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
                       </template>
                       <template #cell(action)="data">
-                        <b-button size="sm" @click="deleteAccount(data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
+                        <b-button size="sm" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
                       </template>
                       <template #head(action)="data">
-                        <b-button size="sm" @click="newAccount('action')" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                        <b-button size="sm" @click="newGroup('action')" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
                       </template>
                       <template #empty="scope">
-                        <h6>CLICK + TO ADD A NEW ACCOUNT</h6>
+                        <h6>CLICK + TO ADD A NEW GROUP</h6>
                       </template>
                     </b-table>
                   </b-card-text>
@@ -561,7 +615,6 @@
                     <li>HAS NO TRACKIING TECHNOLOGY. HOWEVER CONNECTIONS FROM THIS APP TO OPENSEA AND YOUR WEB3 PROVIDER WILL LEAK SOME INFORMATION.</li>
                     <li>CAN BE RUN ON YOUR OWN COMPUTER BY CLONING THE GITHUB REPOSITORY AND SERVING THE PAGES USING A WEBSERVER, OR THE "ANYWHERE" SERVER.</li>
                     <li>CAN BE RUN FROM GITHUB PAGES, SO YOU CAN EASILY CLONE, CUSTOMISE AND SERVE YOUR OWN VERSION</li>
-                    <li>THIS APP DOES ADD A REF LINK TO MY ACCOUNT TO OPENSEA URLS</li>
                     <li>HAS SOME CODE FROM THE IS IT CLEAN TOOL BY <a href="https://twitter.com/yungwknd" target="_blank">@yungwknd</a></li>
                   </ul>
                 </b-card-text>
@@ -592,7 +645,7 @@
           processing: null,
           connected: false,
           account: null,
-          accounts: [ ],
+          groups: [ ],
           tokensOwned: [],
           owners: [],
           ensMap: {},
@@ -607,6 +660,7 @@
           categories: {},
 
           settings: {
+            mySexyBastards: false,
             advancedSearch: false,
             cardView: false,
             searchTokenId: '',
@@ -652,7 +706,7 @@
             { value: '12000', text: '12,000%' },
           ],
 
-          accountsFields: [
+          groupsFields: [
             { key: 'name', label: 'NAME', thStyle: 'width: 40%;' },
             { key: 'account', label: 'ACCOUNT', thStyle: 'width: 40%;', sortable: true },
             { key: 'active', label: 'ACTIVE?', thStyle: 'width: 10%;', sortable: true },
@@ -856,6 +910,13 @@
               const searchTokenIds = this.settings.searchTokenId.split(",").map(function(item) { return item.trim(); });
               stage1Data = [];
               for (s of searchTokenIds) {
+                var range = s.match(/(\d+)-(\d+)/)
+                if (range != null) {
+                  for (let i = range[1]; i <= range[2]; i++) {
+                    console.log("Adding: " + i)
+                    stage1Data.push(data[i]);
+                  }
+                }
                 if (s >= 0 && s < this.getTotalSupply) {
                   stage1Data.push(data[s]);
                 }
@@ -1287,17 +1348,17 @@
           saveSettings() {
             localStorage.setItem('bastardsSettings', JSON.stringify(this.settings));
           },
-          saveAccounts() {
-            localStorage.setItem('bastardAccounts', JSON.stringify(this.accounts));
+          saveGroups() {
+            localStorage.setItem('bastardGroups', JSON.stringify(this.groups));
           },
-          newAccount() {
-            this.accounts.push( { name: "", account: "", active: false } );
-            this.saveAccounts('newAccount');
+          newGroup() {
+            this.groups.push( { name: "", notes: "", accounts: [ { name: "hello", account: "0x1234", filterInOut: "in", filter: "" }], active: false } );
+            this.saveGroups('newGroup');
           },
-          deleteAccount(index) {
-            console.log("deleteAccount(" + index + ")");
-            this.accounts.splice(index, 1);
-            this.saveAccounts('deleteAccount');
+          deleteGroup(index) {
+            console.log("deleteGroup(" + index + ")");
+            this.groups.splice(index, 1);
+            this.saveGroups('deleteGroup');
           },
           ensOrShortName(address) {
             try {
@@ -1322,8 +1383,8 @@
           if (localStorage.getItem('bastardMyAccount')) {
             this.account = JSON.parse(localStorage.getItem('bastardMyAccount'));
           }
-          if (localStorage.getItem('bastardAccounts')) {
-            this.accounts = JSON.parse(localStorage.getItem('bastardAccounts'));
+          if (localStorage.getItem('bastardGroups')) {
+            this.groups = JSON.parse(localStorage.getItem('bastardGroups'));
           }
           if (localStorage.getItem('bastardsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('bastardsENSMap'));
@@ -1335,7 +1396,7 @@
           }
           if (localStorage.getItem('bastardsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('bastardsSettings'));
-            if (savedSettings.selection != null) {
+            if (savedSettings.mySexyBastards != null) {
               this.settings = savedSettings;
             }
           }

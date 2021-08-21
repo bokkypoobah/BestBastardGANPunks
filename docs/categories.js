@@ -191,6 +191,6 @@ const CATEGORIES = [
   },
 ];
 
-module.exports = {
-  CATEGORIES
-}
+// module.exports = {
+//   CATEGORIES
+// }
