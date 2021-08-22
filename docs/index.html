@@ -58,7 +58,7 @@
   </head>
   <body>
     <div id="app">
-      <b-container fluid class="m-0 p-2">
+      <b-container fluid class="m-0 p-1">
         <div>
           <b-navbar variant="light">
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'Best Bastard GAN Punks'">
@@ -144,36 +144,36 @@
                     <div>
                       <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..."></b-form-input>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..."></b-form-input>
                     </div>
-                    <!-- <div class="pl-2">
+                    <!-- <div class="pl-1">
                       <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
                     </div> -->
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-button size="sm" :pressed.sync="settings.mySexyBastards" @click="recalculate('searchAccount')" variant="outline-primary" v-b-popover.hover="'VIEW ONLY MY SEXY BASTARDS'">MY SEXY BASTARDS</b-button>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-button size="sm" :pressed.sync="settings.advancedSearch" @click="saveSettings('advancedSearch')" variant="outline-primary" v-b-popover.hover="'ADVANCED SEARCH'"><span v-if="settings.advancedSearch"><b-icon-chevron-double-up shift-v="+1" font-scale="1.0"></b-icon-chevron-double-up></span><span v-else><b-icon-chevron-double-down shift-v="+1" font-scale="1.0"></b-icon-chevron-double-down></span></b-button>
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <font size="-2">{{ tokensSearchResults.length }}/{{ getTotalSupply }}</font>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-pagination size="sm" v-model="tokensCurrentPage" :total-rows="tokensSearchResults.length" :per-page="tokensPageSize"></b-pagination>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-form-input type="text" size="sm" v-model.trim="tokensCurrentPage" debounce="600" class="w-25"></b-form-input>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-form-select size="sm" v-model="tokensPageSize" :options="pageSizes"></b-form-select>
                     </div>
-                    <div class="pl-2" v-if="settings.cardView">
+                    <div class="pl-1" v-if="settings.cardView">
                       <b-form-select size="sm" v-model="cardImageSizeCurrent" :options="cardImageSizeOptions"></b-form-select>
                     </div>
-                    <div class="pl-2">
+                    <div class="pl-1">
                       <b-button size="sm" :pressed.sync="settings.cardView" @click="saveSettings('cardView')" variant="link" v-b-popover.hover="'LIST OR CARD VIEW'"><span v-if="settings.cardView"><b-icon-list-ol shift-v="+1" font-scale="1.0"></b-icon-list-ol></span><span v-else><b-icon-grid3x3-gap shift-v="+1" font-scale="1.0"></b-icon-grid3x3-gap></span></b-button>
                       <b-button size="sm" v-b-toggle.sidebar-border variant="link" v-b-popover.hover="'ADVANCED SERACH'" class="m-0 p-0"><b-icon-search shift-v="+.5" font-scale="1.2"></b-icon-search></b-button>
                     </div>
@@ -471,49 +471,49 @@
                 <b-card-text v-if="groups.length == 0">
                   <h6>CLICK + TO ADD A NEW GROUP</h6>
                 </b-card-text>
-                <!-- <b-card-group> -->
-                  <div v-for="(group, groupIndex) in groups">
-
-                    <b-card body-class="p-2" header-class="p-2" footer-class="p-1" class="m-1 p-0">
-                      <template #header>
-                        <h6 class="mb-0">{{ groupIndex+1 }}. {{ group.name }} <b-button size="sm" class="float-right m-0 p-0" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE GROUP'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button></h6>
-                      </template>
-                      <b-card-text>
-                        <b-form-group label-cols="3" content-cols="9" label="GROUP NAME" class="m-0 p-0">
-                          <b-form-input type="text" size="sm" @change="saveGroups('group.name')" v-model.trim="group.name" debounce="600" placeholder="GROUP NAME"></b-form-input>
-                        </b-form-group>
-                        <b-form-group label-cols="3" content-cols="9" label="NOTES" class="m-0 p-0">
-                          <b-form-textarea size="sm" @change="saveGroups('group.notes')" v-model.trim="group.notes" placeholder="NOTES..." rows="3" max-rows="6"></b-form-textarea>
-                        </b-form-group>
-                      </b-card-text>
-                      <b-card-text>
-                        <b-table small striped hover :fields="accountsFields" :items="group.accounts" responsive="sm"  show-empty>
-                          <template #cell(name)="data">
-                            <b-form-input type="text" size="sm" @change="saveGroups('accountName')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
-                          </template>
-                          <template #cell(account)="data">
-                            <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
-                          </template>
-                          <template #cell(filter)="data">
-                            <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.filter" debounce="600" placeholder="ID1, ID2-ID3, ..."></b-form-input>
-                          </template>
-                          <template #cell(active)="data">
-                            <b-button size="sm" :pressed.sync="data.item.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
-                          </template>
-                          <template #cell(action)="data">
-                            <b-button size="sm" @click="deleteAccount(group, data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
-                          </template>
-                          <template #head(action)="data">
-                            <b-button size="sm" @click="newAccount(group)" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
-                          </template>
-                          <template #empty="scope">
-                            <h6>CLICK + TO ADD A NEW ACCOUNT</h6>
-                          </template>
-                        </b-table>
-                      </b-card-text>
-                    </b-card>
-                  </div>
-                <!-- </b-card-group> -->
+                <div v-for="(group, groupIndex) in groups">
+                  <b-card body-class="p-2" header-class="p-2" footer-class="p-1" class="m-1 p-0">
+                    <template #header>
+                      <h6 class="mb-0"><b-button size="sm" :pressed.sync="group.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="group.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>{{ groupIndex+1 }}. {{ group.name }} <b-button size="sm" class="float-right m-0 p-0" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE GROUP'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button></h6>
+                    </template>
+                    <b-card-text>
+                      <b-form-group label-cols="3" content-cols="9" label="GROUP NAME" class="m-0 p-0">
+                        <b-form-input type="text" size="sm" @change="saveGroups('group.name')" v-model.trim="group.name" debounce="600" placeholder="GROUP NAME"></b-form-input>
+                      </b-form-group>
+                      <b-form-group label-cols="3" content-cols="9" label="NOTES" class="m-0 p-0">
+                        <b-form-textarea size="sm" @change="saveGroups('group.notes')" v-model.trim="group.notes" placeholder="NOTES..." rows="3" max-rows="6"></b-form-textarea>
+                      </b-form-group>
+                    </b-card-text>
+                    <b-card-text>
+                      <b-table small striped hover :fields="accountsFields" :items="group.accounts" responsive="sm"  show-empty>
+                        <template #cell(active)="data">
+                          <b-button size="sm" :pressed.sync="data.item.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="data.item.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>
+                        </template>
+                        <template #cell(name)="data">
+                          <b-form-input type="text" size="sm" @change="saveGroups('accountName')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
+                        </template>
+                        <template #cell(account)="data">
+                          <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                        </template>
+                        <template #cell(filterInOut)="data">
+                          <b-form-select size="sm" v-model="data.item.filterInOut" :options="filterOptions"></b-form-select>
+                        </template>
+                        <template #cell(filter)="data">
+                          <b-form-input type="text" size="sm" :disabled="data.item.filterInOut == null" @change="saveGroups('account')" v-model.trim="data.item.filter" debounce="600" placeholder="ID1, ID2-ID3, ..."></b-form-input>
+                        </template>
+                        <template #cell(action)="data">
+                          <b-button size="sm" @click="deleteAccount(group, data.index)" variant="link" v-b-popover.hover="'DELETE ROW'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
+                        </template>
+                        <template #head(action)="data">
+                          <b-button size="sm" @click="newAccount(group)" variant="link" v-b-popover.hover="'ADD NEW LINE'"><b-icon-plus shift-v="-1" font-scale="1.0"></b-icon-plus></b-button>
+                        </template>
+                        <template #empty="scope">
+                          <h6>CLICK + TO ADD A NEW ACCOUNT</h6>
+                        </template>
+                      </b-table>
+                    </b-card-text>
+                  </b-card>
+                </div>
               </b-tab>
 
               <b-tab title="INFO">
@@ -666,17 +666,16 @@
           ],
 
           filterOptions: [
-            { value: null, text: '(unused)' },
-            { value: 'in', text: 'In' },
-            { value: 'out', text: 'Out' },
+            { value: null, text: 'Inactive' },
+            { value: 'in', text: 'Include' },
+            { value: 'out', text: 'Exclude' },
           ],
-
           accountsFields: [
+            { key: 'active', label: 'ACTIVE?', thStyle: 'width: 5%;', sortable: true },
             { key: 'name', label: 'NAME', thStyle: 'width: 20%;' },
             { key: 'account', label: 'ACCOUNT', thStyle: 'width: 30%;', sortable: true },
             { key: 'filterInOut', label: 'FILTER?', thStyle: 'width: 10%;', sortable: true },
-            { key: 'filter', label: 'FILTER', thStyle: 'width: 10%;', sortable: true },
-            { key: 'active', label: 'ACTIVE?', thStyle: 'width: 10%;', sortable: true },
+            { key: 'filter', label: 'FILTER', thStyle: 'width: 30%;', sortable: true },
             { key: 'action', label: '' },
           ],
           categoryFields: [
@@ -729,19 +728,13 @@
           },
           getSelectedShowcase() {
             const MAXBASTARDSTODISPLAY = 14;
-            function shuffleArray(array) {
-              for (var i = array.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-              }
-            }
             let tokenIdsOwned = this.tokensOwned.slice(0);
             if (tokenIdsOwned.length == 0) {
               tokenIdsOwned = this.bokkysBastards.slice(0);
             }
-            shuffleArray(tokenIdsOwned);
+            tokenIdsOwned.sort(() => {
+              return Math.random() - 0.5;
+            });
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
           },
           getTags() {
@@ -1326,7 +1319,7 @@
             localStorage.setItem('bastardGroups', JSON.stringify(this.groups));
           },
           newGroup() {
-            this.groups.push( { name: "", notes: "", accounts: [], active: false } );
+            this.groups.push( { name: "", notes: "", accounts: [], active: true } );
             this.saveGroups('newGroup');
           },
           deleteGroup(index) {
@@ -1335,7 +1328,7 @@
             this.saveGroups('deleteGroup');
           },
           newAccount(group) {
-            group.accounts.push( { name: "hello1", account: "0x12345", filterInOut: null, filter: "", active: true } );
+            group.accounts.push( { name: "", account: "", filterInOut: null, filter: "", active: true } );
             this.saveGroups('newAccount');
           },
           deleteAccount(group, index) {
