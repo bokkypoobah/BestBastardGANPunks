@@ -354,7 +354,8 @@
                         <b-link :href="data.item.permalink" target="_blank">
                           <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
-                        <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1"></b-form-tags>
+                        <b-form-textarea size="sm" @change="saveNotes('listView')" v-model.trim="notes[data.item.tokenId]" placeholder="NOTES ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
+                        <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="TAGS ..." class="ml-0 mt-1 mb-1"></b-form-tags>
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
                           <b-button size="sm" variant="warning" :href="data.item.permalink" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].sellOrder.currentPrice) }}</b-badge>
@@ -472,7 +473,7 @@
                   <h6>CLICK + TO ADD A NEW GROUP</h6>
                 </b-card-text>
                 <div v-for="(group, groupIndex) in groups">
-                  <b-card body-class="p-2" header-class="p-2" footer-class="p-1" class="m-1 p-0">
+                  <b-card body-class="p-1" header-class="p-1" footer-class="p-1" class="m-1 mb-3 p-0">
                     <template #header>
                       <h6 class="mb-0"><b-button size="sm" :pressed.sync="group.active" @click="saveGroups('active')" variant="link" v-b-popover.hover="'ENABLE OR DISABLE IN FILTERS'"><span v-if="group.active"><b-icon-check-square-fill shift-v="+1" font-scale="1.0"></b-icon-check-square-fill></span><span v-else><b-icon-x-square shift-v="+1" font-scale="1.0"></b-icon-x-square></span></b-button>{{ groupIndex+1 }}. {{ group.name }} <b-button size="sm" class="float-right m-0 p-0" @click="deleteGroup(data.index)" variant="link" v-b-popover.hover="'DELETE GROUP'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button></h6>
                     </template>
@@ -493,7 +494,12 @@
                           <b-form-input type="text" size="sm" @change="saveGroups('accountName')" v-model.trim="data.item.name" debounce="600" placeholder="NAME"></b-form-input>
                         </template>
                         <template #cell(account)="data">
-                          <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                          <b-input-group>
+                            <b-form-input type="text" size="sm" @change="saveGroups('account')" v-model.trim="data.item.account" debounce="600" placeholder="0x12AbC..."></b-form-input>
+                            <template #append>
+                              <b-button size="sm" @click="data.item.account = account; saveGroups('filleWithAccount')" v-b-popover.hover="'FILL WITH CURRENT WEB3 ACCOUNT ' + account"><b-icon-chevron-double-left shift-v="+1" font-scale="1.0"></b-icon-chevron-double-left></b-button>
+                            </template>
+                          </b-input-group>
                         </template>
                         <template #cell(filterInOut)="data">
                           <b-form-select size="sm" v-model="data.item.filterInOut" :options="filterOptions"></b-form-select>
@@ -609,6 +615,7 @@
           owners: [],
           ensMap: {},
           osData: {},
+          notes: {},
           tags: {},
           selectedTags: [],
           selectedCategories: [],
@@ -626,6 +633,15 @@
             searchLyrics: '',
             searchAccount: '',
             selection: {},
+            display: {
+              owner: true,
+              // record.images = [osData.image_url, record.image, record.imageArweave, osData.image_preview_url, osData.image_thumbnail_url];
+              imageSource: null, // 0 = OSImages, IPFSImage, ArweaveImage, OSPreview, OSThumbnail, GH
+              imagesLinks: true,
+              notes: true,
+              tags: true,
+              osLink: true,
+            }
           },
 
           tokensSearchResults: [],
@@ -673,9 +689,9 @@
           accountsFields: [
             { key: 'active', label: 'ACTIVE?', thStyle: 'width: 5%;', sortable: true },
             { key: 'name', label: 'NAME', thStyle: 'width: 20%;' },
-            { key: 'account', label: 'ACCOUNT', thStyle: 'width: 30%;', sortable: true },
+            { key: 'account', label: 'ACCOUNT', thStyle: 'width: 35%;', sortable: true },
             { key: 'filterInOut', label: 'FILTER?', thStyle: 'width: 10%;', sortable: true },
-            { key: 'filter', label: 'FILTER', thStyle: 'width: 30%;', sortable: true },
+            { key: 'filter', label: 'FILTER', thStyle: 'width: 25%;', sortable: true },
             { key: 'action', label: '' },
           ],
           categoryFields: [
@@ -1304,6 +1320,14 @@
               }
             }
           },
+          saveNotes() {
+            // for (const [key, value] of Object.entries(this.notes)) {
+            //   if (value.length == 0) {
+            //     Vue.delete(this.notes, key);
+            //   }
+            // }
+            localStorage.setItem('bastardsNotes', JSON.stringify(this.notes));
+          },
           saveTags() {
             for (const [key, value] of Object.entries(this.tags)) {
               if (value.length == 0) {
@@ -1370,9 +1394,12 @@
           if (localStorage.getItem('bastardsTags')) {
             this.tags = JSON.parse(localStorage.getItem('bastardsTags'));
           }
+          if (localStorage.getItem('bastardsNotes')) {
+            this.notes = JSON.parse(localStorage.getItem('bastardsNotes'));
+          }
           if (localStorage.getItem('bastardsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('bastardsSettings'));
-            if (savedSettings.mySexyBastards != null) {
+            if (savedSettings.display != null) {
               this.settings = savedSettings;
             }
           }
