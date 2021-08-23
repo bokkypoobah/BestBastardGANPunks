@@ -53,7 +53,8 @@ try {
       }
     }
     record.permalink = osData.permalink;
-    record.images = [osData.image_url, record.image, record.imageArweave, osData.image_preview_url, osData.image_thumbnail_url];
+    const localCopy = "./arweaveimages/" + record.tokenId + "_" + record.imageArweave.replace("https://arweave.net/", "") + (record.imageMosaic == null ? ".png" : ".gif");
+    record.images = [localCopy, record.image, record.imageArweave, osData.image_url, osData.image_preview_url, osData.image_thumbnail_url];
     delete record.image;
     delete record.imageArweave;
 

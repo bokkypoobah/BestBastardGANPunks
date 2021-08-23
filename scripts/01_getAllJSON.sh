@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wget https://api.bastardganpunks.club/all -O raw/all.json
+wget --timeout=30 https://api.bastardganpunks.club/all -O raw/all.json
 
 #for i in {0..11304}; do
 #  if [ ! -s raw/"$i".json ]

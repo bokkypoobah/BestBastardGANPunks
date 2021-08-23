@@ -18,12 +18,18 @@ const downloadFile = (async (url, path) => {
 async function doit() {
   for (let i = 0; i < TOTALSUPPLY; i += BATCHSIZE) {
     let filename = "osraw/" + i + ".json";
-    let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=0x31385d3520bCED94f77AaE104b406994D8F2168C\&order_direction=desc\&limit=50\&offset=0";
-    for (let j = i; j < i + BATCHSIZE && j < TOTALSUPPLY; j++) {
-      url = url + "&token_ids=" + j;
+    while (!fs.existsSync(filename)) {
+      let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=0x31385d3520bCED94f77AaE104b406994D8F2168C\&order_direction=desc\&limit=50\&offset=0";
+      for (let j = i; j < i + BATCHSIZE && j < TOTALSUPPLY; j++) {
+        url = url + "&token_ids=" + j;
+      }
+      console.log("Downloading " + i + " with batch size " + BATCHSIZE);
+      try {
+        await downloadFile(url, filename);
+      } catch (e) {
+        console.error("Error downloading: " + filename);
+      }
     }
-    console.log("Downloading " + i + " with batch size " + BATCHSIZE);
-    await downloadFile(url, filename);
   }
 }
 
