@@ -1127,6 +1127,11 @@
               const network = await provider.getNetwork();
               if (network.chainId == 1) {
                 this.connected = true;
+
+                const yourBastardYourCall = new ethers.Contract(YOURBASTARDYOURCALLADDRESS, YOURBASTARDYOURCALLABI, provider);
+                const result = await yourBastardYourCall.showLicenseForBASTARD(2, 10932);
+                console.log("showLicenseForBASTARD(2, 10932): " + JSON.stringify(result));
+
                 const erc721Helper = new ethers.Contract(ERC721HELPERADDRESS, ERC721HELPERABI, provider);
                 const info = await erc721Helper.tokenInfo(BASTARDADDRESS);
                 const totalSupply = parseInt(info[2].toString());
