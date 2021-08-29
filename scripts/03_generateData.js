@@ -2,13 +2,13 @@ var fs = require('fs');
 const util = require('util');
 
 // Must sync up with 02_getOSJSONs.js
-const BATCHSIZE = 50;
+const BATCHSIZE = 30;
 const TOTALSUPPLY = 11305;
 
 
 const OSINPUTDATADIR = "osraw/";
 let osrecords = {};
-for (let i = 0; i < TOTALSUPPLY; i += 50) {
+for (let i = 0; i < TOTALSUPPLY; i += BATCHSIZE) {
   var filename = OSINPUTDATADIR + i + ".json";
   // console.log(filename);
   try {

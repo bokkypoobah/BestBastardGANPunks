@@ -2,7 +2,7 @@ var fs = require('fs');
 const util = require('util');
 const fetch = require('node-fetch');
 
-const BATCHSIZE = 50;
+const BATCHSIZE = 30;
 const TOTALSUPPLY = 11305;
 
 const downloadFile = (async (url, path) => {
