@@ -99,7 +99,7 @@ const CATEGORIES = [
   },
   {
     "category": "NECK_THIN",
-    "tokenIds": [ 1142, 1631, 3549, 4035, 4363, 7181, 8416 ]
+    "tokenIds": [ 1142, 1631, 3549, 4035, 4363, 5936, 7181, 8416 ]
   },
   {
     "category": "PEAKSPIKE",
