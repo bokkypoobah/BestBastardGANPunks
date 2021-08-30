@@ -337,26 +337,64 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab title="SHOWCASE">
+              <b-tab active title="SHOWCASE">
                 <b-card-text>
-                  <b-form-select v-model="selectedShowcaseBastardsEvents" :options="getShowcaseBastardsEvents"></b-form-select>
+                  <div class="d-flex m-0 p-0" style="height: 37px;">
+                    <div>
+                      <b-form-select v-model="selectedShowcaseBastardsEvents" :options="getShowcaseBastardsEvents"></b-form-select>
+                    </div>
+                    <div class="pr-1 flex-grow-1">
+                    </div>
+                    <div class="pl-2">
+                      <b-form-select size="sm" v-model="cardImageSizeCurrent" :options="cardImageSizeOptions"></b-form-select>
+                    </div>
+                  </div>
                 </b-card-text>
                 <b-card-text>
-                  <!-- {{ getShowcaseBastards[selectedShowcaseBastardsEvents].tokenIds }} -->
                   <b-card-group deck>
                     <div v-for="record in getShowcaseBastards[selectedShowcaseBastardsEvents].tokenIds">
                       <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0 border-0">
                         <b-link @click="displayToken(data[record].tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                           <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="data[record].images[0]" />
                         </b-link>
-                      <b-card>
-                      <!-- {{ record }}
-                      <b-link @click="displayToken(record)">
-                        <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[record] ? data[record].images[0] : null" v-b-popover.hover.bottom="'#' + record" class="ml-2"></b-avatar>
-                      </b-link> -->
+                        <b-card-text>
+                          <b-form-checkbox @input="saveSettings('cardViewSelection')" inline v-model="settings.selection[record]">
+                            <b-link :href="'https://www.bastardganpunks.club/v2/' + record" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
+                              {{ '#' + record }}
+                            </b-link>
+                          </b-form-checkbox>
+                          <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
+                            {{ ensOrShortName(owners[record]) }}
+                          </b-link>
+                          <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
+                            <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
+                          </b-link>
+                          <b-link v-if="cardImageSizeCurrent >= 300" :href="data[record].images[1]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON IPFS'" target="_blank">
+                            <b-icon-image shift-v="+1" font-scale="0.8"></b-icon-image>
+                          </b-link>
+                          <b-link v-if="cardImageSizeCurrent >= 300" :href="data[record].images[2]" v-b-popover.hover="'VIEW ORIGINAL IMAGE ON ARWEAVE'" target="_blank">
+                            <b-icon-image-fill shift-v="+1" font-scale="0.8"></b-icon-image-fill>
+                          </b-link>
+                          <b-link v-if="cardImageSizeCurrent >= 300" :href="'./arweaveimages/' + record + '_' + data[record].images[2].replace('https://arweave.net/', '') + (data[record].imageMosaic != null ? '.gif' : '.png')" v-b-popover.hover="'VIEW SAVED COPY OF ORIGINAL ARWEAVE IMAGE'" target="_blank">
+                            <b-icon-card-image shift-v="+1" font-scale="0.8"></b-icon-card-image>
+                          </b-link>
+                          <span v-if="data[record].mosaicurl != null && cardImageSizeCurrent >= 300">
+                            <b-link :href="data[record].mosaicurl" v-b-popover.hover="'VIEW HYPED AF (ANIMATED) MOSAIC'" target="_blank">
+                              <b-icon-grid3x3-gap shift-v="+1" font-scale="0.8"></b-icon-grid3x3-gap>
+                            </b-link>
+                          </span>
+                          <b-link v-if="cardImageSizeCurrent >= 300" :href="data[record].permalink" target="_blank">
+                            <span v-if="osData[record] && osData[record].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></span>
+                          </b-link>
+                          <span v-if="cardImageSizeCurrent >= 300">
+                            <font size="-2">
+                              <b-form-tags size="sm" @input="saveTags" v-model="tags[record]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1 mw-100"></b-form-tags>
+                            </font>
+                          </span>
+                        </b-card-text>
+                      </b-card>
                     </div>
                   </b-card-group>
-
                 </b-card-text>
               </b-tab>
 
