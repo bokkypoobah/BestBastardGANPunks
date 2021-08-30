@@ -351,7 +351,7 @@
                     <div v-if="settings.sortOption == 'random'" class="pl-2">
                       <b-button size="sm" :pressed.sync="randomise" variant="link" v-b-popover.hover="'RANDOMISE'"><b-icon-arrow-clockwise shift-v="-1" font-scale="1.4"></b-icon-arrow-clockwise></b-button>
                     </div>
-                    <div class="pl-0">
+                    <div class="pl-2">
                       <b-form-select size="sm" @input="saveSettings('sortOption')" v-model="settings.sortOption" :options="sortOptions"></b-form-select>
                     </div>
                     <div class="pl-2">
