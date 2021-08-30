@@ -147,9 +147,6 @@
                     <div class="pl-1">
                       <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..."></b-form-input>
                     </div>
-                    <!-- <div class="pl-1">
-                      <b-button size="sm" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary"><< MY SEXY BASTARDS</b-button>
-                    </div> -->
                     <div class="pl-1">
                       <b-button size="sm" :pressed.sync="settings.mySexyBastards" @click="recalculate('searchAccount')" variant="outline-primary" v-b-popover.hover="'VIEW ONLY MY SEXY BASTARDS'">MY SEXY BASTARDS</b-button>
                     </div>
@@ -186,34 +183,9 @@
                         <b-card-group deck>
                           <b-card header="QUICK FILTER" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
-                              <!-- <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2, ..." class="mb-2"></b-form-input> -->
-
-                              <!-- <b-input-group v-if="selectedItemIsGIF">
-                                <template #prepend>
-                                  <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
-                                  <b-input-group-text>0</b-input-group-text>
-                                </template>
-                                <b-form-input @change="setFrame()" v-model.trim="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
-                                <template #append>
-                                  <b-input-group-text>{{ selectedItemFrames == null ? 0 : (selectedItemFrames - 1) }}</b-input-group-text>
-                                </template>
-                              </b-input-group> -->
-
-                              <!-- <b-input-group size="sm" > -->
-                                <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..." class="mb-2"></b-form-input>
-                                <!-- <template #append>
-                                  <b-button :disabled="settings.searchTokenId.length == 0" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary" class="mb-2">{{ getURL(settings.searchTokenId)}}</b-button>
-                                </template>
-                              </b-input-group> -->
-                              <!-- <b-input-group size="sm" > -->
-                                <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..." class="mb-2"></b-form-input>
-                                <!-- <template #append>
-                                  <b-button :disabled="settings.searchAccount.length == 0" @click="settings.searchAccount = account; recalculate('mySexyBastards')" variant="outline-primary" class="mb-2 w-50">{{ getURL(settings.searchAccount)}}</b-button>
-                                </template>
-                              </b-input-group> -->
-
+                              <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..." class="mb-2"></b-form-input>
+                              <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..." class="mb-2"></b-form-input>
                               <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input>
-
                               <b-form-checkbox @change="recalculate('searchForSaleOnly')" v-model.trim="settings.searchForSaleOnly" debounce="600">For Sale Only (coming)</b-form-checkbox>
                             </b-card-text>
                           </b-card>
@@ -234,27 +206,6 @@
                               <b-button size="sm" @click="settings.selection = {}; saveSettings('resetSelection')" variant="outline-primary" v-b-popover.hover="'RESET SELECTION'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
                             </b-card-text>
                           </b-card>
-
-                          <!--
-                          <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryKey">
-                            <b-card style="min-width: 18rem; max-width: 18rem;" class="mb-2">
-                              <template #header>
-                                <span variant="secondary">
-                                  {{ categoryKey }}
-                                </span>
-                                <font size="-2">
-                                  <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
-                                    <template #cell(select)="data">
-                                      <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
-                                    </template>
-                                  </b-table>
-                                </font>
-                              </template>
-                              <b-card-text>
-                              </b-card-text>
-                            </b-card>
-                          </div>
-                          -->
                         </b-card-group>
                       </b-card>
                     </b-collapse>
@@ -312,7 +263,6 @@
                       <template #cell(image)="data">
                         <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="300%" :src="data.item.images[0]" />
-                          <!-- <b-avatar rounded="sm" variant="light" size="10.0rem" :src="data.item.osimage"></b-avatar> -->
                         </b-link>
                       </template>
                       <template #cell(tokenId)="data">
@@ -432,12 +382,6 @@
                         <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW #' + tokenId + ' IN OPENSEA'" target="_blank">
                           <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
                         </b-link>
-                        <!-- <b-link :href="'https://opensea.io/assets/0x31385d3520bced94f77aae104b406994d8f2168c/' + tokenId" v-b-popover.hover="'VIEW IN OPENSEA'" target="_blank">
-                          {{ tokenId }} <b-img-lazy :width="'60%'" :src="getImagePreview(tokenId)" />
-                        </b-link> -->
-                        <!-- <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
-                          <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.images[0]" />
-                        </b-link> -->
                       </span>
                     </template>
                   </b-table>
