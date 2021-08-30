@@ -337,7 +337,7 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab active title="SHOWCASE">
+              <b-tab title="SHOWCASE">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
@@ -355,7 +355,7 @@
                 </b-card-text>
                 <b-card-text>
                   <b-card-group deck>
-                    <div v-for="record in getShowcaseBastards[selectedShowcaseBastardsEvents].tokenIds">
+                    <div v-for="record in getShowcaseBastards(selectedShowcaseBastardsEvents).tokenIds">
                       <b-card v-if="data[record]" body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0 border-0">
                         <b-card-text>
                           <b-link @click="displayToken(data[record].tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
@@ -733,7 +733,7 @@
           ],
           sortOptions: [
             { value: 'tokenIdAscending', text: 'TOKENID ASCENDING' },
-            // { value: 'tokenIdDescending', text: 'TOKENID DESCENDING' },
+            { value: 'tokenIdDescending', text: 'TOKENID DESCENDING' },
             { value: 'random', text: 'RANDOM' },
           ],
           bokkysBastards: [471, 1133, 1147, 1197, 1322, 1406, 1822, 1835, 2289, 2893, 3053, 3291, 3316, 3569, 3852, 3905, 3906, 4046, 4087, 4113, 4158, 4209, 4272, 4618, 4777, 4793, 4994, 5288, 5601, 5654, 5710, 5775, 5903, 6225, 6285, 6626, 6632, 7008, 7214, 7222, 7266, 7432, 7492, 7567, 7721, 7731, 7776, 7831, 7850, 8621, 8645, 8854, 8895, 9040, 9158, 9260, 9362, 9374, 9401, 9490, 9594, 9595, 9740, 9759, 9783, 9792, 9881, 10050, 10093, 10178, 10192, 10193, 10252, 10341, 10375, 10449, 10456, 10564, 10583, 10592, 10661, 10724, 10727, 10729, 10734, 10735, 10736, 10737, 10834, 11100, 11105, 11140, 11258],
@@ -773,9 +773,6 @@
               return Math.random() - 0.5;
             });
             return tokenIdsOwned.slice(0, MAXBASTARDSTODISPLAY);
-          },
-          getShowcaseBastards() {
-            return SHOWCASE;
           },
           getShowcaseBastardsEvents() {
             const results = [];
@@ -831,6 +828,23 @@
 
 
         methods: {
+          getShowcaseBastards(index) {
+            let record = SHOWCASE[index];
+            if (this.settings.sortOption == 'tokenIdAscending') {
+              record.tokenIds.sort((a, b) => {
+                return a - b;
+              });
+            } else if (this.settings.sortOption == 'tokenIdDescending') {
+              record.tokenIds.sort((a, b) => {
+                return b - a;
+              });
+            } else {
+              record.tokenIds.sort(() => {
+                return Math.random() - 0.5;
+              });
+            }
+            return record;
+          },
           copyCurrentFilteredResultsIntoSelection() {
             const results = {};
             for (const item of this.tokensSearchResults) {
