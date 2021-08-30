@@ -337,7 +337,7 @@
                 </b-card-text>
               </b-tab>
 
-              <b-tab lazy>
+              <b-tab lazy active>
                 <template #title>
                   <b-spinner type="grow" variant="warning" small></b-spinner> SHOWCASE
                 </template>
@@ -348,7 +348,10 @@
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
-                    <div class="pl-2">
+                    <div v-if="settings.sortOption == 'random'" class="pl-2">
+                      <b-button size="sm" :pressed.sync="randomise" variant="link" v-b-popover.hover="'RANDOMISE'"><b-icon-arrow-clockwise shift-v="-1" font-scale="1.4"></b-icon-arrow-clockwise></b-button>
+                    </div>
+                    <div class="pl-0">
                       <b-form-select size="sm" @input="saveSettings('sortOption')" v-model="settings.sortOption" :options="sortOptions"></b-form-select>
                     </div>
                     <div class="pl-2">
@@ -638,6 +641,7 @@
           collatedOwners: [],
           tabIndex: 0,
           selectedShowcaseBastardsEvents: 0,
+          randomise: false,
 
           data: [],
           categories: {},
@@ -832,7 +836,7 @@
 
         methods: {
           getShowcaseBastards(index) {
-            let record = SHOWCASE[index];
+            let record = this.randomise ? SHOWCASE[index] : SHOWCASE[index];
             if (this.settings.sortOption == 'tokenIdAscending') {
               record.tokenIds.sort((a, b) => {
                 return a - b;
