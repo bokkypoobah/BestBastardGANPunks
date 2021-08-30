@@ -1156,6 +1156,7 @@
 
           // --- Web3 Connection ---
           async connect() {
+            console.log("connect() ...");
             if (!window.ethereum) {
               alert("Please use the https://metamask.io addon with Firefox, Chromium, Opera or Chrome, or any other other web3 browser, if you would like to view your Ethereum wallet's BGANPUNKSV2.");
               this.connected = false;
@@ -1195,7 +1196,7 @@
                 const totalSupply = parseInt(info[2].toString());
                 console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
                 const owners = [];
-                const NFTOWNERBATCHSIZE = 500;
+                const NFTOWNERBATCHSIZE = 300; // 500 OK
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
@@ -1221,7 +1222,7 @@
                 ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 let addresses = Object.keys(ensMap);
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
-                const ENSOWNERBATCHSIZE = 500;
+                const ENSOWNERBATCHSIZE = 300; // 500 fails occassionally
                 for (let i = 0; i < addresses.length; i += ENSOWNERBATCHSIZE) {
                   this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " OF " + ethers.utils.commify(addresses.length);
                   const batch = addresses.slice(i, parseInt(i) + ENSOWNERBATCHSIZE);
