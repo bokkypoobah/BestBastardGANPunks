@@ -327,7 +327,7 @@
                         </span>
                       </template>
                       <template #cell(attributes)="data">
-                        <b-row v-for="attribute in data.item.attributes"  v-bind:key="attribute.trait_type" class="m-0 p-0">
+                        <b-row v-for="(attribute, i) in data.item.attributes"  v-bind:key="i" class="m-0 p-0">
                           <b-col class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></font></b-col>
                         </b-row>
                       </template>
