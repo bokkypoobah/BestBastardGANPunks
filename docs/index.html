@@ -742,7 +742,7 @@
           ownersFields: [
             { key: 'index', label: '#' },
             { key: 'owner', label: 'OWNER' },
-            { key: 'tokens', label: 'TONKENS' },
+            { key: 'tokens', label: 'BASTARDS' },
           ],
           sortOptions: [
             { value: 'tokenIdAscending', text: 'TOKENID ASCENDING' },
@@ -1084,7 +1084,7 @@
                 results.push({ owner: key, tokens: value, count: value.length });
               }
               results.sort(function(a, b) {
-                return b.count - a.count;
+                return a.count - b.count;
               });
               for (let i in results) {
                 results[i].index = i;
