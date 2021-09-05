@@ -848,7 +848,7 @@
         methods: {
           setMetaData(tokenId) {
             console.log("setMetaData: " + tokenId + this.metadatas[tokenId]);
-            if (false && !this.connected) {
+            if (!this.connected) {
               this.$bvModal.msgBoxOk("CLICK [CONNECT WALLET] ON THE TOP RIGHT")
                 .then(value1 => {
                   event.preventDefault();
