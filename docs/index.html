@@ -1204,14 +1204,13 @@
 
                 const metadatas = [];
                 const METADATABATCHSIZE = 300; // 500 OK
-                for (let i = 0; i < totalSupply && i < 1000; i += METADATABATCHSIZE) {
+                for (let i = 0; i < totalSupply; i += METADATABATCHSIZE) {
                   const to = (i + METADATABATCHSIZE > totalSupply) ? totalSupply : i + METADATABATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 YOURBASTARDYOURCALL METADATA FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
 
                   const metadataResult = await yourBastardYourCallHelper.getMetadata(2, i, to);
                   console.log(new Date().toUTCString() + " getMetadata from: " + i + ", to: " + to + ", size: " + JSON.stringify(metadataResult));
                   for (let j = 0; j < metadataResult.length; j++) {
-                    // console.log(j + " " + metadataResult[j]);
                     metadatas.push(metadataResult[j]);
                   }
                 }
