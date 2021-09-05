@@ -848,26 +848,50 @@
         methods: {
           setMetaData(tokenId) {
             console.log("setMetaData: " + tokenId + this.metadatas[tokenId]);
-            this.$bvModal.msgBoxConfirm('SET METADATA/LICENSE FOR TOKENID ' + tokenId + ' to "' + this.metadatas[tokenId] + '"?', {
-                title: 'Please Confirm',
-                size: 'sm',
-                buttonSize: 'sm',
-                okVariant: 'danger',
-                okTitle: 'Yes',
-                cancelTitle: 'No',
-                footerClass: 'p-2',
-                hideHeaderClose: false,
-                centered: true
-              })
-              .then(value1 => {
-                if (value1) {
+            if (false && !this.connected) {
+              this.$bvModal.msgBoxOk("CLICK [CONNECT WALLET] ON THE TOP RIGHT")
+                .then(value1 => {
                   event.preventDefault();
-                  console.log("EXEC setMetaData: " + tokenId + this.metadatas[tokenId]);
-                }
-              })
-              .catch(err => {
-                // An error occurred
-              });
+                })
+                .catch(err => {
+                  // An error occurred
+                });
+            } else {
+              this.$bvModal.msgBoxConfirm('SET METADATA/LICENSE FOR TOKENID ' + tokenId + ' to "' + this.metadatas[tokenId] + '"? (SEE JAVASCRIPT CONSOLE FOR TX HASH IF YOU WANT IT)', {
+                  title: 'Please Confirm',
+                  size: 'sm',
+                  buttonSize: 'sm',
+                  okVariant: 'danger',
+                  okTitle: 'Yes',
+                  cancelTitle: 'No',
+                  footerClass: 'p-2',
+                  hideHeaderClose: false,
+                  centered: true
+                })
+                .then(async value1 => {
+                  if (value1) {
+                    event.preventDefault();
+                    console.log("EXEC setMetaData: " + tokenId + this.metadatas[tokenId]);
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const yourBastardYourCall = new ethers.Contract(YOURBASTARDYOURCALLADDRESS, YOURBASTARDYOURCALLABI, provider);
+                    const yourBastardYourCallWithSigner = yourBastardYourCall.connect(provider.getSigner());
+                    const tx = await yourBastardYourCallWithSigner.setLicenseForBASTARD(2, tokenId, this.metadatas[tokenId]);
+                    console.log("EXEC setMetaData - yourBastardYourCall - tx: " + JSON.stringify(tx));
+                    // this.$bvModal.msgBoxOk("TRANSACTION HASH: " + tx)
+                    //   .then(value1 => {
+                    //     event.preventDefault();
+                    //   })
+                    //   .catch(err => {
+                    //     // An error occurred
+                    //   });
+                    // function setLicenseForBASTARD(uint8 _version, uint _id, string memory _text) external {
+                    // console.log("EXEC setMetaData - yourBastardYourCall: " + JSON.stringify(yourBastardYourCall));
+                  }
+                })
+                .catch(err => {
+                  // An error occurred
+                });
+            }
           },
           getShowcaseBastards(index) {
             let record = this.randomise ? SHOWCASE[index] : SHOWCASE[index];
@@ -1215,9 +1239,9 @@
               if (network.chainId == 1) {
                 this.connected = true;
 
-                const yourBastardYourCall = new ethers.Contract(YOURBASTARDYOURCALLADDRESS, YOURBASTARDYOURCALLABI, provider);
-                const result = await yourBastardYourCall.showLicenseForBASTARD(2, 10932);
-                console.log("showLicenseForBASTARD(2, 10932): " + JSON.stringify(result));
+                // const yourBastardYourCall = new ethers.Contract(YOURBASTARDYOURCALLADDRESS, YOURBASTARDYOURCALLABI, provider);
+                // const result = await yourBastardYourCall.showLicenseForBASTARD(2, 10932);
+                // console.log("showLicenseForBASTARD(2, 10932): " + JSON.stringify(result));
 
                 const yourBastardYourCallHelper = new ethers.Contract(YOURBASTARDYOURCALLHELPERADDRESS, YOURBASTARDYOURCALLHELPERABI, provider);
                 // const result2 = await yourBastardYourCallHelper.getMetadata(2, 10800, 10935);
