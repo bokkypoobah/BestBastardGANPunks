@@ -307,7 +307,9 @@
                         <b-link :href="data.item.permalink" target="_blank">
                           <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
-                        <b-form-textarea size="sm" readonly v-model.trim="metadatas[data.item.tokenId]" placeholder="NO METADATA ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
+                        <b-button v-if="owners[data.item.tokenId].toLowerCase() == account.toLowerCase()" size="sm" @click="setMetaData(data.item.tokenId)" variant="link" v-b-popover.hover="'SET YOURBASTARDYOURCALL METADATA (LICENSE)'" class="m-0 p-0"><b-icon-pencil-square shift-v="+5" font-scale="0.9" variant="danger"></b-icon-pencil-square></b-button>
+
+                        <b-form-textarea size="sm" @change="metadataDirtyFlag[data.item.tokenId] = true;" :disabled="owners[data.item.tokenId].toLowerCase() != account.toLowerCase()" v-model.trim="metadatas[data.item.tokenId]" placeholder="NO METADATA ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
                         <b-form-textarea size="sm" @change="saveNotes('listView')" v-model.trim="notes[data.item.tokenId]" placeholder="NOTES ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="TAGS ..." class="ml-0 mt-1 mb-1"></b-form-tags>
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
@@ -639,6 +641,7 @@
           tokensOwned: [],
           owners: [],
           metadatas: [],
+          metadataDirtyFlag: [],
           ensMap: {},
           osData: {},
           notes: {},
@@ -843,6 +846,29 @@
 
 
         methods: {
+          setMetaData(tokenId) {
+            console.log("setMetaData: " + tokenId + this.metadatas[tokenId]);
+            this.$bvModal.msgBoxConfirm('SET METADATA/LICENSE FOR TOKENID ' + tokenId + ' to "' + this.metadatas[tokenId] + '"?', {
+                title: 'Please Confirm',
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'danger',
+                okTitle: 'Yes',
+                cancelTitle: 'No',
+                footerClass: 'p-2',
+                hideHeaderClose: false,
+                centered: true
+              })
+              .then(value1 => {
+                if (value1) {
+                  event.preventDefault();
+                  console.log("EXEC setMetaData: " + tokenId + this.metadatas[tokenId]);
+                }
+              })
+              .catch(err => {
+                // An error occurred
+              });
+          },
           getShowcaseBastards(index) {
             let record = this.randomise ? SHOWCASE[index] : SHOWCASE[index];
             if (this.settings.sortOption == 'tokenIdAscending') {
