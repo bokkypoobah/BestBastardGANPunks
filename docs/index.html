@@ -20,7 +20,7 @@
     <script src="js/dexie.js"></script>
     <script src="js/libgif.js"></script>
 
-    <script src="js/ethers-5.2.umd.min.js"></script>
+    <script src="js/ethers-5.4.6.umd.min.js"></script>
     <script src="js/bignumber.min.js"></script>
     <!-- <script src="js/apexcharts.js"></script> -->
 
@@ -1253,7 +1253,7 @@
                 console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
 
                 const metadatas = [];
-                const METADATABATCHSIZE = 300; // 500 OK
+                const METADATABATCHSIZE = 200; // 500 OK
                 for (let i = 0; i < totalSupply; i += METADATABATCHSIZE) {
                   const to = (i + METADATABATCHSIZE > totalSupply) ? totalSupply : i + METADATABATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 YOURBASTARDYOURCALL METADATA FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
@@ -1270,7 +1270,7 @@
                 localStorage.setItem('bastardsMetadatas', JSON.stringify(metadatas));
 
                 const owners = [];
-                const NFTOWNERBATCHSIZE = 300; // 500 OK
+                const NFTOWNERBATCHSIZE = 200; // 500 OK
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
                   this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
@@ -1296,7 +1296,7 @@
                 ensMap["0xcCcBF11AC3030ee8CD7a04CFE15a3718df6dD030".toLowerCase()] = "NFT20_";
                 let addresses = Object.keys(ensMap);
                 const ensReverseRecordsContract = new ethers.Contract(ENSREVERSERECORDSADDRESS, ENSREVERSERECORDSABI, provider);
-                const ENSOWNERBATCHSIZE = 300; // 500 fails occassionally
+                const ENSOWNERBATCHSIZE = 200; // 500 fails occassionally
                 for (let i = 0; i < addresses.length; i += ENSOWNERBATCHSIZE) {
                   this.processing = "RETRIEVING LIVE ENS REVERSE RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " OF " + ethers.utils.commify(addresses.length);
                   const batch = addresses.slice(i, parseInt(i) + ENSOWNERBATCHSIZE);
