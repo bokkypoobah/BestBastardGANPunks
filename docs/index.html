@@ -80,23 +80,22 @@
         <div>
           <b-card no-body class="mt-1">
             <div>
-              <!-- <b-modal size="xl" ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" class="w-100"> -->
-              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-50">
+              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100">
                 <template #modal-title>
-                  {{ selectedTokenId == null ? null : data[selectedTokenId].name }}
-                  <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
+                  {{ selected.tokenId == null ? null : data[selected.tokenId].name }}
+                  <span v-if="selected.isGIF"> - Frame {{ selected.frame == null ? '(loading)' : selected.frame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedTokenId != null && data[selectedTokenId] ? data[selectedTokenId].images[0] : null" :rel:animated_src="selectedTokenId && data[selectedTokenId] ? data[selectedTokenId].images[0] : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selected.tokenId != null && data[selected.tokenId] ? data[selected.tokenId].images[0] : null" :rel:animated_src="selected.tokenId && data[selected.tokenId] ? data[selected.tokenId].images[0] : null" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
-                <b-input-group v-if="selectedItemIsGIF">
+                <b-input-group v-if="selected.isGIF">
                   <template #prepend>
-                    <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selectedItemFrame" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="mr-2"></b-form-spinbutton>
+                    <b-form-spinbutton wrap @change="setFrame()" v-model.trim="selected.frame" min="0" :max="selected.frames == null ? 0 : (selected.frames - 1)" class="mr-2"></b-form-spinbutton>
                     <b-input-group-text>0</b-input-group-text>
                   </template>
-                  <b-form-input @change="setFrame()" v-model.trim="selectedItemFrame" type="range" min="0" :max="selectedItemFrames == null ? 0 : (selectedItemFrames - 1)" class="w-25"></b-form-input>
+                  <b-form-input @change="setFrame()" v-model.trim="selected.frame" type="range" min="0" :max="selected.frames == null ? 0 : (selected.frames - 1)" class="w-25"></b-form-input>
                   <template #append>
-                    <b-input-group-text>{{ selectedItemFrames == null ? 0 : (selectedItemFrames - 1) }}</b-input-group-text>
+                    <b-input-group-text>{{ selected.frames == null ? 0 : (selected.frames - 1) }}</b-input-group-text>
                   </template>
                 </b-input-group>
               </b-modal>
@@ -694,11 +693,13 @@
             { value: 66666, text: 'ALL' },
           ],
 
-          selectedTokenId: null,
-          selectedItemFrame: 0,
-          selectedItemFrames: null,
-          selectedItemIsGIF: false,
-          selectedItemGIF: null,
+          selected: {
+            tokenId: null,
+            frame: 0,
+            frames: null,
+            isGIF: false,
+            gif: null,
+          },
 
           cardImageSizeCurrent: '300',
           cardImageSizeOptions: [
@@ -1372,11 +1373,11 @@
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
-                t.selectedItemIsGIF = true;
+                t.selected.isGIF = true;
               } else {
-                t.selectedItemIsGIF = false;
+                t.selected.isGIF = false;
               }
-              t.selectedTokenId = tokenId;
+              t.selected.tokenId = tokenId;
               t.$refs['gif-frame-extraction-modal'].show();
             }
             xhr.onerror = function() {
@@ -1387,20 +1388,20 @@
           async onGIFFrameSelectionModalOpened() {
             const t = this;
             var element = document.getElementById("thegif1")
-            if (t.selectedItemIsGIF) {
-              this.selectedItemGIF = new SuperGif({ gif: element, loop_delay: 2000, max_width: 600, rubbable: true });
-              this.selectedItemGIF.load(function(){
-                t.selectedItemFrames = t.selectedItemGIF.get_length();
-                if (t.selectedItemFrame < 0 || t.selectedItemFrame >= t.selectedItemFrames) {
-                  t.selectedItemFrame = 0;
+            if (t.selected.isGIF) {
+              t.selected.gif = new SuperGif({ gif: element, loop_delay: 2000, max_width: 600, rubbable: true });
+              t.selected.gif.load(function(){
+                t.selected.frames = t.selected.gif.get_length();
+                if (t.selected.frame < 0 || t.selected.frame >= t.selected.frames) {
+                  t.selected.frame = 0;
                 }
-                t.selectedItemGIF.move_to(t.selectedItemFrame);
+                t.selected.gif.move_to(t.selected.frame);
               });
             }
           },
           setFrame() {
-            if (this.selectedItemGIF) {
-              this.selectedItemGIF.move_to(this.selectedItemFrame);
+            if (this.selected.isGIF) {
+              this.selected.gif.move_to(parseInt(this.selected.frame));
             }
           },
 
