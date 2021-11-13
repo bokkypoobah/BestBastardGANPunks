@@ -264,6 +264,10 @@
                         <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="300%" :src="data.item.images[0]" />
                         </b-link>
+                        <hr />
+                        <b-img-lazy width="60%" :src="'https://ipfs.io/ipfs/QmV7vA888YVzmhL2epitCobSZxSFSAjTaa1r5CWqe5YM2k/gactans/' + data.item.tokenId + '_first.jpg'" /></b-img-lazy>
+                        <b-img-lazy width="120%" :src="'https://ipfs.io/ipfs/QmV7vA888YVzmhL2epitCobSZxSFSAjTaa1r5CWqe5YM2k/gactans/' + data.item.tokenId + '_double.jpg'" /></b-img-lazy>
+                        <b-img-lazy width="60%" :src="'https://ipfs.io/ipfs/QmV7vA888YVzmhL2epitCobSZxSFSAjTaa1r5CWqe5YM2k/gactans/' + data.item.tokenId + '.jpg'" /></b-img-lazy>
                       </template>
                       <template #cell(tokenId)="data">
                         <b-form-checkbox @input="saveSettings('listViewSelection')" inline v-model="settings.selection[data.item.tokenId]">
