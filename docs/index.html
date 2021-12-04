@@ -299,20 +299,17 @@
                           </b-link>
                         </span>
 
-                        <!--
-                        TODO
-                        <span>
-                          <b-link :href="'????/' + data.item.tokenId + '.png'" v-b-popover.hover="'VIEW RAW DATA'" target="_blank">
-                            <b-icon-file-text shift-v="+1" font-scale="0.8"></b-icon-file-text>
-                          </b-link>
-                        </span>
-                        -->
                         <b-link :href="data.item.permalink" target="_blank">
                           <span v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder"><b-icon-cart-fill shift-v="+1" font-scale="0.8" v-b-popover.hover="'FOR SALE IN OPENSEA'"></b-icon-cart-fill></span><span v-else><b-icon-cart4 shift-v="+1" font-scale="0.8" v-b-popover.hover="'NOT FOR SALE IN OPENSEA'"></b-icon-cart4></span>
                         </b-link>
-                        <b-button v-if="owners[data.item.tokenId].toLowerCase() == account.toLowerCase()" size="sm" @click="setMetaData(data.item.tokenId)" variant="link" v-b-popover.hover="'SET YOURBASTARDYOURCALL METADATA (LICENSE)'" class="m-0 p-0"><b-icon-pencil-square shift-v="+5" font-scale="0.9" variant="danger"></b-icon-pencil-square></b-button>
+                        <div v-if="owners[data.item.tokenId] && metadataDirtyFlag[data.item.tokenId]">
+                          <b-button v-if="owners[data.item.tokenId].toLowerCase() == account.toLowerCase()" size="sm" @click="setMetaData(data.item.tokenId)" variant="link" v-b-popover.hover="'SET YOURBASTARDYOURCALL METADATA (LICENSE)'" class="m-0 p-0"><b-icon-pencil-square shift-v="+5" font-scale="0.9" variant="danger"></b-icon-pencil-square></b-button>
+                        </div>
 
-                        <b-form-textarea size="sm" @change="metadataDirtyFlag[data.item.tokenId] = true;" :disabled="owners[data.item.tokenId].toLowerCase() != account.toLowerCase()" v-model.trim="metadatas[data.item.tokenId]" placeholder="NO METADATA ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
+                        <div v-if="owners[data.item.tokenId] && metadataDirtyFlag[data.item.tokenId]">
+                          <b-form-textarea size="sm" @change="metadataDirtyFlag[data.item.tokenId] = true;" :disabled="owners[data.item.tokenId].toLowerCase() != account.toLowerCase()" v-model.trim="metadatas[data.item.tokenId]" placeholder="NO METADATA ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
+                        </div>
+
                         <b-form-textarea size="sm" @change="saveNotes('listView')" v-model.trim="notes[data.item.tokenId]" placeholder="NOTES ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="TAGS ..." class="ml-0 mt-1 mb-1"></b-form-tags>
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
